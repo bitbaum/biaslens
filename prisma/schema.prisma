@@ -1,0 +1,112 @@
+// BiasLens core data model — Milestone 1.
+// The ubiquitous language from the spec, as the single source of truth for types.
+// Principle: separate facts (Claim/Evidence) from interpretation (Narrative/Frame);
+// every score is explainable (carries its inputs), reproducible, and challengeable.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A news outlet — the publisher whose editorial DNA we characterize over time.
+model Outlet {
+  id                String             @id @default(cuid())
+  name              String             @unique
+  country           String?
+  ownership         String?
+  funding           String?
+  isPublic          Boolean            @default(false)
+  articles          Article[]
+  homepageSnapshots HomepageSnapshot[]
+  editorialDna      EditorialDna?
+  createdAt         DateTime           @default(now())
+}
+
+/// A single published article — the unit of analysis.
+model Article {
+  id         String     @id @default(cuid())
+  outlet     Outlet     @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  outletId   String
+  headline   String
+  author     String?
+  section    String?
+  url        String     @unique
+  body       String
+  publishedAt DateTime?
+  claims     Claim[]
+  narratives Narrative[]
+  createdAt  DateTime   @default(now())
+
+  @@index([outletId])
+}
+
+/// A checkable factual assertion extracted from an article. Facts, not framing.
+model Claim {
+  id                 String     @id @default(cuid())
+  article            Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId          String
+  text               String
+  speaker            String?
+  /// pending | supported | contradicted | unverifiable
+  verificationStatus String     @default("pending")
+  /// 0..1 — model confidence in the verification, always recorded (explainability).
+  confidence         Float?
+  evidence           Evidence[]
+  createdAt          DateTime   @default(now())
+
+  @@index([articleId])
+}
+
+/// A piece of evidence for or against a claim — the substrate of every score.
+model Evidence {
+  id        String   @id @default(cuid())
+  claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId   String
+  /// supports | contradicts
+  stance    String
+  source    String
+  excerpt   String?
+  url       String?
+  createdAt DateTime @default(now())
+
+  @@index([claimId])
+}
+
+/// An interpretation/framing of an event — kept separate from Claims (facts).
+/// Competing narratives coexist by design.
+model Narrative {
+  id        String   @id @default(cuid())
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String
+  frame     String
+  summary   String?
+  createdAt DateTime @default(now())
+
+  @@index([articleId])
+}
+
+/// An outlet's characterized editorial leaning across dimensions, tracked over time.
+model EditorialDna {
+  id         String   @id @default(cuid())
+  outlet     Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  outletId   String   @unique
+  /// dimension -> score (-1..1); explainable, recomputed from evidence.
+  dimensions Json
+  updatedAt  DateTime @updatedAt
+}
+
+/// A point-in-time capture of an outlet's homepage — for placement/visibility analysis.
+model HomepageSnapshot {
+  id         String   @id @default(cuid())
+  outlet     Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  outletId   String
+  capturedAt DateTime @default(now())
+  /// ordered list of {articleUrl, position, headline} as captured.
+  items      Json
+
+  @@index([outletId, capturedAt])
+}
