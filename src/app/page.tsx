@@ -1,0 +1,22 @@
+export default function Home() {
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: "0.75rem",
+        padding: "2rem",
+        maxWidth: "42rem",
+        marginInline: "auto",
+      }}
+    >
+      <h1 style={{ color: "var(--color-brand)", fontSize: "2rem" }}>BiasLens</h1>
+      <p style={{ color: "var(--color-text-muted)" }}>
+        Media bias analysis engine. Evidence before conclusions; facts separated
+        from framing; every score explainable and reproducible.
+      </p>
+    </main>
+  );
+}

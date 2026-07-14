@@ -1,0 +1,32 @@
+:root {
+  /* Tier 1 — primitives */
+  --primitive-ink-900: #1c1917;
+  --primitive-stone-500: #78716c;
+  --primitive-teal-600: #0d6e78;
+  --primitive-paper: #faf8f5;
+  --primitive-white: #ffffff;
+
+  /* Tier 2 — semantic tokens */
+  --color-bg: var(--primitive-paper);
+  --color-surface: var(--primitive-white);
+  --color-text: var(--primitive-ink-900);
+  --color-text-muted: var(--primitive-stone-500);
+  --color-brand: var(--primitive-teal-600);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius-card: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
