@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { scoreClaimVerification } from '@/lib/domain/claim-verification';
+import type { ApiResult } from '@/lib/api/result';
+import {
+  scoreClaimVerification,
+  type ClaimVerification,
+} from '@/lib/domain/claim-verification';
 import { parseVerifyRequest } from '@/lib/domain/verify-request';
 
 /**
@@ -17,7 +21,9 @@ import { parseVerifyRequest } from '@/lib/domain/verify-request';
  * The response carries the tally, confidence, and algorithm id straight from the
  * domain, so a caller can reproduce the verdict from what they sent.
  */
-export async function POST(request: Request): Promise<NextResponse> {
+export async function POST(
+  request: Request,
+): Promise<NextResponse<ApiResult<ClaimVerification>>> {
   let body: unknown;
   try {
     body = await request.json();

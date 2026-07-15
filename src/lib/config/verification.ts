@@ -28,6 +28,30 @@ export type VerificationStatus =
   (typeof VERIFICATION_STATUS)[keyof typeof VERIFICATION_STATUS];
 
 /**
+ * How each verdict is presented to a human: its label and a semantic *tone*
+ * (not a colour — the CSS layer maps tone → `--color-tone-*`, keeping presentation
+ * out of config). Deriving the UI from this map means a new status is labelled in
+ * exactly one place. `tone` is intentionally decoupled from status so several
+ * statuses can share a colour without repeating hex anywhere.
+ */
+export type VerdictTone = 'positive' | 'negative' | 'neutral';
+export const VERIFICATION_DISPLAY: Record<
+  VerificationStatus,
+  { label: string; tone: VerdictTone }
+> = {
+  [VERIFICATION_STATUS.SUPPORTED]: { label: 'Supported', tone: 'positive' },
+  [VERIFICATION_STATUS.CONTRADICTED]: { label: 'Contradicted', tone: 'negative' },
+  [VERIFICATION_STATUS.UNVERIFIABLE]: { label: 'Unverifiable', tone: 'neutral' },
+  [VERIFICATION_STATUS.PENDING]: { label: 'Pending — no evidence yet', tone: 'neutral' },
+};
+
+/** Human labels for each evidence stance, so the UI never hard-codes them. */
+export const STANCE_DISPLAY: Record<EvidenceStance, { label: string }> = {
+  [EVIDENCE_STANCE.SUPPORTS]: { label: 'Supporting' },
+  [EVIDENCE_STANCE.CONTRADICTS]: { label: 'Contradicting' },
+};
+
+/**
  * Minimum share of evidence (0..1) that must agree before a claim is called
  * SUPPORTED or CONTRADICTED. Below this the majority is too thin to conclude, so
  * the claim stays UNVERIFIABLE — we would rather withhold a verdict than assert a

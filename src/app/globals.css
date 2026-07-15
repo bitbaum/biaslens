@@ -2,19 +2,32 @@
   /* Tier 1 — primitives */
   --primitive-ink-900: #1c1917;
   --primitive-stone-500: #78716c;
+  --primitive-stone-200: #e7e5e4;
+  --primitive-stone-50: #f5f5f4;
   --primitive-teal-600: #0d6e78;
+  --primitive-green-700: #15803d;
+  --primitive-red-700: #b91c1c;
   --primitive-paper: #faf8f5;
   --primitive-white: #ffffff;
 
   /* Tier 2 — semantic tokens */
   --color-bg: var(--primitive-paper);
   --color-surface: var(--primitive-white);
+  --color-surface-muted: var(--primitive-stone-50);
+  --color-border: var(--primitive-stone-200);
   --color-text: var(--primitive-ink-900);
   --color-text-muted: var(--primitive-stone-500);
   --color-brand: var(--primitive-teal-600);
+  --color-action: var(--primitive-teal-600);
+
+  /* Verdict tones — map a status' semantic tone to a colour (see VERIFICATION_DISPLAY) */
+  --color-tone-positive: var(--primitive-green-700);
+  --color-tone-negative: var(--primitive-red-700);
+  --color-tone-neutral: var(--primitive-stone-500);
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --radius-card: 16px;
+  --radius-btn: 8px;
 }
 
 * {
