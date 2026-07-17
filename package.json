@@ -12,6 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "verify": "npm run lint && npm run typecheck && npm run test",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev"
   },
