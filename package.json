@@ -2,12 +2,17 @@
   "name": "biaslens",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "verify": "npm run lint && npm run typecheck && npm run test",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev"
   },
@@ -20,7 +25,10 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.20",
     "prisma": "^6.2.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.7"
   }
 }

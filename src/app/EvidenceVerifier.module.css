@@ -1,0 +1,158 @@
+.panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.sub {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.15rem;
+}
+
+.counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.counter {
+  flex: 1 1 12rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background: var(--color-surface-muted);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.counterLabel {
+  font-weight: 500;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.count {
+  min-width: 1.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.stepBtn {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepBtn:hover {
+  border-color: var(--color-action);
+}
+
+.stepBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.verifyBtn {
+  background: var(--color-action);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verifyBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--color-tone-negative);
+  font-size: 0.9rem;
+}
+
+.result {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.verdictRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.verdict {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.tonePositive {
+  color: var(--color-tone-positive);
+}
+
+.toneNegative {
+  color: var(--color-tone-negative);
+}
+
+.toneNeutral {
+  color: var(--color-tone-neutral);
+}
+
+.confidence {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tally {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.explain {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.algo {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

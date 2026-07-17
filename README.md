@@ -39,8 +39,10 @@ and on-demand Article Loop (extract → analyze → report → feedback).
 
 ## Roadmap
 
-1. **Define the core data model** — Outlet, Article, Claim, Evidence, Narrative,
-   Editorial DNA as Prisma schemas (this scaffold seeds `prisma/schema.prisma`).
+1. ~~**Define the core data model** — Outlet, Article, Claim, Evidence, Narrative,
+   Editorial DNA as Prisma schemas (this scaffold seeds `prisma/schema.prisma`).~~
+   **✅ DONE** (`0d46066`) — App Router root + initial Prisma migration applied;
+   build, lint, and `tsc` all green.
 2. Build the Extraction + Claim agents to parse an article into structured claims.
 3. Bias + Evidence scoring engine — every score explainable.
 4. Hourly Homepage Loop crawling + comparing outlets.
