@@ -19,12 +19,12 @@
   "dependencies": {
     "@prisma/client": "^6.2.1",
     "next": "^15.1.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
-    "@types/react": "^19.0.4",
+    "@types/react": "^19.2.18",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.20",
     "prisma": "^6.2.1",
