@@ -152,7 +152,7 @@
 }
 
 .algo {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
   font-size: 0.75rem;
   color: var(--color-text-muted);
 }

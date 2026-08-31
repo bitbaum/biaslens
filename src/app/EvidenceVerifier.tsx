@@ -82,8 +82,8 @@ export function EvidenceVerifier() {
       <div>
         <div className={styles.heading}>Verify a claim from its evidence</div>
         <p className={styles.sub}>
-          The verdict is a tally of supporting vs. contradicting evidence. Add
-          evidence on each side and see the explainable result — nothing hidden.
+          The verdict is a tally of supporting vs. contradicting evidence. Add evidence on each side
+          and see the explainable result — nothing hidden.
         </p>
       </div>
 
@@ -118,12 +118,7 @@ export function EvidenceVerifier() {
       </div>
 
       <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.verifyBtn}
-          onClick={verify}
-          disabled={loading}
-        >
+        <button type="button" className={styles.verifyBtn} onClick={verify} disabled={loading}>
           {loading ? 'Verifying…' : 'Verify'}
         </button>
         {error && <span className={styles.error}>{error}</span>}
@@ -132,9 +127,7 @@ export function EvidenceVerifier() {
       {result && display && (
         <div className={styles.result}>
           <div className={styles.verdictRow}>
-            <span className={`${styles.verdict} ${TONE_CLASS[display.tone]}`}>
-              {display.label}
-            </span>
+            <span className={`${styles.verdict} ${TONE_CLASS[display.tone]}`}>{display.label}</span>
             {result.confidence !== null && (
               <span className={styles.confidence}>
                 {Math.round(result.confidence * 100)}% confidence
@@ -148,9 +141,8 @@ export function EvidenceVerifier() {
           </div>
           <p className={styles.explain}>
             A verdict of Supported or Contradicted needs at least{' '}
-            {Math.round(MIN_AGREEMENT_TO_CONCLUDE * 100)}% of evidence to agree;
-            below that the claim stays Unverifiable rather than assert a
-            weakly-backed conclusion.
+            {Math.round(MIN_AGREEMENT_TO_CONCLUDE * 100)}% of evidence to agree; below that the
+            claim stays Unverifiable rather than assert a weakly-backed conclusion.
           </p>
           <span className={styles.algo}>algorithm: {result.algorithm}</span>
         </div>

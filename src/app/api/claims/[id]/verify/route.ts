@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 
 import type { ApiResult } from '@/lib/api/result';
 import { prisma } from '@/lib/db/prisma';
-import {
-  scoreClaimVerification,
-  type ClaimVerification,
-} from '@/lib/domain/claim-verification';
+import { scoreClaimVerification, type ClaimVerification } from '@/lib/domain/claim-verification';
 
 /**
  * GET /api/claims/[id]/verify

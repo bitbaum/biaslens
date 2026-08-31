@@ -13,9 +13,7 @@ import { EVIDENCE_STANCE, type EvidenceStance } from '../config/verification';
  * uses — so an unknown stance is rejected here with a helpful message rather than
  * being silently dropped downstream.
  */
-export type ParseResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+export type ParseResult<T> = { success: true; data: T } | { success: false; error: string };
 
 export interface VerifyRequest {
   evidence: ReadonlyArray<{ stance: EvidenceStance }>;

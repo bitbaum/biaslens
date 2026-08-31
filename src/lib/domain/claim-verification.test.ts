@@ -19,13 +19,7 @@ describe('scoreClaimVerification', () => {
 
   it('is SUPPORTED when the supporting majority meets the threshold', () => {
     // 3/5 = 0.6 ≥ MIN_AGREEMENT_TO_CONCLUDE
-    const result = scoreClaimVerification([
-      supports,
-      supports,
-      supports,
-      contradicts,
-      contradicts,
-    ]);
+    const result = scoreClaimVerification([supports, supports, supports, contradicts, contradicts]);
     expect(result.status).toBe(VERIFICATION_STATUS.SUPPORTED);
     expect(result.confidence).toBeCloseTo(0.6);
     expect(result.inputs).toEqual({ supports: 3, contradicts: 2, total: 5 });
@@ -57,20 +51,14 @@ describe('scoreClaimVerification', () => {
   });
 
   it('ignores unknown stance values rather than trusting them', () => {
-    const result = scoreClaimVerification([
-      supports,
-      supports,
-      { stance: 'garbage' },
-    ]);
+    const result = scoreClaimVerification([supports, supports, { stance: 'garbage' }]);
     expect(result.inputs).toEqual({ supports: 2, contradicts: 0, total: 2 });
     expect(result.status).toBe(VERIFICATION_STATUS.SUPPORTED);
     expect(result.confidence).toBe(1);
   });
 
   it('stamps the algorithm version for reproducibility', () => {
-    expect(scoreClaimVerification([]).algorithm).toBe(
-      CLAIM_VERIFICATION_ALGORITHM,
-    );
+    expect(scoreClaimVerification([]).algorithm).toBe(CLAIM_VERIFICATION_ALGORITHM);
   });
 
   it('is deterministic — identical input yields identical output', () => {
