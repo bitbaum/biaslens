@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
-    "eslint": "^9.39.5",
+    "eslint": "^10.9.1",
     "eslint-config-next": "^15.5.20",
     "prettier": "3.9.6",
     "prisma": "^6.2.1",
