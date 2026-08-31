@@ -30,7 +30,7 @@
     "eslint": "^10",
     "eslint-config-next": "^16",
     "prettier": "3.9.6",
-    "prisma": "^6.2.1",
+    "prisma": "^7.10.0",
     "typescript": "^6",
     "vitest": "^4.1.11"
   }
