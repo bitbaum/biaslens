@@ -24,8 +24,7 @@ export const VERIFICATION_STATUS = {
   /** Evidence exists but is too balanced to conclude either way. */
   UNVERIFIABLE: 'unverifiable',
 } as const;
-export type VerificationStatus =
-  (typeof VERIFICATION_STATUS)[keyof typeof VERIFICATION_STATUS];
+export type VerificationStatus = (typeof VERIFICATION_STATUS)[keyof typeof VERIFICATION_STATUS];
 
 /**
  * How each verdict is presented to a human: its label and a semantic *tone*
