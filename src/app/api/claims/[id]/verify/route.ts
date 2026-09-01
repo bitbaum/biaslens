@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import type { ApiResult } from '@/lib/api/result';
-import { prisma } from '@/lib/db/prisma';
+import { db } from '@/lib/db/client';
 import { scoreClaimVerification, type ClaimVerification } from '@/lib/domain/claim-verification';
 
 /**
@@ -26,9 +26,10 @@ export async function GET(
 ): Promise<NextResponse<ApiResult<ClaimVerification>>> {
   const { id } = await context.params;
 
-  const claim = await prisma.claim.findUnique({
-    where: { id },
-    select: { evidence: { select: { stance: true } } },
+  const claim = await db.query.claims.findFirst({
+    where: (claims, { eq }) => eq(claims.id, id),
+    columns: {},
+    with: { evidence: { columns: { stance: true } } },
   });
 
   if (!claim) {

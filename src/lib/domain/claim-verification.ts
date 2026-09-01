@@ -1,4 +1,4 @@
-import type { Evidence } from '@prisma/client';
+import type { Evidence } from '../db/schema';
 import {
   CLAIM_VERIFICATION_ALGORITHM,
   EVIDENCE_STANCE,

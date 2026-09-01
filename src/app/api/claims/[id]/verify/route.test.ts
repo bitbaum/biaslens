@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { EVIDENCE_STANCE, VERIFICATION_STATUS } from '@/lib/config/verification';
 
-// The route reads stored evidence through the shared Prisma client. We mock that
+// The route reads stored evidence through the shared Drizzle client. We mock that
 // door so the boundary logic (lookup → 404-or-score) is testable without a live
 // database — the same test then runs in CI, which has no Postgres.
-const findUnique = vi.fn();
-vi.mock('@/lib/db/prisma', () => ({
-  prisma: { claim: { findUnique: (...args: unknown[]) => findUnique(...args) } },
+const findFirst = vi.fn();
+vi.mock('@/lib/db/client', () => ({
+  db: { query: { claims: { findFirst: (...args: unknown[]) => findFirst(...args) } } },
 }));
 
 import { GET } from './route';
@@ -18,11 +18,11 @@ function callGet(id: string) {
 
 describe('GET /api/claims/[id]/verify', () => {
   beforeEach(() => {
-    findUnique.mockReset();
+    findFirst.mockReset();
   });
 
   it('404s with a structured error when the claim does not exist', async () => {
-    findUnique.mockResolvedValue(null);
+    findFirst.mockResolvedValue(undefined);
 
     const res = await callGet('missing');
     const body = await res.json();
@@ -32,7 +32,7 @@ describe('GET /api/claims/[id]/verify', () => {
   });
 
   it('scores the claim from its stored evidence stances', async () => {
-    findUnique.mockResolvedValue({
+    findFirst.mockResolvedValue({
       evidence: [
         { stance: EVIDENCE_STANCE.SUPPORTS },
         { stance: EVIDENCE_STANCE.SUPPORTS },
@@ -50,7 +50,7 @@ describe('GET /api/claims/[id]/verify', () => {
   });
 
   it('reports PENDING for a stored claim that has no evidence yet', async () => {
-    findUnique.mockResolvedValue({ evidence: [] });
+    findFirst.mockResolvedValue({ evidence: [] });
 
     const res = await callGet('c2');
     const body = await res.json();
