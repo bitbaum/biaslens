@@ -1,9 +1,9 @@
 // SSOT for claim-verification vocabulary and thresholds.
 //
-// The Prisma schema stores `Claim.verificationStatus` and `Evidence.stance` as
+// The DB schema stores `Claim.verificationStatus` and `Evidence.stance` as
 // free-form strings (documented there by comment); this module is the single
 // source of truth the application layer validates and computes against. Keep the
-// literal values here in sync with prisma/schema.prisma — nothing else may
+// literal values here in sync with src/lib/db/schema.ts — nothing else may
 // redefine them.
 
 /** How a piece of evidence relates to its claim. Mirrors `Evidence.stance`. */

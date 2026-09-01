@@ -25,7 +25,7 @@ Argument Arena vision.
 
 ## Stack
 
-Next.js + TypeScript + Prisma/Postgres. Multi-agent pipeline for
+Next.js + TypeScript + Drizzle/Postgres. Multi-agent pipeline for
 crawl/extract/score. FleetCrown for orchestration + loops; OrangeCat for funding
 + public transparency.
 
@@ -40,8 +40,9 @@ and on-demand Article Loop (extract → analyze → report → feedback).
 ## Roadmap
 
 1. ~~**Define the core data model** — Outlet, Article, Claim, Evidence, Narrative,
-   Editorial DNA as Prisma schemas (this scaffold seeds `prisma/schema.prisma`).~~
-   **✅ DONE** (`0d46066`) — App Router root + initial Prisma migration applied;
+   Editorial DNA as schema definitions (now `src/lib/db/schema.ts`, Drizzle ORM —
+   migrated from the original Prisma scaffold with byte-identical tables).~~
+   **✅ DONE** (`0d46066`) — App Router root + initial migration applied;
    build, lint, and `tsc` all green.
 2. Build the Extraction + Claim agents to parse an article into structured claims.
 3. Bias + Evidence scoring engine — every score explainable.
@@ -54,7 +55,7 @@ and on-demand Article Loop (extract → analyze → report → feedback).
 ```bash
 npm install
 cp .env.example .env   # set DATABASE_URL
-npx prisma migrate dev
+npm run db:migrate     # drizzle-kit migrate — applies drizzle/*.sql
 npm run dev
 ```
 
