@@ -1,6 +1,7 @@
 {
   "name": "biaslens",
   "version": "0.1.0",
+  "packageManager": "pnpm@11.25.0",
   "private": true,
   "engines": {
     "node": ">=20"
@@ -12,7 +13,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "format": "prettier --write .",
