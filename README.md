@@ -53,10 +53,10 @@ and on-demand Article Loop (extract → analyze → report → feedback).
 ## Getting started
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env   # set DATABASE_URL
-npm run db:migrate     # drizzle-kit migrate — applies drizzle/*.sql
-npm run dev
+pnpm run db:migrate     # drizzle-kit migrate — applies drizzle/*.sql
+pnpm run dev
 ```
 
 ## Definition of done

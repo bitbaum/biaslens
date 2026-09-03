@@ -1,0 +1,6 @@
+# pnpm 11 blocks dependency postinstall scripts by default; these two need
+# their builds: esbuild installs its platform binary, unrs-resolver its
+# native resolver (used by eslint-config-next).
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true

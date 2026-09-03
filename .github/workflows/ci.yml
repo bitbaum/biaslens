@@ -1,5 +1,5 @@
 # Golden CI floor — see dotfiles/templates/ci/README.md.
-# biaslens: npm + vitest + Drizzle. Floor = verify (lint + typecheck + test);
+# biaslens: pnpm + vitest + Drizzle. Floor = verify (lint + typecheck + test);
 # the 14-case suite runs on every push & PR. Drizzle needs no codegen — types
 # derive from src/lib/db/schema.ts directly, so nothing runs between install and
 # verify. `next build` is hermetic (no live DB): all DB access is inside dynamic
@@ -27,20 +27,22 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: pnpm/action-setup@v6
+
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
 
       - name: Install
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
-        run: npm run verify
+        run: pnpm run verify
 
       # Build gate: catches build-only breakage that verify (lint+typecheck+test)
       # can miss. Hermetic — no live DB needed (all queries are in dynamic route
       # handlers; the Drizzle client initializes lazily on first request).
       - name: Build
-        run: npm run build
+        run: pnpm run build

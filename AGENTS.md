@@ -13,24 +13,24 @@ Media bias analysis engine. See `CLAUDE.md` for the product contract and
 ## Commands
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env        # set DATABASE_URL
-npm run db:generate         # drizzle-kit generate — new migration from schema changes
-npm run db:migrate          # drizzle-kit migrate (needs a live Postgres)
-npm run dev                 # local dev server
-npm run build               # next build (production compile; no live DB needed)
-npm run verify              # SSOT gate: lint + typecheck + test
+pnpm run db:generate         # drizzle-kit generate — new migration from schema changes
+pnpm run db:migrate          # drizzle-kit migrate (needs a live Postgres)
+pnpm run dev                 # local dev server
+pnpm run build               # next build (production compile; no live DB needed)
+pnpm run verify              # SSOT gate: lint + typecheck + test
 ```
 
 ## Verify (definition of done)
 
-`npm run verify` runs `lint && typecheck && test` — the single source of truth for
+`pnpm run verify` runs `lint && typecheck && test` — the single source of truth for
 "green". CI calls it verbatim; run it locally before declaring any change done.
 `next build` also runs in CI after verify to catch build-only breakage.
 
 Drizzle has no codegen: types derive from `src/lib/db/schema.ts` at typecheck
-time, so `npm install` is the only prerequisite for `typecheck`/`build`.
-`npm run db:generate` is only needed after changing the schema (it writes a new
+time, so `pnpm install` is the only prerequisite for `typecheck`/`build`.
+`pnpm run db:generate` is only needed after changing the schema (it writes a new
 SQL migration into `drizzle/`).
 
 ## Layout

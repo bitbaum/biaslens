@@ -30,7 +30,7 @@ pass. (FleetCrown's DoD gate judges against this.)
 ## Roadmap (current milestone first)
 
 1. **Core data model** — seeded in `src/lib/db/schema.ts` (Outlet, Article, Claim,
-   Evidence, Narrative, EditorialDna, HomepageSnapshot). Acceptance: `npm run
+   Evidence, Narrative, EditorialDna, HomepageSnapshot). Acceptance: `pnpm run
    db:migrate` runs clean against a fresh Postgres.
 2. Extraction + Claim agents: parse an article into structured claims with sources.
 3. Bias + Evidence scoring engine — explainable scores.
