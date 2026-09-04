@@ -19,12 +19,12 @@ pnpm run db:generate         # drizzle-kit generate — new migration from schem
 pnpm run db:migrate          # drizzle-kit migrate (needs a live Postgres)
 pnpm run dev                 # local dev server
 pnpm run build               # next build (production compile; no live DB needed)
-pnpm run verify              # SSOT gate: lint + typecheck + test
+pnpm run verify              # SSOT gate: format:check + lint + typecheck + test
 ```
 
 ## Verify (definition of done)
 
-`pnpm run verify` runs `lint && typecheck && test` — the single source of truth for
+`pnpm run verify` runs `format:check && lint && typecheck && test` — the single source of truth for
 "green". CI calls it verbatim; run it locally before declaring any change done.
 `next build` also runs in CI after verify to catch build-only breakage.
 
