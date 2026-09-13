@@ -1,7 +1,7 @@
 # BiasLens — agent brief
 
 You are building BiasLens, a media bias analysis engine. This file is the
-contract every change follows. It mirrors the FleetCrown project brief.
+contract every change follows. It mirrors the Loki project brief.
 
 ## Product philosophy — non-negotiable
 
@@ -25,7 +25,7 @@ contract every change follows. It mirrors the FleetCrown project brief.
 
 A change is done only when: every new score documents input, algorithm, evidence,
 confidence, and failure modes; conclusions are reproducible; `tsc` + lint + tests
-pass. (FleetCrown's DoD gate judges against this.)
+pass. (Loki's DoD gate judges against this.)
 
 ## Roadmap (current milestone first)
 

@@ -5,7 +5,7 @@ from framing, measures uncertainty, and surfaces missing perspectives — every
 score explainable, reproducible, and challengeable. The "Bloomberg Terminal for
 media analysis."
 
-Bootstrapped by FleetCrown from the BiasLens Product & Engineering Specification.
+Bootstrapped by Loki from the BiasLens Product & Engineering Specification.
 
 ## Vision
 
@@ -26,7 +26,7 @@ Argument Arena vision.
 ## Stack
 
 Next.js + TypeScript + Drizzle/Postgres. Multi-agent pipeline for
-crawl/extract/score. FleetCrown for orchestration + loops; OrangeCat for funding
+crawl/extract/score. Loki for orchestration + loops; OrangeCat for funding
 + public transparency.
 
 ## Architecture (target)
