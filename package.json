@@ -24,18 +24,18 @@
     "drizzle-orm": "^0.45.1",
     "next": "^16",
     "pg": "^8.23.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@types/node": "^26.5.0",
+    "@types/node": "^26.6.1",
     "@types/pg": "^8.23.1",
-    "@types/react": "^19.2.18",
+    "@types/react": "^19.3.0",
     "drizzle-kit": "^0.31.9",
     "eslint": "^10",
     "eslint-config-next": "^16",
     "prettier": "3.9.6",
     "typescript": "^6",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.1"
   }
 }
