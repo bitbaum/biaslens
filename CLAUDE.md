@@ -1,5 +1,8 @@
 # BiasLens — agent brief
 
+Org rules are [bitbaum/fleet AGENTS.md](https://github.com/bitbaum/fleet/blob/main/AGENTS.md): packages by default (say why if you skip one), search through `@bitbaum/searchkit`, chat through `@bitbaum/chatkit`, shared names and the identity contract. Read that file. Do not restate it here.
+
+
 You are building BiasLens, a media bias analysis engine. This file is the
 contract every change follows. It mirrors the Loki project brief.
 
