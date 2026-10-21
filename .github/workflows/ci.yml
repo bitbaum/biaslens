@@ -55,10 +55,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
-      # Temporary formatter inspection, removed once its exact diff is applied.
-      - name: Formatter diagnostic
-        run: pnpm exec prettier --write src/app/analyze/analyze.module.css src/app/analyze/AnalyzeWorkspace.tsx src/app/page.tsx && git diff -- src/app/analyze/analyze.module.css src/app/analyze/AnalyzeWorkspace.tsx src/app/page.tsx
-
       - name: Verify
         run: pnpm run verify
 
