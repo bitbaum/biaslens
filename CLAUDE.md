@@ -1,42 +1,32 @@
-# BiasLens — agent brief
+# BiasLens agent entrypoint
 
-Org rules are [bitbaum/fleet AGENTS.md](https://github.com/bitbaum/fleet/blob/main/AGENTS.md): packages by default (say why if you skip one), search through `@bitbaum/searchkit`, chat through `@bitbaum/chatkit`, shared names and the identity contract. Read that file. Do not restate it here.
+**First read:** [this repository's AGENTS.md](AGENTS.md) and the
+[Bitbaum Fleet agent rules](https://github.com/bitbaum/fleet/blob/main/AGENTS.md).
 
+Do not create a second roadmap, product brief, brand, identity register or
+shared-package implementation here. Loki's project profile is the source for
+mission, vision, problem, solution, roadmap and changelog.
 
-You are building BiasLens, a media bias analysis engine. This file is the
-contract every change follows. It mirrors the Loki project brief.
+## Product and engineering references
 
-## Product philosophy — non-negotiable
+- [Public Open Epistemic Method v0.1](docs/methodology/open-epistemic-method-v0.1.md)
+- [Truth Seeker → BiasLens migration handoff](docs/convergence-truthseeker.md)
+- [Repository README](README.md) for the current implemented state and commands
+- `src/lib/domain/epistemic-graph.ts` for claim/evidence/causal-link audit types
+- `src/lib/domain/first-principles.ts` for the model-output contract
+- `src/lib/analysis/` and `src/app/api/analyze/route.ts` for the first working
+  URL/paste workflow; `src/app/analyze/` for the browser report
 
-- **Never tell the user what to think.** Show evidence before conclusions.
-- **Separate facts from interpretation**, and **bias from factual accuracy**.
-- **Measure uncertainty** — every score carries a confidence and its inputs.
-- **Every score is explainable, reproducible, and challengeable.** Competing
-  interpretations coexist.
+The article output is **unverified AI analysis**, not an external fact verdict.
+Keep evidence quality, framing, attribution and causal hypotheses visibly
+distinct. A claim can be challenged; a human disagreement cannot be closed
+merely by generating an AI answer.
 
-## Conventions
+## Coordination
 
-- Next.js (App Router) + TypeScript strict + Drizzle/Postgres.
-- `src/lib/db/schema.ts` is the SSOT for domain types — derive TS types from it
-  (`$inferSelect`), never redefine them.
-- Facts live in `Claim`/`Evidence`; framing lives in `Narrative`/`Frame`. Do not
-  collapse the two.
-- Scores are functions of stored evidence — never hard-coded — so they recompute
-  and stay auditable.
-
-## Definition of done
-
-A change is done only when: every new score documents input, algorithm, evidence,
-confidence, and failure modes; conclusions are reproducible; `tsc` + lint + tests
-pass. (Loki's DoD gate judges against this.)
-
-## Roadmap (current milestone first)
-
-1. **Core data model** — seeded in `src/lib/db/schema.ts` (Outlet, Article, Claim,
-   Evidence, Narrative, EditorialDna, HomepageSnapshot). Acceptance: `pnpm run
-   db:migrate` runs clean against a fresh Postgres.
-2. Extraction + Claim agents: parse an article into structured claims with sources.
-3. Bias + Evidence scoring engine — explainable scores.
-4. Hourly Homepage Loop: crawl + compare outlets.
-5. Counterfactual headline generator + Missing Perspectives.
-6. Public dashboard + OrangeCat transparency page.
+The first on-demand slice was integrated in
+[PR #49](https://github.com/bitbaum/biaslens/pull/49), superseding the older
+integration draft #46. Do **not** redo that migration. Before any work, inspect
+current `main` and active PRs; use a separate branch, run `pnpm run verify`
+and `pnpm run build`, and keep historical Truth Seeker code intact until
+production parity and rollback checks succeed.

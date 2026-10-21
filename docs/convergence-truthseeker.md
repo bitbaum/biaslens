@@ -1,6 +1,6 @@
 # Truth Seeker → BiasLens: migration handoff
 
-**Decision (20 October 2026):** converge into **one user-facing analysis product**. 
+**Decision (20 October 2026):** converge into **one user-facing analysis product**.
 **Canonical integration target:** `bitbaum/biaslens`. 
 **Donor implementation:** `bitbaum/truthseeker`. 
 No new product repository, no second database, no parallel frontend.
@@ -13,7 +13,7 @@ canonical producer through the owner-approved Loki/Fleet workflow rather than
 making up a second copy here. Until that happens, BiasLens is the repo identifier,
 not a final brand decision.
 
-## Current verified inventory (main branches checked 20 October 2026)
+## Donor inventory (original main branches checked 20 October 2026)
 
 - Truth Seeker: `src/lib/analysis.ts` orchestrates URL/body analysis,
   `article-fetch.ts` and `public-url.ts` implement guarded ingestion;
@@ -26,8 +26,9 @@ not a final brand decision.
   `src/lib/domain/claim-verification.ts` provides a deterministic
   evidence-count demonstration (NOT a reliable measure of truth or confidence).
   `src/app/EvidenceVerifier.tsx` is a small demo, not the finished experience.
-- No competing open PR was found in BiasLens at inspection time.
-  Truth Seeker has an outstanding dependency-maintenance PR (#57).
+- On 21 October, PR #49 merged the on-demand URL/text pipeline and first-principles
+  contract into BiasLens main, superseding PR #46. Truth Seeker's original
+  dependency-maintenance PR #57 was still open at initial inspection.
 - Neither product was documented as deployed in Bitbaum's per-project notes;
   **verify current hosting separately** before publishing availability claims.
 
@@ -56,8 +57,9 @@ not a final brand decision.
 
 ## Agent coordination — no competing source of truth
 
-- **One integration owner:** this BiasLens PR/linked issue is the shared handoff.
-  Claude/Codex/Loki should read it before starting or dispatching related work.
+- **One integration handoff:** this document, current BiasLens main and Fleet's
+  AGENTS.md. Claude/Codex/Loki should inspect them and open PRs before dispatching
+  related work. Do not re-open superseded PR #46.
 - Always fetch current remote refs and inspect open PRs first; work on **new
   feature branches**, not concurrently on another agent's branch or main.
 - Keep Truth Seeker untouched while migration is incomplete, including its
@@ -74,20 +76,24 @@ not a final brand decision.
 
 ## Migration slices and acceptance
 
-**A. Contract (this PR):** import first-principles output taxonomy and
-validation as a pure, tested module. No route, database or feature flags yet.
-The initial source is Truth Seeker's v0.1 JSON format; it remains clearly
-labelled as unverified model output.
+**A. Contract — delivered (PR #49):** first-principles output taxonomy and
+runtime validation are a pure, tested module. The initial source is Truth
+Seeker's v0.1 JSON format; its model output is labelled as unverified.
 
-**B. Ingestion:** port the Truth Seeker guarded URL/text ingestion and tests.
-Reuse the existing `@bitbaum/ai-kit` adapter rather than pinning models.
-Add a rate-limited on-demand BiasLens route with explicit URL/text mode and
-stable typed JSON responses. Preserve URL redirect security and anti-SSRF tests.
+**B. Ingestion — delivered first slice (PR #49):** `POST /api/analyze` accepts
+an article URL or user-supplied text with bounded input, a per-process rate
+limit via `limitkit`, shared `@bitbaum/ai-kit/web` page reading, and multi-model
+fallback via `@bitbaum/ai-kit`. HTTP-boundary and injected-reader tests cover
+rejections, source attribution, truncation and input handling. Production
+security review must still validate redirect/DNS edge cases and deployment
+trust boundaries before serving public traffic.
 
-**C. Report & persistence:** add a real analysis page, original source spans,
-source/reference records and reproducible run metadata; migrate stored claims
-via an explicit DB migration. The final verdict is not a model's prose.
-Do not allow anonymous paid-model calls without effective abuse controls.
+**C. Report & persistence — partially delivered:** `/analyze` now presents a
+structured browser report, with source-attribution and unverified-AI notices.
+Still required: exact source spans, durable report URLs, provenance hashes,
+reproducible run metadata, source/reference DB records and schema migration.
+The final verdict cannot be a model's prose. Before any public deploy,
+strengthen abuse controls for horizontally scaled workers and finite LLM budgets.
 
 **D. BiasLens layer:** separate source balance, framing, actor visibility,
 omissions, tone, expert selection, counterexamples and uncertainty. Include

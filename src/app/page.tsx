@@ -23,7 +23,28 @@ export default function Home() {
           every score explainable and reproducible.
         </p>
       </header>
-      <EvidenceVerifier />
+      <Link
+        href="/analyze"
+        style={{
+          background: 'var(--color-action)',
+          borderRadius: '8px',
+          color: 'white',
+          display: 'inline-block',
+          fontWeight: 700,
+          padding: '0.95rem 1.4rem',
+          textAlign: 'center',
+          textDecoration: 'none',
+        }}
+      >
+        Examine an article →
+      </Link>
+      <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+        Analyse a published article or pasted text. View its claims, possible framing and unresolved
+        questions. Results are AI-generated and not independently verified.
+      </p>
+      <section aria-label="Evidence counting demonstration" style={{ marginTop: '2rem' }}>
+        <EvidenceVerifier />
+      </section>
       <p style={{ fontSize: '0.9rem', lineHeight: 1.6 }}>
         <Link href="/methodology" style={{ color: 'var(--color-brand)' }}>
           Explore the open truth-seeking method and challenge its rules →
