@@ -14,12 +14,14 @@ not currently an independent fact-check.
 
 | Surface | Status |
 | --- | --- |
-| `/analyze` | Browser workspace for fetching an article or pasting text; provisional report, source attribution and truncation notices |
+| `/analyze` | Browser workspace for fetching an article or pasting text; provisional report, source attribution, truncation notices and downloadable versioned JSON report with a SHA-256 digest of the text actually examined |
 | `POST /api/analyze` | Validated, bounded request, shared URL reader, LLM fallback and rate limiting; structured JSON responses |
 | `/methodology` | Public Open Epistemic Method with a worked causal-hypothesis example and a GitHub challenge path |
 | `src/lib/domain/epistemic-graph.ts` | Pure claim/evidence/relation/challenge protocol; detects gaps rather than inventing truth probabilities |
 | `/api/claims/verify` | Legacy evidence **counting demonstration**, not calibrated verification |
 | PostgreSQL / Drizzle | Baseline schema for outlets, articles, claims, evidence and narratives; **analysis results are not persisted yet** |
+
+The downloadable report contains analysis, model and method versions, timestamp, and a digest of the analysed text. It is not stored server-side; a digest does **not** authenticate the original source or reproduce an unavailable model. No full source text is included in the export.
 
 **Not yet delivered:** independent multi-source verification, calibrated
 confidence, persistent public reports, accounts and moderated discussion,
