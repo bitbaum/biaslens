@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 
 import {
   METHOD_VERSION,
@@ -72,14 +72,9 @@ const steps = [
 
 export default function MethodologyPage() {
   return (
-    <main className={styles.page}>
-      <nav className={styles.nav} aria-label="Page navigation">
-        <Link href="/" className={styles.brand}>
-          BiasLens
-        </Link>
-        <a href="https://github.com/bitbaum/biaslens">Open source on GitHub ↗</a>
-      </nav>
-
+    <>
+      <SiteHeader current="methodology" />
+      <main id="main-content" className={styles.page}>
       <header className={styles.hero}>
         <p className={styles.eyebrow}>Public method / Version {METHOD_VERSION} / Provisional</p>
         <h1>Truth is not a vote. It is an investigation.</h1>
@@ -187,10 +182,8 @@ export default function MethodologyPage() {
           Browse public discussions and challenges ↗
         </a>
       </section>
-      <footer className={styles.footer}>
-        <span>BiasLens · Open Epistemic Method {METHOD_VERSION}</span>
-        <Link href="/">Back to BiasLens</Link>
-      </footer>
-    </main>
+      </main>
+      <SiteFooter />
+    </>
   );
 }
