@@ -24,6 +24,19 @@
   --color-tone-negative: var(--primitive-red-700);
   --color-tone-neutral: var(--primitive-stone-500);
 
+  /* Shared brand-neutral composition maps to our editorial palette. */
+  --bb-frame-max: var(--layout-shell);
+  --bb-gutter: var(--layout-gutter);
+  --bb-measure: var(--measure-copy);
+  --bb-action-bg: var(--color-text);
+  --bb-action-fg: var(--color-surface);
+  --bb-control-bg: var(--color-bg);
+  --bb-control-fg: var(--color-text);
+  --bb-line: var(--color-border);
+  --bb-muted: var(--color-text-muted);
+  --bb-focus: var(--color-focus);
+  --bb-radius-control: var(--radius-btn);
+
   /* Spatial and typographic roles shared by this product's screens. */
   --layout-shell: 1160px;
   --layout-gutter: clamp(16px, 3.5vw, 40px);
