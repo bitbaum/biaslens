@@ -16,10 +16,7 @@ export type EvidenceStance = 'supports' | 'contradicts' | 'context';
 export type SourceKind = 'primary' | 'secondary' | 'testimony' | 'dataset' | 'other';
 export type ReviewState = 'candidate' | 'reviewed' | 'disputed';
 export type RelationKind =
-  | 'depends_on'
-  | 'proposed_cause'
-  | 'alternative_explanation'
-  | 'in_tension_with';
+  'depends_on' | 'proposed_cause' | 'alternative_explanation' | 'in_tension_with';
 
 export interface EpistemicClaim {
   id: string;
@@ -117,8 +114,7 @@ export function validateEpistemicGraph(graph: EpistemicGraph): string[] {
   for (const record of graph.evidence) {
     if (!claimIds.has(record.claimId))
       problems.push('Evidence ' + record.id + ' references an unknown claim');
-    if (!nonempty(record.title))
-      problems.push('Evidence ' + record.id + ' has no source title');
+    if (!nonempty(record.title)) problems.push('Evidence ' + record.id + ' has no source title');
     if (record.review === 'reviewed' && (!record.url || !record.locator))
       problems.push('Reviewed evidence ' + record.id + ' needs a URL and a precise locator');
   }
@@ -224,8 +220,7 @@ export function auditEpistemicGraph(graph: EpistemicGraph): {
     const challenged = challengesFor('relation', relation.id).length > 0;
     const gaps: string[] = [];
     if (records.length === 0) gaps.push('Relationship has no direct supporting evidence');
-    if (relation.review !== 'reviewed')
-      gaps.push('Relationship is a hypothesis or disputed');
+    if (relation.review !== 'reviewed') gaps.push('Relationship is a hypothesis or disputed');
     if (relation.kind === 'proposed_cause')
       gaps.push('A causal edge requires separate identification; no transitive proof');
     return {
