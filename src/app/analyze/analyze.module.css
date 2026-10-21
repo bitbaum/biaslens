@@ -324,7 +324,24 @@
   color: var(--color-text-muted);
 }
 
-.reportFooter,
+.reportFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  padding-top: 18px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.source,
+.reportFooter a {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 @media (max-width: 720px) {
   .hero {
     padding: 60px 0 30px;
