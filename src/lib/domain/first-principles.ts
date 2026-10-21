@@ -95,22 +95,27 @@ export function parseFirstPrinciplesAnalysis(input: unknown): FirstPrinciplesPar
   if (!Array.isArray(input.core_claims)) return invalid('core_claims must be an array');
   for (const [index, row] of input.core_claims.entries()) {
     if (!isObject(row)) return invalid('core_claims[' + index + '] must be an object');
-    if (!isNonemptyString(row.claim))
+    if (!isNonemptyString(row.claim)) {
       return invalid('core_claims[' + index + '].claim must be a nonempty string');
-    if (!includesString(CLAIM_KINDS, row.type))
+    }
+    if (!includesString(CLAIM_KINDS, row.type)) {
       return invalid('core_claims[' + index + '].type must be factual, normative, or causal');
-    if (typeof row.supported_in_article !== 'boolean')
+    }
+    if (typeof row.supported_in_article !== 'boolean') {
       return invalid('core_claims[' + index + '].supported_in_article must be a boolean');
-    if (!includesString(ARTICLE_EVIDENCE_QUALITIES, row.evidence_quality))
+    }
+    if (!includesString(ARTICLE_EVIDENCE_QUALITIES, row.evidence_quality)) {
       return invalid('core_claims[' + index + '].evidence_quality is invalid');
+    }
   }
 
   if (!Array.isArray(input.named_sources)) return invalid('named_sources must be an array');
   for (const [index, row] of input.named_sources.entries()) {
     if (!isObject(row)) return invalid('named_sources[' + index + '] must be an object');
     for (const key of ['name', 'role', 'attributed_claim'] as const) {
-      if (!isNonemptyString(row[key]))
+      if (!isNonemptyString(row[key])) {
         return invalid('named_sources[' + index + '].' + key + ' must be a nonempty string');
+      }
     }
   }
 
