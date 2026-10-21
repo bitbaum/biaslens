@@ -13,11 +13,12 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test",
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run design:check && pnpm run test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "design:check": "node --test test/design.test.mjs"
   },
   "dependencies": {
     "@bitbaum/ai-kit": "^1.21.0",
