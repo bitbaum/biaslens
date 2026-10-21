@@ -102,8 +102,8 @@ export default function MethodologyPage() {
           </a>
         </div>
         <p className={styles.caveat}>
-          This is an evolving research method, not an automated arbiter of truth. Some linked features
-          are proposed and are not yet operational.
+          This is an evolving research method, not an automated arbiter of truth. Some linked
+          features are proposed and are not yet operational.
         </p>
       </header>
 
@@ -153,8 +153,8 @@ export default function MethodologyPage() {
           ))}
         </div>
         <p className={styles.warning}>
-          Two plausible arrows do not establish a causal effect. Missing definitions, confounders and
-          unexamined source relationships are research questions, not hidden assumptions.
+          Two plausible arrows do not establish a causal effect. Missing definitions, confounders
+          and unexamined source relationships are research questions, not hidden assumptions.
         </p>
       </section>
 
@@ -170,7 +170,9 @@ export default function MethodologyPage() {
         <div className={styles.principles}>
           <div>
             <h3>Histories are revisable</h3>
-            <p>Manuscripts, artefacts, later accounts and political incentives must be distinguished.</p>
+            <p>
+              Manuscripts, artefacts, later accounts and political incentives must be distinguished.
+            </p>
           </div>
           <div>
             <h3>Bias is not falsehood</h3>
@@ -181,10 +183,7 @@ export default function MethodologyPage() {
             <p>Model responses will be labelled, sourced and subject to human correction.</p>
           </div>
         </div>
-        <a
-          className={styles.bottomLink}
-          href="https://github.com/bitbaum/biaslens/issues"
-        >
+        <a className={styles.bottomLink} href="https://github.com/bitbaum/biaslens/issues">
           Browse public discussions and challenges ↗
         </a>
       </section>
