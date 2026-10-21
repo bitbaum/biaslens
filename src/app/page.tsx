@@ -1,55 +1,189 @@
 import Link from 'next/link';
 
+import { SiteFooter, SiteHeader } from './_components/Chrome';
 import { EvidenceVerifier } from './EvidenceVerifier';
+
+import styles from './home.module.css';
+
+const STEPS = [
+  {
+    number: '01',
+    title: 'Read the actual claim',
+    description:
+      'Begin with what was said, by whom, and in which context. Separate observation from interpretation.',
+  },
+  {
+    number: '02',
+    title: 'Inspect the evidence',
+    description:
+      'See which sources the text names, what is merely asserted and what still needs independent checking.',
+  },
+  {
+    number: '03',
+    title: 'Challenge the reasoning',
+    description:
+      'Find hidden assumptions, rival explanations, causal leaps and the evidence that would change the result.',
+  },
+] as const;
 
 export default function Home() {
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        gap: '1.5rem',
-        padding: '2rem',
-        maxWidth: '42rem',
-        marginInline: 'auto',
-      }}
-    >
-      <header style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        <h1 style={{ color: 'var(--color-brand)', fontSize: '2rem' }}>BiasLens</h1>
-        <p style={{ color: 'var(--color-text-muted)' }}>
-          Media bias analysis engine. Evidence before conclusions; facts separated from framing;
-          every score explainable and reproducible.
-        </p>
-      </header>
-      <Link
-        href="/analyze"
-        style={{
-          background: 'var(--color-action)',
-          borderRadius: '8px',
-          color: 'white',
-          display: 'inline-block',
-          fontWeight: 700,
-          padding: '0.95rem 1.4rem',
-          textAlign: 'center',
-          textDecoration: 'none',
-        }}
-      >
-        Examine an article →
-      </Link>
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-        Analyse a published article or pasted text. View its claims, possible framing and unresolved
-        questions. Results are AI-generated and not independently verified.
-      </p>
-      <section aria-label="Evidence counting demonstration" style={{ marginTop: '2rem' }}>
-        <EvidenceVerifier />
-      </section>
-      <p style={{ fontSize: '0.9rem', lineHeight: 1.6 }}>
-        <Link href="/methodology" style={{ color: 'var(--color-brand)' }}>
-          Explore the open truth-seeking method and challenge its rules →
-        </Link>
-      </p>
-    </main>
+    <>
+      <SiteHeader current="home" />
+      <main id="main-content">
+        <section className={styles.hero}>
+          <div className={styles.heroInner}>
+            <div className={styles.heroContent}>
+              <p className={styles.eyebrow}>
+                <span className={styles.dot} aria-hidden="true" />
+                AN OPEN LAB FOR BETTER QUESTIONS
+              </p>
+              <h1>
+                Don&apos;t just read
+                <span className={styles.line}>the story.</span>
+                <em>Examine it.</em>
+              </h1>
+              <p className={styles.lead}>
+                News, arguments, historical accounts—every story is made of claims. BiasLens helps
+                you see how those claims are built, what supports them, and what we still cannot
+                know.
+              </p>
+              <div className={styles.actions}>
+                <Link href="/analyze" className={styles.primary}>
+                  Examine an article <span aria-hidden="true">↗</span>
+                </Link>
+                <Link href="/methodology" className={styles.secondary}>
+                  Explore our method <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <p className={styles.notice}>
+                Beta research tool · AI-generated interpretations are not independent fact-checks
+              </p>
+            </div>
+
+            <div className={styles.diagram} aria-label="Illustration of the investigation process">
+              <div className={styles.diagramTop}>
+                <span>ANATOMY OF A CLAIM</span>
+                <span>ILLUSTRATIVE / NOT A FINDING</span>
+              </div>
+              <div className={styles.diagramBody}>
+                <div className={styles.diagramQuestion}>
+                  <span className={styles.diagramLabel}>QUESTION</span>
+                  <strong>Does policy A really cause outcome B?</strong>
+                </div>
+                <div className={styles.diagramConnector}>
+                  <span className={styles.diagramDot} aria-hidden="true" />
+                  <span>requires evidence</span>
+                </div>
+                <div className={styles.diagramRow}>
+                  <div>
+                    <span className={styles.diagramLabel}>HYPOTHESIS</span>
+                    <p>A may affect B</p>
+                  </div>
+                  <span className={styles.diagramPill}>Provisional</span>
+                </div>
+                <div className={styles.diagramRow}>
+                  <div>
+                    <span className={styles.diagramLabel}>CAUSAL LINK</span>
+                    <p>Other explanations?</p>
+                  </div>
+                  <span className={styles.diagramPill}>Unresolved</span>
+                </div>
+                <div className={styles.diagramRow}>
+                  <div>
+                    <span className={styles.diagramLabel}>INDEPENDENT SOURCE</span>
+                    <p>What would test it?</p>
+                  </div>
+                  <span className={styles.diagramMissing}>Not yet supplied</span>
+                </div>
+              </div>
+              <div className={styles.diagramFooter}>
+                <span>↑</span>A question is the beginning of an investigation, not a verdict.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.process} aria-labelledby="process-heading">
+          <div className={styles.sectionHeading}>
+            <div>
+              <p className={styles.sectionNumber}>THE APPROACH / 01—03</p>
+              <h2 id="process-heading">A more careful way to know.</h2>
+            </div>
+            <p>
+              No truth meter. No algorithm asking you to trust it. A transparent account of claims,
+              evidence, and uncertainty.
+            </p>
+          </div>
+          <ol className={styles.stepList}>
+            {STEPS.map((step) => (
+              <li key={step.number}>
+                <span className={styles.stepNumber}>{step.number}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className={styles.openSection} aria-labelledby="open-heading">
+          <div>
+            <p className={styles.sectionNumber}>THE RULES CAN BE WRONG TOO</p>
+            <h2 id="open-heading">
+              Question <em>the method.</em>
+            </h2>
+            <p>
+              The process is public, versioned and open to criticism. Present counterevidence,
+              challenge assumptions or propose a better test. No single model—or institution—gets
+              the final word by decree.
+            </p>
+            <Link href="/methodology" className={styles.textLink}>
+              Read and challenge the methodology <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+          <div className={styles.principles}>
+            <div>
+              <span>01</span>
+              <strong>Traceable origins</strong>
+              <p>Know where a proposition or interpretation came from.</p>
+            </div>
+            <div>
+              <span>02</span>
+              <strong>Visible uncertainty</strong>
+              <p>Missing evidence must remain missing, not be filled with guesses.</p>
+            </div>
+            <div>
+              <span>03</span>
+              <strong>Revisable conclusions</strong>
+              <p>A strong challenge can change the recorded assessment.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.lab} aria-labelledby="lab-heading">
+          <div className={styles.labHeader}>
+            <div>
+              <p className={styles.sectionNumber}>IN THE LAB / EDUCATIONAL DEMO</p>
+              <h2 id="lab-heading">Why counting evidence is not enough.</h2>
+            </div>
+            <p>
+              Ten copied headlines are not ten independent sources. Explore the failure of a
+              count-only system before treating a score as fact.
+            </p>
+          </div>
+          <details className={styles.labDetails}>
+            <summary>
+              Open the evidence-counting demonstration <span aria-hidden="true">↓</span>
+            </summary>
+            <div className={styles.labContent}>
+              <EvidenceVerifier />
+            </div>
+          </details>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

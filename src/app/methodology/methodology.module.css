@@ -1,162 +1,164 @@
 .page {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  min-height: 76px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.nav a,
-.footer a {
-  color: var(--color-brand);
-  font-size: 14px;
-  text-decoration: none;
-}
-
-.brand {
-  font-weight: 800;
-  font-size: 19px !important;
-  letter-spacing: -0.035em;
+  width: min(100%, var(--layout-shell));
+  margin-inline: auto;
+  padding-inline: var(--layout-gutter);
 }
 
 .hero {
-  padding: clamp(72px, 11vw, 150px) 0 92px;
-  max-width: 880px;
+  padding-block: clamp(65px, 9vw, 124px);
+  max-width: 920px;
 }
 
 .eyebrow {
   color: var(--color-brand);
-  font-size: 12px;
-  font-weight: 800;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.13em;
 }
 
 .hero h1 {
-  max-width: 870px;
-  margin-top: 23px;
-  font-size: clamp(44px, 7.5vw, 88px);
-  line-height: 1.04;
-  letter-spacing: -0.065em;
-  font-weight: 780;
+  margin-top: 24px;
+  max-width: 15ch;
+  font-family: var(--font-editorial);
+  font-size: clamp(3.2rem, 6.4vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+  font-weight: 400;
+  text-wrap: balance;
 }
 
 .lead {
-  margin-top: 35px;
-  max-width: 760px;
-  font-size: clamp(18px, 2.7vw, 24px);
-  line-height: 1.55;
+  max-width: 64ch;
+  margin-top: 29px;
+  color: var(--color-text-muted);
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.75;
 }
 
 .actions {
-  margin-top: 34px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 13px;
+  margin-top: 34px;
 }
 
 .actionPrimary,
 .actionSecondary {
-  padding: 13px 18px;
-  border-radius: 8px;
+  min-height: 48px;
+  padding: 12px 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-btn);
   text-decoration: none;
   font-size: 14px;
   font-weight: 700;
+  line-height: 1.4;
 }
 
 .actionPrimary {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+.actionPrimary:hover {
   background: var(--color-brand);
-  color: white;
 }
 
 .actionSecondary {
   border: 1px solid var(--color-border);
   color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.actionSecondary:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
 }
 
 .caveat {
-  margin-top: 28px;
+  margin-top: 26px;
+  max-width: 70ch;
   font-size: 13px;
+  line-height: 1.7;
   color: var(--color-text-muted);
 }
 
 .section,
 .graphSection {
   border-top: 1px solid var(--color-border);
-  padding: 88px 0;
+  padding-block: var(--layout-section);
 }
 
 .sectionIntro {
-  max-width: 745px;
-  margin-bottom: 34px;
+  max-width: 760px;
+  margin-bottom: 44px;
 }
 
 .sectionIntro h2 {
-  margin: 15px 0;
-  font-size: clamp(32px, 4.8vw, 52px);
-  letter-spacing: -0.055em;
-  line-height: 1.13;
+  margin: 16px 0 22px;
+  font-family: var(--font-editorial);
+  font-size: clamp(35px, 4.8vw, 56px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  max-width: 21ch;
 }
 
 .sectionIntro > p:last-child {
   color: var(--color-text-muted);
   font-size: 17px;
-  line-height: 1.7;
+  line-height: 1.75;
+  max-width: 65ch;
 }
 
 .stepGrid {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--color-border);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  overflow: hidden;
+  gap: 36px 32px;
 }
 
 .step {
-  padding: 27px;
-  background: var(--color-surface);
-  min-height: 190px;
+  border-top: 2px solid var(--color-text);
+  padding-block-start: 20px;
+  min-width: 0;
 }
 
 .stepNumber,
 .graphLabel {
   display: block;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   color: var(--color-brand);
-  font-weight: 800;
+  font-weight: 750;
   letter-spacing: 0.07em;
 }
 
 .step h3,
 .principles h3 {
   margin-top: 22px;
-  font-size: 20px;
+  font-size: 19px;
   letter-spacing: -0.03em;
+  line-height: 1.3;
 }
 
 .step p,
 .principles p {
-  margin-top: 12px;
+  margin-top: 11px;
   color: var(--color-text-muted);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.73;
 }
 
 .graphFlow {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 44px 0 28px;
+  margin: 48px 0 28px;
 }
 
 .graphSegment {
@@ -164,57 +166,59 @@
 }
 
 .graphCard {
-  width: min(100%, 640px);
-  padding: 24px 28px;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  width: min(100%, 660px);
+  padding: 26px 30px;
+  border-inline-start: 3px solid var(--color-brand);
   background: var(--color-surface);
+  box-shadow: 0 0 0 1px var(--color-border);
 }
 
 .graphCard strong {
   display: block;
-  font-size: 19px;
-  line-height: 1.45;
-  margin-top: 8px;
-  letter-spacing: -0.03em;
+  font-size: 20px;
+  line-height: 1.5;
+  margin-top: 9px;
+  letter-spacing: -0.035em;
 }
 
 .graphCard p {
-  margin-top: 12px;
-  font-size: 12px;
+  margin-top: 13px;
+  font-size: 13px;
   color: var(--color-text-muted);
+  line-height: 1.65;
 }
 
 .graphArrow {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 13px 0;
+  gap: 4px;
+  padding: 16px 0;
   color: var(--color-brand);
-  font-size: 18px;
+  font-size: 19px;
 }
 
 .graphArrow span {
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   color: var(--color-text-muted);
 }
 
 .warning {
-  max-width: 640px;
-  margin: 16px auto 0;
+  max-width: 660px;
+  margin: 15px auto 0;
   color: var(--color-text-muted);
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
   text-align: center;
 }
 
 .principles {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 28px;
 }
 
 .principles > div {
@@ -223,61 +227,36 @@
 }
 
 .bottomLink {
-  display: inline-block;
-  margin-top: 36px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 30px;
   font-weight: 700;
+  font-size: 14px;
   color: var(--color-brand);
-}
-
-.footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 26px 0;
-  border-top: 1px solid var(--color-border);
-  font-size: 13px;
-  color: var(--color-text-muted);
 }
 
 @media (max-width: 760px) {
   .hero {
-    padding: 72px 0;
-  }
-
-  .section,
-  .graphSection {
-    padding: 65px 0;
+    padding-block: 68px;
   }
 
   .stepGrid,
   .principles {
     grid-template-columns: 1fr;
+    gap: 26px;
   }
 
-  .step {
-    min-height: unset;
+  .step h3 {
+    margin-top: 13px;
   }
 
-  .nav {
-    min-height: 68px;
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .nav a {
-    font-size: 12px;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .actionPrimary,
-  .actionSecondary,
-  .bottomLink {
-    transition: opacity 150ms ease;
-  }
-
-  .actionPrimary:hover,
-  .actionSecondary:hover,
-  .bottomLink:hover {
-    opacity: 0.8;
+  .graphCard {
+    padding: 20px;
   }
 }

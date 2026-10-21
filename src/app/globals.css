@@ -1,5 +1,5 @@
 :root {
-  /* Tier 1 — primitives */
+  /* BiasLens identity: editorial paper, dark ink, investigative teal. */
   --primitive-ink-900: #1c1917;
   --primitive-stone-500: #78716c;
   --primitive-stone-200: #e7e5e4;
@@ -10,7 +10,6 @@
   --primitive-paper: #faf8f5;
   --primitive-white: #ffffff;
 
-  /* Tier 2 — semantic tokens */
   --color-bg: var(--primitive-paper);
   --color-surface: var(--primitive-white);
   --color-surface-muted: var(--primitive-stone-50);
@@ -19,27 +18,87 @@
   --color-text-muted: var(--primitive-stone-500);
   --color-brand: var(--primitive-teal-600);
   --color-action: var(--primitive-teal-600);
-
-  /* Verdict tones — map a status' semantic tone to a colour (see VERIFICATION_DISPLAY) */
+  --color-on-action: var(--primitive-white);
+  --color-focus: var(--primitive-teal-600);
   --color-tone-positive: var(--primitive-green-700);
   --color-tone-negative: var(--primitive-red-700);
   --color-tone-neutral: var(--primitive-stone-500);
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --radius-card: 16px;
-  --radius-btn: 8px;
+  /* Spatial and typographic roles shared by this product's screens. */
+  --layout-shell: 1160px;
+  --layout-gutter: clamp(16px, 3.5vw, 40px);
+  --layout-section: clamp(60px, 8vw, 116px);
+  --measure-copy: 67ch;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-editorial: 'Iowan Old Style', 'Baskerville', Georgia, serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --radius-card: 12px;
+  --radius-btn: 7px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html,
+html {
+  background: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
 body {
+  min-width: 320px;
+  min-height: 100vh;
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #cee8e7;
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

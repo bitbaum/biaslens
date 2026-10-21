@@ -41,6 +41,11 @@ intentionally retained as migration history and rollback.
   engineering invariants, donor sources, remaining migration checks.
 - [Fleet agent rules](https://github.com/bitbaum/fleet/blob/main/AGENTS.md):
   all agents, shared packages, naming and identity boundaries.
+- [BiasLens design decisions](docs/design-decisions.md):
+  product-specific editorial character, shared site chrome and visual QA gates.
+  Reusable layout primitives belong in the opt-in
+  [design-tokens composition layer](https://github.com/bitbaum/design-tokens/blob/main/composition.css)
+  once a version containing that export has been released.
 - **Loki project profile**: canonical producer for the product's problem,
   solution, mission, vision, roadmap and changelog. Do not maintain duplicate
   versions of those fields in this README or in `CLAUDE.md`.
@@ -84,8 +89,8 @@ pnpm run verify
 pnpm run build
 ```
 
-CI runs formatting, lint, TypeScript, unit and HTTP-boundary tests, then a
-production build. Tests use injected reader/model implementations and do not
+CI runs formatting, lint, TypeScript, design consistency/accessibility checks, unit and HTTP-boundary tests, then a
+production build. Use `pnpm run design:check` to run the design gate directly. Tests use injected reader/model implementations and do not
 fetch live pages or spend provider tokens.
 
 ## Openness

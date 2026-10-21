@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+
+import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 import { useState, type FormEvent } from 'react';
 
 import type { ArticleAnalysisResult } from '@/lib/analysis/run';
@@ -64,132 +66,124 @@ export function AnalyzeWorkspace() {
   };
 
   return (
-    <main className={styles.page}>
-      <nav className={styles.nav} aria-label="Workspace navigation">
-        <Link className={styles.brand} href="/">
-          BiasLens
-        </Link>
-        <Link href="/methodology">Open methodology ↗</Link>
-      </nav>
+    <>
+      <SiteHeader current="analyze" />
+      <main id="main-content" className={styles.page}>
+        <header className={styles.hero}>
+          <p className={styles.eyebrow}>First-principles analysis / Beta</p>
+          <h1>What is this article really claiming?</h1>
+          <p className={styles.lead}>
+            Trace the argument, separate facts from judgements, examine possible framing, and find
+            out what evidence would change the assessment.
+          </p>
+        </header>
 
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>First-principles analysis / Beta</p>
-        <h1>What is this article really claiming?</h1>
-        <p className={styles.lead}>
-          Trace the argument, separate facts from judgements, examine possible framing, and find out
-          what evidence would change the assessment.
-        </p>
-      </header>
-
-      <section className={styles.tool} aria-label="Analyse an article">
-        <div className={styles.modeSwitch} role="group" aria-label="Choose source format">
-          <button
-            type="button"
-            className={mode === 'url' ? styles.activeMode : styles.modeButton}
-            aria-pressed={mode === 'url'}
-            onClick={() => {
-              setMode('url');
-              setError(null);
-            }}
-          >
-            Article URL
-          </button>
-          <button
-            type="button"
-            className={mode === 'text' ? styles.activeMode : styles.modeButton}
-            aria-pressed={mode === 'text'}
-            onClick={() => {
-              setMode('text');
-              setError(null);
-            }}
-          >
-            Paste article text
-          </button>
-        </div>
-
-        <form onSubmit={submit} className={styles.form}>
-          <label className={styles.fieldLabel} htmlFor="article-url">
-            {mode === 'url' ? 'Article URL' : 'Source URL (optional, supplied by you)'}
-          </label>
-          <input
-            id="article-url"
-            className={styles.input}
-            type="url"
-            placeholder="https://example.com/news/article"
-            value={url}
-            onChange={(event) => {
-              setUrl(event.target.value);
-              setReport(null);
-            }}
-            required={mode === 'url'}
-            maxLength={2048}
-            autoComplete="url"
-          />
-
-          {mode === 'text' && (
-            <>
-              <label className={styles.fieldLabel} htmlFor="article-text">
-                Article body
-              </label>
-              <textarea
-                id="article-text"
-                className={styles.textarea}
-                placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
-                rows={9}
-                value={text}
-                onChange={(event) => {
-                  setText(event.target.value);
-                  setReport(null);
-                }}
-                minLength={MIN_TEXT_LENGTH}
-                maxLength={30_000}
-                required
-              />
-              <p className={styles.hint}>
-                {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL, we
-                will not independently check that your pasted text matches it.
-              </p>
-            </>
-          )}
-
-          <div className={styles.formBottom}>
-            <button className={styles.submit} type="submit" disabled={!canSubmit || busy}>
-              {busy ? 'Examining…' : 'Examine article →'}
+        <section className={styles.tool} aria-label="Analyse an article">
+          <div className={styles.modeSwitch} role="group" aria-label="Choose source format">
+            <button
+              type="button"
+              className={mode === 'url' ? styles.activeMode : styles.modeButton}
+              aria-pressed={mode === 'url'}
+              onClick={() => {
+                setMode('url');
+                setError(null);
+              }}
+            >
+              Article URL
             </button>
-            <p className={styles.hint}>
-              This tool analyses arguments; it does not certify their truth or make accusations
-              about authors.
-            </p>
+            <button
+              type="button"
+              className={mode === 'text' ? styles.activeMode : styles.modeButton}
+              aria-pressed={mode === 'text'}
+              onClick={() => {
+                setMode('text');
+                setError(null);
+              }}
+            >
+              Paste article text
+            </button>
           </div>
-        </form>
 
-        <div role="status" aria-live="polite">
-          {busy && <p className={styles.progress}>Reading claims and composing an analysis…</p>}
-          {error && (
-            <div role="alert" className={styles.error}>
-              <strong>Analysis unavailable</strong>
-              <p>{error}</p>
-              {mode === 'url' && (
-                <button
-                  type="button"
-                  className={styles.pasteFallback}
-                  onClick={() => setMode('text')}
-                >
-                  Paste article text instead →
-                </button>
-              )}
+          <form onSubmit={submit} className={styles.form}>
+            <label className={styles.fieldLabel} htmlFor="article-url">
+              {mode === 'url' ? 'Article URL' : 'Source URL (optional, supplied by you)'}
+            </label>
+            <input
+              id="article-url"
+              className={styles.input}
+              type="url"
+              placeholder="https://example.com/news/article"
+              value={url}
+              onChange={(event) => {
+                setUrl(event.target.value);
+                setReport(null);
+              }}
+              required={mode === 'url'}
+              maxLength={2048}
+              autoComplete="url"
+            />
+
+            {mode === 'text' && (
+              <>
+                <label className={styles.fieldLabel} htmlFor="article-text">
+                  Article body
+                </label>
+                <textarea
+                  id="article-text"
+                  className={styles.textarea}
+                  placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
+                  rows={9}
+                  value={text}
+                  onChange={(event) => {
+                    setText(event.target.value);
+                    setReport(null);
+                  }}
+                  minLength={MIN_TEXT_LENGTH}
+                  maxLength={30_000}
+                  required
+                />
+                <p className={styles.hint}>
+                  {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL, we
+                  will not independently check that your pasted text matches it.
+                </p>
+              </>
+            )}
+
+            <div className={styles.formBottom}>
+              <button className={styles.submit} type="submit" disabled={!canSubmit || busy}>
+                {busy ? 'Examining…' : 'Examine article →'}
+              </button>
+              <p className={styles.hint}>
+                This tool analyses arguments; it does not certify their truth or make accusations
+                about authors.
+              </p>
             </div>
-          )}
-        </div>
-      </section>
+          </form>
 
-      {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
+          <div role="status" aria-live="polite">
+            {busy && <p className={styles.progress}>Reading claims and composing an analysis…</p>}
+            {error && (
+              <div role="alert" className={styles.error}>
+                <strong>Analysis unavailable</strong>
+                <p>{error}</p>
+                {mode === 'url' && (
+                  <button
+                    type="button"
+                    className={styles.pasteFallback}
+                    onClick={() => setMode('text')}
+                  >
+                    Paste article text instead →
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
 
-      <footer className={styles.footer}>
-        <span>BiasLens · Open evidence, contestable conclusions</span>
-        <a href="https://github.com/bitbaum/biaslens">View open-source code ↗</a>
-      </footer>
-    </main>
+        {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
+      </main>
+      <SiteFooter />
+    </>
   );
 }
 

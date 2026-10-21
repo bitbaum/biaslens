@@ -55,8 +55,8 @@
 }
 
 .stepBtn {
-  width: 2rem;
-  height: 2rem;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-btn);
   background: var(--color-surface);
@@ -82,7 +82,8 @@
 }
 
 .verifyBtn {
-  background: var(--color-action);
+  min-height: 44px;
+  background: var(--color-text);
   color: var(--color-surface);
   border: none;
   border-radius: var(--radius-btn);
@@ -94,6 +95,10 @@
 .verifyBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.verifyBtn:not(:disabled):hover {
+  background: var(--color-brand);
 }
 
 .error {
