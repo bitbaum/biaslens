@@ -44,9 +44,9 @@ export default function Home() {
                 <em>Examine it.</em>
               </h1>
               <p className={styles.lead}>
-                News, arguments, historical accounts—every story is made of claims.
-                BiasLens helps you see how those claims are built, what supports them,
-                and what we still cannot know.
+                News, arguments, historical accounts—every story is made of claims. BiasLens helps
+                you see how those claims are built, what supports them, and what we still cannot
+                know.
               </p>
               <div className={styles.actions}>
                 <Link href="/analyze" className={styles.primary}>
@@ -57,8 +57,7 @@ export default function Home() {
                 </Link>
               </div>
               <p className={styles.notice}>
-                Beta research tool · AI-generated interpretations are not independent
-                fact-checks
+                Beta research tool · AI-generated interpretations are not independent fact-checks
               </p>
             </div>
 
@@ -99,8 +98,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={styles.diagramFooter}>
-                <span>↑</span>
-                A question is the beginning of an investigation, not a verdict.
+                <span>↑</span>A question is the beginning of an investigation, not a verdict.
               </div>
             </div>
           </div>
@@ -113,8 +111,8 @@ export default function Home() {
               <h2 id="process-heading">A more careful way to know.</h2>
             </div>
             <p>
-              No truth meter. No algorithm asking you to trust it. A transparent
-              account of claims, evidence, and uncertainty.
+              No truth meter. No algorithm asking you to trust it. A transparent account of claims,
+              evidence, and uncertainty.
             </p>
           </div>
           <ol className={styles.stepList}>
@@ -137,9 +135,9 @@ export default function Home() {
               Question <em>the method.</em>
             </h2>
             <p>
-              The process is public, versioned and open to criticism. Present
-              counterevidence, challenge assumptions or propose a better test.
-              No single model—or institution—gets the final word by decree.
+              The process is public, versioned and open to criticism. Present counterevidence,
+              challenge assumptions or propose a better test. No single model—or institution—gets
+              the final word by decree.
             </p>
             <Link href="/methodology" className={styles.textLink}>
               Read and challenge the methodology <span aria-hidden="true">↗</span>
@@ -171,12 +169,14 @@ export default function Home() {
               <h2 id="lab-heading">Why counting evidence is not enough.</h2>
             </div>
             <p>
-              Ten copied headlines are not ten independent sources. Explore the
-              failure of a count-only system before treating a score as fact.
+              Ten copied headlines are not ten independent sources. Explore the failure of a
+              count-only system before treating a score as fact.
             </p>
           </div>
           <details className={styles.labDetails}>
-            <summary>Open the evidence-counting demonstration <span aria-hidden="true">↓</span></summary>
+            <summary>
+              Open the evidence-counting demonstration <span aria-hidden="true">↓</span>
+            </summary>
             <div className={styles.labContent}>
               <EvidenceVerifier />
             </div>
