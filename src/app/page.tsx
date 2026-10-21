@@ -39,8 +39,8 @@ export default function Home() {
         Examine an article →
       </Link>
       <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-        Analyse a published article or pasted text. View its claims, possible framing and
-        unresolved questions. Results are AI-generated and not independently verified.
+        Analyse a published article or pasted text. View its claims, possible framing and unresolved
+        questions. Results are AI-generated and not independently verified.
       </p>
       <section aria-label="Evidence counting demonstration" style={{ marginTop: '2rem' }}>
         <EvidenceVerifier />
