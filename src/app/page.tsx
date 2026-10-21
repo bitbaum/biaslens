@@ -52,7 +52,10 @@ export default function Home() {
                 <Link href="/analyze" className={`${styles.primary} bb-button bb-button--primary`}>
                   Examine an article <span aria-hidden="true">↗</span>
                 </Link>
-                <Link href="/methodology" className={`${styles.secondary} bb-button bb-button--secondary`}>
+                <Link
+                  href="/methodology"
+                  className={`${styles.secondary} bb-button bb-button--secondary`}
+                >
                   Explore our method <span aria-hidden="true">→</span>
                 </Link>
               </div>
