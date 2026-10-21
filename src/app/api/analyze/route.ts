@@ -83,7 +83,10 @@ export async function POST(request: Request) {
   } catch (error) {
     const large = error instanceof BodyTooLarge;
     return Response.json(
-      errorBody(large ? 'BODY_TOO_LARGE' : 'INVALID_JSON', large ? 'Request body is too large.' : 'Request body must be JSON.'),
+      errorBody(
+        large ? 'BODY_TOO_LARGE' : 'INVALID_JSON',
+        large ? 'Request body is too large.' : 'Request body must be JSON.',
+      ),
       { status: large ? 413 : 400, headers },
     );
   }
@@ -130,7 +133,10 @@ export async function POST(request: Request) {
         headers,
       });
     }
-    console.error('BiasLens analysis provider error', error instanceof Error ? error.name : 'unknown');
+    console.error(
+      'BiasLens analysis provider error',
+      error instanceof Error ? error.name : 'unknown',
+    );
     return Response.json(
       errorBody(
         'MODEL_UNAVAILABLE',
