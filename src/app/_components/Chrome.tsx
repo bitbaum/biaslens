@@ -25,10 +25,7 @@ export function SiteHeader({ current }: { current: Section }) {
             <Link href="/analyze" aria-current={current === 'analyze' ? 'page' : undefined}>
               Examine
             </Link>
-            <Link
-              href="/methodology"
-              aria-current={current === 'methodology' ? 'page' : undefined}
-            >
+            <Link href="/methodology" aria-current={current === 'methodology' ? 'page' : undefined}>
               Method
             </Link>
           </nav>
