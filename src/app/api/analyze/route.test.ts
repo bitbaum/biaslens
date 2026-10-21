@@ -75,9 +75,7 @@ describe('POST /api/analyze', () => {
   });
 
   it('prevents oversized requests from reaching the analysis pipeline', async () => {
-    const res = await POST(
-      request({ url: SOURCE }, '203.0.113.63', { 'content-length': '99000' }),
-    );
+    const res = await POST(request({ url: SOURCE }, '203.0.113.63', { 'content-length': '99000' }));
     expect(res.status).toBe(413);
   });
 
