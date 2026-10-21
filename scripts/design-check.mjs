@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const chrome = read('src/app/_components/Chrome.tsx');
+const layout = read('src/app/layout.tsx');
+const packageJson = JSON.parse(read('package.json'));
 const shell = read('src/app/_components/Chrome.module.css');
 const globals = read('src/app/globals.css');
 const home = read('src/app/page.tsx');
@@ -64,14 +66,38 @@ test('every public route uses the same navigational frame and one skip target', 
   assert.match(shell, /\.skip:focus/);
 });
 
-test('same-kind nav and choices keep their anatomy and mobile widths', () => {
+test('composition comes from one pinned source and frames are not duplicated', () => {
+  const ref = packageJson.dependencies['@bitbaum/design-tokens'];
+  assert.equal(
+    ref,
+    'github:bitbaum/design-tokens#8e786a43220d267ccf6b5cd6119a012f1a52dfff',
+    'shared CSS must come from the reviewed, immutable source ref',
+  );
+  assert.match(layout, /@bitbaum\/design-tokens\/composition\.css/);
+  assert.ok(
+    layout.indexOf("'./globals.css'") < layout.indexOf('composition.css'),
+    'low-specificity controls must load after the app reset',
+  );
+  for (const role of ['--bb-action-bg', '--bb-action-fg', '--bb-line', '--bb-focus']) {
+    assert.ok(globals.includes(role + ':'), 'missing semantic mapping ' + role);
+  }
+  assert.match(chrome, /bb-frame/);
+  assert.match(method, /bb-frame/);
+  assert.match(analyze, /bb-frame/);
+  assert.doesNotMatch(shell, /\.frame,\s*\.footerFrame\s*\{/);
+});
+
+test('choices and buttons share anatomy, while editorial character stays local', () => {
   assert.match(shell, /min-height:\s*44px/);
   assert.match(shell, /@media \(max-width: 380px\)/);
-  assert.match(analyzeCss, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(analyze, /bb-choice-row/);
+  assert.match(analyze, /bb-control/);
   assert.match(analyzeCss, /min-height:\s*52px/);
+  assert.match(home, /bb-actions/);
+  assert.match(home, /bb-button bb-button--primary/);
   assert.match(homeCss, /@media \(max-width: 420px\)/);
   assert.match(homeCss, /grid-template-columns:\s*1fr/);
-  assert.match(homeCss, /min-height:\s*50px/);
+  assert.match(globals, /--font-editorial/);
 });
 
 test('demo controls are touch-safe and article primary CTA stays above the demonstration', () => {
