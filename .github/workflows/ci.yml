@@ -54,10 +54,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # Temporary diagnostic: capture exact formatter output for the new files.
-      - name: Show method formatting diff
-        run: pnpm exec prettier --write .github/ISSUE_TEMPLATE/methodology-challenge.yml src/app/methodology/page.tsx src/lib/domain/epistemic-graph.ts && git diff -- .github/ISSUE_TEMPLATE/methodology-challenge.yml src/app/methodology/page.tsx src/lib/domain/epistemic-graph.ts
-
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
