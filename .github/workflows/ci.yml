@@ -54,10 +54,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # Temporary formatter diagnostic; removed after capturing diff.
-      - name: Show presentation formatting
-        run: pnpm exec prettier --write src/app/EvidenceVerifier.tsx && git diff -- src/app/EvidenceVerifier.tsx
-
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
