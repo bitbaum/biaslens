@@ -12,9 +12,7 @@ export interface AnalyzeInput {
   text: string | null;
 }
 
-export type InputResult =
-  | { ok: true; data: AnalyzeInput }
-  | { ok: false; error: string };
+export type InputResult = { ok: true; data: AnalyzeInput } | { ok: false; error: string };
 
 export function parseAnalyzeInput(value: unknown): InputResult {
   const invalid = (error: string): InputResult => ({ ok: false, error });
