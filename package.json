@@ -18,7 +18,8 @@
     "db:migrate": "drizzle-kit migrate",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "design:check": "node --test scripts/design-check.mjs"
+    "design:check": "node --test scripts/design-check.mjs",
+    "browser:smoke": "bash scripts/browser-smoke.sh"
   },
   "dependencies": {
     "@bitbaum/ai-kit": "^1.21.0",
