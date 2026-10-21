@@ -20,13 +20,6 @@
   background: var(--color-bg);
 }
 
-.frame,
-.footerFrame {
-  width: min(100%, var(--layout-shell));
-  padding-inline: var(--layout-gutter);
-  margin-inline: auto;
-}
-
 .frame {
   min-height: 78px;
   display: flex;
