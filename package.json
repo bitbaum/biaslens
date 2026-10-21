@@ -20,12 +20,14 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@bitbaum/ai-kit": "^1.21.0",
     "@paralleldrive/cuid2": "^3.3.0",
     "drizzle-orm": "^0.45.4",
     "next": "^16",
     "pg": "^8.23.1",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "limitkit": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
