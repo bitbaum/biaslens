@@ -14,7 +14,7 @@ fi
 
 echo "Browser: $("$browser" --version)"
 
-pnpm run start -- --hostname 127.0.0.1 --port 3000 > "$out/server.log" 2>&1 &
+pnpm run start --hostname 127.0.0.1 --port 3000 > "$out/server.log" 2>&1 &
 app_pid="$!"
 cleanup() {
   kill "$app_pid" 2>/dev/null || true
