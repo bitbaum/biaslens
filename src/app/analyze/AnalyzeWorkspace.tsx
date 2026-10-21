@@ -79,7 +79,11 @@ export function AnalyzeWorkspace() {
         </header>
 
         <section className={styles.tool} aria-label="Analyse an article">
-          <div className={`${styles.modeSwitch} bb-choice-row`} role="group" aria-label="Choose source format">
+          <div
+            className={`${styles.modeSwitch} bb-choice-row`}
+            role="group"
+            aria-label="Choose source format"
+          >
             <button
               type="button"
               className={mode === 'url' ? styles.activeMode : styles.modeButton}
@@ -150,7 +154,11 @@ export function AnalyzeWorkspace() {
             )}
 
             <div className={`${styles.formBottom} bb-actions`}>
-              <button className={`${styles.submit} bb-button bb-button--primary`} type="submit" disabled={!canSubmit || busy}>
+              <button
+                className={`${styles.submit} bb-button bb-button--primary`}
+                type="submit"
+                disabled={!canSubmit || busy}
+              >
                 {busy ? 'Examining…' : 'Examine article →'}
               </button>
               <p className={styles.hint}>
@@ -340,7 +348,11 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
           {(report.durationMs / 1_000).toFixed(1)}s{report.modelId ? ' · ' + report.modelId : ''}
         </span>
         <Link href="/methodology">Question or challenge the methodology ↗</Link>
-        <button className={`${styles.exportBtn} bb-button bb-button--secondary`} type="button" onClick={saveJson}>
+        <button
+          className={`${styles.exportBtn} bb-button bb-button--secondary`}
+          type="button"
+          onClick={saveJson}
+        >
           Save report JSON ↓
         </button>
       </div>
