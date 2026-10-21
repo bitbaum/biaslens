@@ -54,6 +54,10 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # Temporary formatter diagnostic for the convergence branch; remove after use.
+      - name: Show Prettier diff for convergence module
+        run: pnpm exec prettier --write src/lib/domain/first-principles.ts && git diff -- src/lib/domain/first-principles.ts
+
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
