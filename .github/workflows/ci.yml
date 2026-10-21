@@ -54,10 +54,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # Temporary Prettier audit: report exact formatting diff for new design files.
-      - name: Report design formatting
-        run: pnpm exec prettier --write src/app/_components/Chrome.tsx src/app/analyze/AnalyzeWorkspace.tsx src/app/home.module.css src/app/methodology/page.tsx src/app/page.tsx && git diff -- src/app/_components/Chrome.tsx src/app/analyze/AnalyzeWorkspace.tsx src/app/home.module.css src/app/methodology/page.tsx src/app/page.tsx
-
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
