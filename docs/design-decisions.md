@@ -34,13 +34,19 @@ The stable **brand-neutral** composition primitives have now been implemented
 in `bitbaum/design-tokens/composition.css` as an opt-in subpath. They are
 distinct from the fleet's common brand tokens for OrangeCat/Loki/Solon.
 
-**Current adoption:** this redesign uses app-local CSS modules and the
-single-root layout tokens to keep its own style. Do not claim the new shared
-`composition.css` is installed until the package is tagged/published and the
-consumer's dependency and lockfile are updated. When available, migrate the
-equivalent shell, controls and choice-row structure to the shared classes,
-map `--bb-*` variables to BiasLens's own colours and remove redundant local
-declarations. Do not copy the shared stylesheet into this repository.
+**Current adoption (2026-10-22):** BiasLens imports only
+`@bitbaum/design-tokens/composition.css` from the immutable
+`8e786a43220d267ccf6b5cd6119a012f1a52dfff` Git commit, whose source
+package manifest declares version 1.2.0. It does **not** import the separate
+fleet-wide `tokens.css` colour/typography system. Its own `globals.css`
+maps `--bb-*` semantic roles to paper, ink and teal.
+
+The shared classes replace duplicated shell width/gutters, action
+sizing/arrangement, text controls and URL/text choice anatomy. BiasLens retains
+its editorial typography, report layout and local CSS modules. The package is
+pinned by SHA rather than a yet-unpublished `v1.2.0` tag. When tagged and
+published, swap to a released, verified package version and regenerate the
+lockfile. Do not change package identity or add a second local copy.
 
 ## Acceptance and iteration
 
