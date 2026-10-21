@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { EvidenceVerifier } from './EvidenceVerifier';
 
 export default function Home() {
@@ -23,26 +21,6 @@ export default function Home() {
           every score explainable and reproducible.
         </p>
       </header>
-      <Link
-        href="/analyze"
-        style={{
-          alignSelf: 'flex-start',
-          padding: '0.9rem 1.2rem',
-          borderRadius: '8px',
-          background: 'var(--color-action)',
-          color: 'white',
-          textDecoration: 'none',
-          fontWeight: 700,
-        }}
-      >
-        Examine an article →
-      </Link>
-      <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-        Paste an article URL or its text for a provisional, first-principles analysis.
-      </p>
-      <Link href="/methodology" style={{ color: 'var(--color-brand)', fontSize: '0.9rem' }}>
-        Read and challenge the open methodology ↗
-      </Link>
       <EvidenceVerifier />
     </main>
   );
