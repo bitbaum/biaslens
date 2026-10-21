@@ -38,10 +38,10 @@ export const VERIFICATION_DISPLAY: Record<
   VerificationStatus,
   { label: string; tone: VerdictTone }
 > = {
-  [VERIFICATION_STATUS.SUPPORTED]: { label: 'Supported', tone: 'positive' },
-  [VERIFICATION_STATUS.CONTRADICTED]: { label: 'Contradicted', tone: 'negative' },
-  [VERIFICATION_STATUS.UNVERIFIABLE]: { label: 'Unverifiable', tone: 'neutral' },
-  [VERIFICATION_STATUS.PENDING]: { label: 'Pending — no evidence yet', tone: 'neutral' },
+  [VERIFICATION_STATUS.SUPPORTED]: { label: 'Supporting entries dominate', tone: 'positive' },
+  [VERIFICATION_STATUS.CONTRADICTED]: { label: 'Contradicting entries dominate', tone: 'negative' },
+  [VERIFICATION_STATUS.UNVERIFIABLE]: { label: 'No clear count majority', tone: 'neutral' },
+  [VERIFICATION_STATUS.PENDING]: { label: 'No entries', tone: 'neutral' },
 };
 
 /** Human labels for each evidence stance, so the UI never hard-codes them. */
@@ -51,10 +51,9 @@ export const STANCE_DISPLAY: Record<EvidenceStance, { label: string }> = {
 };
 
 /**
- * Minimum share of evidence (0..1) that must agree before a claim is called
- * SUPPORTED or CONTRADICTED. Below this the majority is too thin to conclude, so
- * the claim stays UNVERIFIABLE — we would rather withhold a verdict than assert a
- * weakly-backed one (product philosophy: never tell the user what to think).
+ * Minimum share of counted entries (0..1) for the legacy demonstration.
+ * This is NOT statistical confidence, a truth probability or a source-quality
+ * threshold. The API enum names are retained for database compatibility.
  */
 export const MIN_AGREEMENT_TO_CONCLUDE = 0.6;
 
