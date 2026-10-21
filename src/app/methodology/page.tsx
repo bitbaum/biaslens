@@ -75,113 +75,114 @@ export default function MethodologyPage() {
     <>
       <SiteHeader current="methodology" />
       <main id="main-content" className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>Public method / Version {METHOD_VERSION} / Provisional</p>
-        <h1>Truth is not a vote. It is an investigation.</h1>
-        <p className={styles.lead}>
-          Every claim should be open to inspection. Every piece of evidence should have an origin.
-          Every connection should say why it exists. Every conclusion should be challengeable.
-        </p>
-        <div className={styles.actions}>
-          <a
-            className={styles.actionPrimary}
-            href="https://github.com/bitbaum/biaslens/issues/new?template=methodology-challenge.yml"
-          >
-            Challenge the method ↗
-          </a>
-          <a
-            className={styles.actionSecondary}
-            href="https://github.com/bitbaum/biaslens/blob/main/docs/methodology/open-epistemic-method-v0.1.md"
-          >
-            Read the complete protocol ↗
-          </a>
-        </div>
-        <p className={styles.caveat}>
-          This is an evolving research method, not an automated arbiter of truth. Some linked
-          features are proposed and are not yet operational.
-        </p>
-      </header>
-
-      <section aria-labelledby="method-heading" className={styles.section}>
-        <div className={styles.sectionIntro}>
-          <p className={styles.eyebrow}>How the method works</p>
-          <h2 id="method-heading">Evidence before conclusions.</h2>
-          <p>
-            A news article, an ancient manuscript and a causal economic theory require different
-            kinds of investigation, but share the same standards of provenance and criticism.
+        <header className={styles.hero}>
+          <p className={styles.eyebrow}>Public method / Version {METHOD_VERSION} / Provisional</p>
+          <h1>Truth is not a vote. It is an investigation.</h1>
+          <p className={styles.lead}>
+            Every claim should be open to inspection. Every piece of evidence should have an origin.
+            Every connection should say why it exists. Every conclusion should be challengeable.
           </p>
-        </div>
-        <ol className={styles.stepGrid}>
-          {steps.map(([number, title, description]) => (
-            <li className={styles.step} key={number}>
-              <span className={styles.stepNumber}>{number}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section aria-labelledby="graph-heading" className={styles.graphSection}>
-        <div className={styles.sectionIntro}>
-          <p className={styles.eyebrow}>An example, not a finding</p>
-          <h2 id="graph-heading">Connect the dots. Audit the connections.</h2>
-          <p>
-            Here is a possible economic argument. We have deliberately attached no evidence. The
-            method shows uncertainty instead of manufacturing an answer.
+          <div className={styles.actions}>
+            <a
+              className={styles.actionPrimary}
+              href="https://github.com/bitbaum/biaslens/issues/new?template=methodology-challenge.yml"
+            >
+              Challenge the method ↗
+            </a>
+            <a
+              className={styles.actionSecondary}
+              href="https://github.com/bitbaum/biaslens/blob/main/docs/methodology/open-epistemic-method-v0.1.md"
+            >
+              Read the complete protocol ↗
+            </a>
+          </div>
+          <p className={styles.caveat}>
+            This is an evolving research method, not an automated arbiter of truth. Some linked
+            features are proposed and are not yet operational.
           </p>
-        </div>
-        <div className={styles.graphFlow}>
-          {example.claims.map((claim, index) => (
-            <div className={styles.graphSegment} key={claim.id}>
-              <div className={styles.graphCard}>
-                <span className={styles.graphLabel}>Hypothesis {index + 1}</span>
-                <strong>{claim.text}</strong>
-                <p>{audit.claims[index]?.gaps.join(' · ')}</p>
-              </div>
-              {index < example.claims.length - 1 && (
-                <div className={styles.graphArrow} aria-label="Causal relation not demonstrated">
-                  ↓ <span>Unverified connection</span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-        <p className={styles.warning}>
-          Two plausible arrows do not establish a causal effect. Missing definitions, confounders
-          and unexamined source relationships are research questions, not hidden assumptions.
-        </p>
-      </section>
+        </header>
 
-      <section aria-labelledby="participate-heading" className={styles.section}>
-        <div className={styles.sectionIntro}>
-          <p className={styles.eyebrow}>Open by design</p>
-          <h2 id="participate-heading">The methodology can be wrong too.</h2>
-          <p>
-            Challenge our rules. Propose counterexamples. Cite original records. We should retain
-            dissent and explanations for decisions, including when a conclusion is revised.
-          </p>
-        </div>
-        <div className={styles.principles}>
-          <div>
-            <h3>Histories are revisable</h3>
+        <section aria-labelledby="method-heading" className={styles.section}>
+          <div className={styles.sectionIntro}>
+            <p className={styles.eyebrow}>How the method works</p>
+            <h2 id="method-heading">Evidence before conclusions.</h2>
             <p>
-              Manuscripts, artefacts, later accounts and political incentives must be distinguished.
+              A news article, an ancient manuscript and a causal economic theory require different
+              kinds of investigation, but share the same standards of provenance and criticism.
             </p>
           </div>
-          <div>
-            <h3>Bias is not falsehood</h3>
-            <p>An accurate claim can be selectively presented. Both axes deserve inspection.</p>
+          <ol className={styles.stepGrid}>
+            {steps.map(([number, title, description]) => (
+              <li className={styles.step} key={number}>
+                <span className={styles.stepNumber}>{number}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section aria-labelledby="graph-heading" className={styles.graphSection}>
+          <div className={styles.sectionIntro}>
+            <p className={styles.eyebrow}>An example, not a finding</p>
+            <h2 id="graph-heading">Connect the dots. Audit the connections.</h2>
+            <p>
+              Here is a possible economic argument. We have deliberately attached no evidence. The
+              method shows uncertainty instead of manufacturing an answer.
+            </p>
           </div>
-          <div>
-            <h3>People can challenge AI</h3>
-            <p>Model responses will be labelled, sourced and subject to human correction.</p>
+          <div className={styles.graphFlow}>
+            {example.claims.map((claim, index) => (
+              <div className={styles.graphSegment} key={claim.id}>
+                <div className={styles.graphCard}>
+                  <span className={styles.graphLabel}>Hypothesis {index + 1}</span>
+                  <strong>{claim.text}</strong>
+                  <p>{audit.claims[index]?.gaps.join(' · ')}</p>
+                </div>
+                {index < example.claims.length - 1 && (
+                  <div className={styles.graphArrow} aria-label="Causal relation not demonstrated">
+                    ↓ <span>Unverified connection</span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        </div>
-        <a className={styles.bottomLink} href="https://github.com/bitbaum/biaslens/issues">
-          Browse public discussions and challenges ↗
-        </a>
-      </section>
+          <p className={styles.warning}>
+            Two plausible arrows do not establish a causal effect. Missing definitions, confounders
+            and unexamined source relationships are research questions, not hidden assumptions.
+          </p>
+        </section>
+
+        <section aria-labelledby="participate-heading" className={styles.section}>
+          <div className={styles.sectionIntro}>
+            <p className={styles.eyebrow}>Open by design</p>
+            <h2 id="participate-heading">The methodology can be wrong too.</h2>
+            <p>
+              Challenge our rules. Propose counterexamples. Cite original records. We should retain
+              dissent and explanations for decisions, including when a conclusion is revised.
+            </p>
+          </div>
+          <div className={styles.principles}>
+            <div>
+              <h3>Histories are revisable</h3>
+              <p>
+                Manuscripts, artefacts, later accounts and political incentives must be
+                distinguished.
+              </p>
+            </div>
+            <div>
+              <h3>Bias is not falsehood</h3>
+              <p>An accurate claim can be selectively presented. Both axes deserve inspection.</p>
+            </div>
+            <div>
+              <h3>People can challenge AI</h3>
+              <p>Model responses will be labelled, sourced and subject to human correction.</p>
+            </div>
+          </div>
+          <a className={styles.bottomLink} href="https://github.com/bitbaum/biaslens/issues">
+            Browse public discussions and challenges ↗
+          </a>
+        </section>
       </main>
       <SiteFooter />
     </>
