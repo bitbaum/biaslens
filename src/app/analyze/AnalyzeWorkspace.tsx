@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+
+import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 import { useState, type FormEvent } from 'react';
 
 import type { ArticleAnalysisResult } from '@/lib/analysis/run';
@@ -64,14 +66,9 @@ export function AnalyzeWorkspace() {
   };
 
   return (
-    <main className={styles.page}>
-      <nav className={styles.nav} aria-label="Workspace navigation">
-        <Link className={styles.brand} href="/">
-          BiasLens
-        </Link>
-        <Link href="/methodology">Open methodology ↗</Link>
-      </nav>
-
+    <>
+      <SiteHeader current="analyze" />
+      <main id="main-content" className={styles.page}>
       <header className={styles.hero}>
         <p className={styles.eyebrow}>First-principles analysis / Beta</p>
         <h1>What is this article really claiming?</h1>
@@ -185,11 +182,9 @@ export function AnalyzeWorkspace() {
 
       {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
 
-      <footer className={styles.footer}>
-        <span>BiasLens · Open evidence, contestable conclusions</span>
-        <a href="https://github.com/bitbaum/biaslens">View open-source code ↗</a>
-      </footer>
-    </main>
+      </main>
+      <SiteFooter />
+    </>
   );
 }
 
