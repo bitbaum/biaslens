@@ -11,6 +11,9 @@ importers:
       '@bitbaum/ai-kit':
         specifier: ^1.21.0
         version: 1.21.0(react@19.3.0)
+      '@bitbaum/design-tokens':
+        specifier: github:bitbaum/design-tokens#8e786a43220d267ccf6b5cd6119a012f1a52dfff
+        version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -62,6 +65,12 @@ importers:
         version: 5.0.4(@types/node@26.6.5)(vite@8.2.2(@types/node@26.6.5)(esbuild@0.28.2)(tsx@4.23.13))
 
 packages:
+
+  '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff':
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff}
+    version: 1.2.0
+    engines: {node: '>=20'}
+
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -2808,6 +2817,9 @@ packages:
 
 
 snapshots:
+
+  '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff': {}
+
 
   '@babel/code-frame@7.29.7':
     dependencies:
