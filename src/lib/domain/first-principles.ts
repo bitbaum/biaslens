@@ -10,6 +10,9 @@
  * model implementation and validate its output before writing to the DB.
  */
 
+/** Versioned prompt rubric; changing substantive reasoning instructions bumps this. */
+export const FIRST_PRINCIPLES_PROMPT_VERSION = 'first-principles@1' as const;
+
 export const CLAIM_KINDS = ['factual', 'normative', 'causal'] as const;
 export type ClaimKind = (typeof CLAIM_KINDS)[number];
 

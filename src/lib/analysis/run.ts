@@ -1,9 +1,14 @@
+import { createHash } from 'node:crypto';
+
 import {
   buildFirstPrinciplesUserPrompt,
   FIRST_PRINCIPLES_SYSTEM_PROMPT,
+  FIRST_PRINCIPLES_PROMPT_VERSION,
   parseFirstPrinciplesAnalysis,
   type FirstPrinciplesAnalysis,
 } from '@/lib/domain/first-principles';
+
+import { METHOD_VERSION } from '@/lib/domain/epistemic-graph';
 
 import type { AnalyzeInput } from './input';
 
@@ -37,8 +42,15 @@ export interface ArticleAnalysisResult {
     attribution: 'retrieved' | 'user-asserted' | 'not-provided';
     modelChars: number;
     truncated: boolean;
+    /** SHA-256 of the exact article text visible to the model, excluding prompt wrapper. */
+    textSha256: string;
   };
   modelId: string | null;
+  run: {
+    generatedAt: string;
+    methodVersion: string;
+    promptVersion: string;
+  };
   durationMs: number;
   /** The text is model-generated analysis and has NOT been independently checked. */
   independentlyVerified: false;
@@ -136,8 +148,14 @@ export async function analyzeArticle(
         input.mode === 'url' ? 'retrieved' : sourceUrl ? 'user-asserted' : 'not-provided',
       modelChars: text.length,
       truncated: fetchTruncated || clipped,
+      textSha256: createHash('sha256').update(text, 'utf8').digest('hex'),
     },
     modelId: generated.modelId,
+    run: {
+      generatedAt: new Date().toISOString(),
+      methodVersion: METHOD_VERSION,
+      promptVersion: FIRST_PRINCIPLES_PROMPT_VERSION,
+    },
     durationMs: Date.now() - started,
     independentlyVerified: false,
   };

@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { describe, expect, it, vi } from 'vitest';
 
 import { analyzeArticle, AnalysisFailure, type AnalysisDeps } from './run';
@@ -123,5 +125,37 @@ describe('analyzeArticle', () => {
       analyzeArticle({ mode: 'url', url: 'https://example.org/a', text: null }, providers),
     ).rejects.toMatchObject({ code: 'SOURCE_TOO_SHORT' });
     expect(providers.complete).not.toHaveBeenCalled();
+  });
+
+  it('records the exact analysed-text digest and version, without claiming authenticity', async () => {
+    const result = await analyzeArticle(
+      { mode: 'text', url: 'https://example.org/claimed', text: articleText },
+      deps(),
+    );
+    const expected = createHash('sha256').update(articleText, 'utf8').digest('hex');
+    expect(result.origin.textSha256).toBe(expected);
+    expect(result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(result.origin.attribution).toBe('user-asserted');
+    expect(result.run.methodVersion).toBe('0.1.0');
+    expect(result.run.promptVersion).toBe('first-principles@1');
+    expect(Number.isNaN(Date.parse(result.run.generatedAt))).toBe(false);
+    expect(result.independentlyVerified).toBe(false);
+  });
+
+  it('hashes the clipped content that the model received rather than unseen text', async () => {
+    const providers = deps();
+    providers.readPage = vi.fn(async (url: string) => ({
+      ok: true,
+      url,
+      text: 'X'.repeat(22_000),
+      truncated: true,
+    }));
+    const result = await analyzeArticle(
+      { mode: 'url', url: 'https://example.org/long', text: null },
+      providers,
+    );
+    const expected = createHash('sha256').update('X'.repeat(18_000), 'utf8').digest('hex');
+    expect(result.origin.textSha256).toBe(expected);
+    expect(result.origin.truncated).toBe(true);
   });
 });

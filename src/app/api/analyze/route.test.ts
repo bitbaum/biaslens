@@ -92,6 +92,11 @@ describe('POST /api/analyze', () => {
     const output = await res.json();
     expect(output.ok).toBe(true);
     expect(output.result.independentlyVerified).toBe(false);
+    expect(output.result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(output.result.run).toMatchObject({
+      methodVersion: '0.1.0',
+      promptVersion: 'first-principles@1',
+    });
     expect(output.result.origin).toMatchObject({
       attribution: 'user-asserted',
       kind: 'user-pasted-text',
