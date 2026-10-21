@@ -39,7 +39,10 @@ function deps(): AnalysisDeps {
 describe('analyzeArticle', () => {
   it('fetches a URL and never reports the analysis as independently verified', async () => {
     const providers = deps();
-    const result = await analyzeArticle({ mode: 'url', url: 'https://example.org/a', text: null }, providers);
+    const result = await analyzeArticle(
+      { mode: 'url', url: 'https://example.org/a', text: null },
+      providers,
+    );
     expect(result.analysis.core_claims).toHaveLength(1);
     expect(result.independentlyVerified).toBe(false);
     expect(result.origin).toMatchObject({
@@ -89,14 +92,20 @@ describe('analyzeArticle', () => {
       text: 'e'.repeat(22_000),
       truncated: false,
     }));
-    const result = await analyzeArticle({ mode: 'url', url: 'https://example.org/a', text: null }, providers);
+    const result = await analyzeArticle(
+      { mode: 'url', url: 'https://example.org/a', text: null },
+      providers,
+    );
     expect(result.origin.truncated).toBe(true);
     expect(result.origin.modelChars).toBe(18_000);
   });
 
   it('rejects hallucinated or malformed result shapes at the boundary', async () => {
     const providers = deps();
-    providers.complete = vi.fn(async () => ({ text: JSON.stringify({ title: 'Only a title' }), modelId: null }));
+    providers.complete = vi.fn(async () => ({
+      text: JSON.stringify({ title: 'Only a title' }),
+      modelId: null,
+    }));
     await expect(
       analyzeArticle({ mode: 'text', url: null, text: articleText }, providers),
     ).rejects.toBeInstanceOf(AnalysisFailure);
