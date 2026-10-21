@@ -46,8 +46,7 @@ export interface FirstPrinciplesAnalysis {
 }
 
 export type FirstPrinciplesParseResult =
-  | { success: true; data: FirstPrinciplesAnalysis }
-  | { success: false; error: string };
+  { success: true; data: FirstPrinciplesAnalysis } | { success: false; error: string };
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
