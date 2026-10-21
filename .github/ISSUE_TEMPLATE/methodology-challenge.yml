@@ -1,6 +1,6 @@
 name: Challenge the open truth-seeking methodology
 description: Propose a correction, counterexample, missing source or an improvement to the method.
-title: "[Methodology] "
+title: '[Methodology] '
 labels: []
 body:
   - type: markdown
@@ -28,7 +28,7 @@ body:
     attributes:
       label: Exact rule, claim, source or relationship
       description: Include version, URL, ID, quote or line number where possible.
-      placeholder: "Method 0.1, step 6; relationship from claim C2 to C3"
+      placeholder: 'Method 0.1, step 6; relationship from claim C2 to C3'
     validations:
       required: true
   - type: textarea
