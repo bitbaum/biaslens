@@ -25,10 +25,7 @@ export function AnalyzeWorkspace() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const canSubmit =
-    mode === 'url'
-      ? url.trim().length > 0
-      : text.trim().length >= MIN_TEXT_LENGTH;
+  const canSubmit = mode === 'url' ? url.trim().length > 0 : text.trim().length >= MIN_TEXT_LENGTH;
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -160,8 +157,8 @@ export function AnalyzeWorkspace() {
               {busy ? 'Examining…' : 'Examine article →'}
             </button>
             <p className={styles.hint}>
-              This tool analyses arguments; it does not certify their truth or make accusations about
-              authors.
+              This tool analyses arguments; it does not certify their truth or make accusations
+              about authors.
             </p>
           </div>
         </form>
@@ -211,13 +208,15 @@ function AboutAnalysis() {
         </div>
         <div>
           <h3>03 · Investigate</h3>
-          <p>See what would change the assessment and where independent evidence is still needed.</p>
+          <p>
+            See what would change the assessment and where independent evidence is still needed.
+          </p>
         </div>
       </div>
       <p className={styles.aboutNote}>
         External evidence retrieval, historical corroboration, cross-outlet comparison and
-        calibrated verification are separate development stages. This page currently analyses
-        the content of one article only.
+        calibrated verification are separate development stages. This page currently analyses the
+        content of one article only.
       </p>
     </section>
   );
@@ -325,8 +324,7 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
       <div className={styles.reportFooter}>
         <span>
           Analysed {report.origin.modelChars.toLocaleString()} characters ·{' '}
-          {(report.durationMs / 1_000).toFixed(1)}s
-          {report.modelId ? ' · ' + report.modelId : ''}
+          {(report.durationMs / 1_000).toFixed(1)}s{report.modelId ? ' · ' + report.modelId : ''}
         </span>
         <Link href="/methodology">Question or challenge the methodology ↗</Link>
       </div>
