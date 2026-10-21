@@ -54,6 +54,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Format homepage for review
+        run: pnpm exec prettier --write src/app/page.tsx && git diff -- src/app/page.tsx
+
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
