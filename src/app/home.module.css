@@ -1,8 +1,7 @@
 .hero {
   border-bottom: 1px solid var(--color-border);
   background:
-    radial-gradient(ellipse at 78% 45%, rgb(13 110 120 / 0.055), transparent 54%),
-    var(--color-bg);
+    radial-gradient(ellipse at 78% 45%, rgb(13 110 120 / 0.055), transparent 54%), var(--color-bg);
 }
 
 .heroInner,
@@ -320,7 +319,10 @@
   width: 100%;
   max-width: none;
   padding-block: var(--layout-section);
-  padding-inline: max(var(--layout-gutter), calc((100% - var(--layout-shell)) / 2 + var(--layout-gutter)));
+  padding-inline: max(
+    var(--layout-gutter),
+    calc((100% - var(--layout-shell)) / 2 + var(--layout-gutter))
+  );
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   align-items: center;
