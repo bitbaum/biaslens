@@ -11,7 +11,7 @@ export function SiteHeader({ current }: { current: Section }) {
         Skip to content
       </a>
       <header className={styles.header}>
-        <div className={styles.frame}>
+        <div className={`${styles.frame} bb-frame`}>
           <Link aria-label="BiasLens home" className={styles.wordmark} href="/">
             <span className={styles.mark} aria-hidden="true">
               B<span className={styles.markDivider}>/</span>L
@@ -46,7 +46,7 @@ export function SiteHeader({ current }: { current: Section }) {
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
-      <div className={styles.footerFrame}>
+      <div className={`${styles.footerFrame} bb-frame`}>
         <div>
           <strong>BiasLens</strong>
           <p>Evidence before conclusions. An open, revisable methodology.</p>

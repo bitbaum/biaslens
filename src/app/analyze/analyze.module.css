@@ -1,9 +1,3 @@
-.page {
-  width: min(100%, var(--layout-shell));
-  margin-inline: auto;
-  padding-inline: var(--layout-gutter);
-}
-
 .hero {
   max-width: 890px;
   padding: clamp(62px, 8vw, 110px) 0 42px;
@@ -45,9 +39,9 @@
 }
 
 .modeSwitch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 0;
   border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
   background: var(--color-surface-muted);
 }
 
@@ -85,14 +79,6 @@
 
 .input,
 .textarea {
-  width: 100%;
-  padding: 13px 15px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font: inherit;
-  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -108,23 +94,11 @@
 }
 
 .formBottom {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
   margin-top: 9px;
 }
 
 .submit {
   min-height: 48px;
-  border: none;
-  background: var(--color-text);
-  color: var(--color-on-action);
-  border-radius: 8px;
-  padding: 14px 20px;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .submit:disabled {
@@ -352,11 +326,6 @@
     gap: 23px;
   }
 
-  .formBottom {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
   .submit {
     width: 100%;
   }
@@ -380,14 +349,8 @@
 
 .exportBtn {
   min-height: 44px;
-  border: 1px solid var(--color-brand);
-  background: var(--color-surface);
+  border-color: var(--color-brand);
   color: var(--color-brand);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .exportBtn:hover {

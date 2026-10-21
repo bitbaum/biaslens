@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+// Opt-in shared geometry comes after the app reset; local CSS modules own the brand.
+import '@bitbaum/design-tokens/composition.css';
 
 export const metadata: Metadata = {
   title: 'BiasLens',

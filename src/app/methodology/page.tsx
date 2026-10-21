@@ -74,7 +74,7 @@ export default function MethodologyPage() {
   return (
     <>
       <SiteHeader current="methodology" />
-      <main id="main-content" className={styles.page}>
+      <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>Public method / Version {METHOD_VERSION} / Provisional</p>
           <h1>Truth is not a vote. It is an investigation.</h1>
@@ -82,15 +82,15 @@ export default function MethodologyPage() {
             Every claim should be open to inspection. Every piece of evidence should have an origin.
             Every connection should say why it exists. Every conclusion should be challengeable.
           </p>
-          <div className={styles.actions}>
+          <div className={`${styles.actions} bb-actions`}>
             <a
-              className={styles.actionPrimary}
+              className={`${styles.actionPrimary} bb-button bb-button--primary`}
               href="https://github.com/bitbaum/biaslens/issues/new?template=methodology-challenge.yml"
             >
               Challenge the method ↗
             </a>
             <a
-              className={styles.actionSecondary}
+              className={`${styles.actionSecondary} bb-button bb-button--secondary`}
               href="https://github.com/bitbaum/biaslens/blob/main/docs/methodology/open-epistemic-method-v0.1.md"
             >
               Read the complete protocol ↗

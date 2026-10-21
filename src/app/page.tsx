@@ -32,7 +32,7 @@ export default function Home() {
       <SiteHeader current="home" />
       <main id="main-content">
         <section className={styles.hero}>
-          <div className={styles.heroInner}>
+          <div className={`${styles.heroInner} bb-frame`}>
             <div className={styles.heroContent}>
               <p className={styles.eyebrow}>
                 <span className={styles.dot} aria-hidden="true" />
@@ -48,11 +48,14 @@ export default function Home() {
                 you see how those claims are built, what supports them, and what we still cannot
                 know.
               </p>
-              <div className={styles.actions}>
-                <Link href="/analyze" className={styles.primary}>
+              <div className={`${styles.actions} bb-actions`}>
+                <Link href="/analyze" className={`${styles.primary} bb-button bb-button--primary`}>
                   Examine an article <span aria-hidden="true">↗</span>
                 </Link>
-                <Link href="/methodology" className={styles.secondary}>
+                <Link
+                  href="/methodology"
+                  className={`${styles.secondary} bb-button bb-button--secondary`}
+                >
                   Explore our method <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -104,7 +107,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className={styles.process} aria-labelledby="process-heading">
+        <section className={`${styles.process} bb-frame`} aria-labelledby="process-heading">
           <div className={styles.sectionHeading}>
             <div>
               <p className={styles.sectionNumber}>THE APPROACH / 01—03</p>
@@ -162,7 +165,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className={styles.lab} aria-labelledby="lab-heading">
+        <section className={`${styles.lab} bb-frame`} aria-labelledby="lab-heading">
           <div className={styles.labHeader}>
             <div>
               <p className={styles.sectionNumber}>IN THE LAB / EDUCATIONAL DEMO</p>

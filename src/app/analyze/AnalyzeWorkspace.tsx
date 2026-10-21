@@ -68,7 +68,7 @@ export function AnalyzeWorkspace() {
   return (
     <>
       <SiteHeader current="analyze" />
-      <main id="main-content" className={styles.page}>
+      <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>First-principles analysis / Beta</p>
           <h1>What is this article really claiming?</h1>
@@ -79,7 +79,11 @@ export function AnalyzeWorkspace() {
         </header>
 
         <section className={styles.tool} aria-label="Analyse an article">
-          <div className={styles.modeSwitch} role="group" aria-label="Choose source format">
+          <div
+            className={`${styles.modeSwitch} bb-choice-row`}
+            role="group"
+            aria-label="Choose source format"
+          >
             <button
               type="button"
               className={mode === 'url' ? styles.activeMode : styles.modeButton}
@@ -110,7 +114,7 @@ export function AnalyzeWorkspace() {
             </label>
             <input
               id="article-url"
-              className={styles.input}
+              className={`${styles.input} bb-control`}
               type="url"
               placeholder="https://example.com/news/article"
               value={url}
@@ -130,7 +134,7 @@ export function AnalyzeWorkspace() {
                 </label>
                 <textarea
                   id="article-text"
-                  className={styles.textarea}
+                  className={`${styles.textarea} bb-control`}
                   placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
                   rows={9}
                   value={text}
@@ -149,8 +153,12 @@ export function AnalyzeWorkspace() {
               </>
             )}
 
-            <div className={styles.formBottom}>
-              <button className={styles.submit} type="submit" disabled={!canSubmit || busy}>
+            <div className={`${styles.formBottom} bb-actions`}>
+              <button
+                className={`${styles.submit} bb-button bb-button--primary`}
+                type="submit"
+                disabled={!canSubmit || busy}
+              >
                 {busy ? 'Examining…' : 'Examine article →'}
               </button>
               <p className={styles.hint}>
@@ -340,7 +348,11 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
           {(report.durationMs / 1_000).toFixed(1)}s{report.modelId ? ' · ' + report.modelId : ''}
         </span>
         <Link href="/methodology">Question or challenge the methodology ↗</Link>
-        <button className={styles.exportBtn} type="button" onClick={saveJson}>
+        <button
+          className={`${styles.exportBtn} bb-button bb-button--secondary`}
+          type="button"
+          onClick={saveJson}
+        >
           Save report JSON ↓
         </button>
       </div>
