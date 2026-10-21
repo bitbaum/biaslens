@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { EvidenceVerifier } from './EvidenceVerifier';
 
 export default function Home() {
@@ -22,6 +24,11 @@ export default function Home() {
         </p>
       </header>
       <EvidenceVerifier />
+      <p style={{ fontSize: '0.9rem', lineHeight: 1.6 }}>
+        <Link href="/methodology" style={{ color: 'var(--color-brand)' }}>
+          Explore the open truth-seeking method and challenge its rules →
+        </Link>
+      </p>
     </main>
   );
 }

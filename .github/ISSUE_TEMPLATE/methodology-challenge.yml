@@ -1,0 +1,61 @@
+name: Challenge the open truth-seeking methodology
+description: Propose a correction, counterexample, missing source or an improvement to the method.
+title: '[Methodology] '
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a public, versioned discussion of the *method*, not a vote on truth.
+        Cite precise evidence, distinguish facts from interpretations, and avoid personal information.
+        AI may help answer later, but will be labelled and will not automatically close your challenge.
+  - type: dropdown
+    id: challenge-kind
+    attributes:
+      label: What are you challenging?
+      options:
+        - Methodology step
+        - Claim or interpretation
+        - Evidence provenance or quality
+        - Causal relationship / omitted variable
+        - Historical source / dating
+        - Bias-scoring rubric
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Exact rule, claim, source or relationship
+      description: Include version, URL, ID, quote or line number where possible.
+      placeholder: 'Method 0.1, step 6; relationship from claim C2 to C3'
+    validations:
+      required: true
+  - type: textarea
+    id: criticism
+    attributes:
+      label: What is wrong, missing, or uncertain?
+      description: Explain the failure mode, not just the conclusion you disagree with.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and strongest counterexample
+      description: Include primary links, relevant excerpts, source independence, or measured counterexamples.
+    validations:
+      required: false
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: Proposed correction and test for acceptance
+      description: What would a better methodology do differently, and how could we test it?
+    validations:
+      required: false
+  - type: checkboxes
+    id: public
+    attributes:
+      label: Public participation
+      options:
+        - label: I understand this GitHub issue and its comments are public; I have not included private or sensitive information.
+          required: true
