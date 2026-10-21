@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@bitbaum/ai-kit':
+        specifier: ^1.21.0
+        version: 1.21.0(react@19.3.0)
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
       drizzle-orm:
         specifier: ^0.45.4
         version: 0.45.4(@types/pg@8.23.1)(pg@8.23.1)
+      limitkit:
+        specifier: ^0.2.0
+        version: 0.2.0
       next:
         specifier: ^16
         version: 16.4.0(@babel/core@7.29.7)(@types/node@26.6.5)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -2776,6 +2782,31 @@ packages:
   zod@4.5.4:
     resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
 
+  '@bitbaum/ai-kit@1.21.0':
+    resolution: {integrity: sha512-eWOsNrv4nyURMOxA9AoUfAZpj2ajuCSG3IK0z94vpPgAbcbkPviNOXGQpV9e01PRfMBP3EBVIrTa0wLN9gT9pQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18'
+    peerDependenciesMeta:
+      react:
+        optional: true
+
+
+  ai-forms@0.1.3:
+    resolution: {integrity: sha512-jpewuXsyiI7/356qcNCkeiDl6E8ua+5ZjpMxpA+e4XiEcNrjUE9XsUC1bKMr2j0ikzGNDp7/MuQIssKeYVaRhQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18'
+    peerDependenciesMeta:
+      react:
+        optional: true
+
+
+  limitkit@0.2.0:
+    resolution: {integrity: sha512-x05857iOBGf04eRBAXWTtRTrGhRdBfW9fZa8rfJDx3rQNRBVQpwK2z9aiMYNWhRp71QoIjvA0rl4ZiL4+6O8rA==}
+    engines: {node: '>=20'}
+
+
 snapshots:
 
   '@babel/code-frame@7.29.7':
@@ -5391,3 +5422,15 @@ snapshots:
       zod: 4.5.4
 
   zod@4.5.4: {}
+
+  '@bitbaum/ai-kit@1.21.0(react@19.3.0)':
+    dependencies:
+      ai-forms: 0.1.3(react@19.3.0)
+    optionalDependencies:
+      react: 19.3.0
+
+  ai-forms@0.1.3(react@19.3.0):
+    optionalDependencies:
+      react: 19.3.0
+
+  limitkit@0.2.0: {}
