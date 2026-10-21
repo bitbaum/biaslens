@@ -79,9 +79,9 @@ export function EvidenceVerifier() {
       <div>
         <div className={styles.heading}>Evidence-counting demonstration</div>
         <p className={styles.sub}>
-          Add hypothetical supporting and contradicting entries to explore how a simple count behaves.
-          This does not read sources or verify a claim. Repeated or weak sources count just as much as
-          strong, independent evidence.
+          Add hypothetical supporting and contradicting entries to explore how a simple count
+          behaves. This does not read sources or verify a claim. Repeated or weak sources count just
+          as much as strong, independent evidence.
         </p>
       </div>
 
