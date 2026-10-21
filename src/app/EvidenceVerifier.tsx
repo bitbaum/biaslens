@@ -25,13 +25,10 @@ const TONE_CLASS: Record<VerdictTone, string> = {
 type Counts = Record<EvidenceStance, number>;
 
 /**
- * EvidenceVerifier — the browser face of the claim-verification score.
+ * EvidenceVerifier — an educational count-only demo, NOT a fact-check.
  *
- * It mirrors the algorithm honestly: the verdict is a tally of supporting vs.
- * contradicting evidence, so the input is exactly that — two counters, nothing
- * invented. On "Verify" it posts to /api/claims/verify and renders the full
- * explainable result (verdict, confidence, the tally it was derived from, and the
- * algorithm id) — evidence shown alongside the conclusion, per product philosophy.
+ * The legacy API field called "confidence" is only the majority's share of
+ * synthetic entries. The UI must never present it as a truth probability.
  */
 export function EvidenceVerifier() {
   const [counts, setCounts] = useState<Counts>({
@@ -78,12 +75,13 @@ export function EvidenceVerifier() {
   const display = result ? VERIFICATION_DISPLAY[result.status] : null;
 
   return (
-    <section className={styles.panel} aria-label="Claim verification demo">
+    <section className={styles.panel} aria-label="Evidence counting demonstration">
       <div>
-        <div className={styles.heading}>Verify a claim from its evidence</div>
+        <div className={styles.heading}>Evidence-counting demonstration</div>
         <p className={styles.sub}>
-          The verdict is a tally of supporting vs. contradicting evidence. Add evidence on each side
-          and see the explainable result — nothing hidden.
+          Add hypothetical supporting and contradicting entries to explore how a simple count behaves.
+          This does not read sources or verify a claim. Repeated or weak sources count just as much as
+          strong, independent evidence.
         </p>
       </div>
 
@@ -119,7 +117,7 @@ export function EvidenceVerifier() {
 
       <div className={styles.actions}>
         <button type="button" className={styles.verifyBtn} onClick={verify} disabled={loading}>
-          {loading ? 'Verifying…' : 'Verify'}
+          {loading ? 'Counting…' : 'Compare counts'}
         </button>
         {error && <span className={styles.error}>{error}</span>}
       </div>
@@ -130,7 +128,7 @@ export function EvidenceVerifier() {
             <span className={`${styles.verdict} ${TONE_CLASS[display.tone]}`}>{display.label}</span>
             {result.confidence !== null && (
               <span className={styles.confidence}>
-                {Math.round(result.confidence * 100)}% confidence
+                {Math.round(result.confidence * 100)}% share of counted entries — not confidence
               </span>
             )}
           </div>
@@ -140,9 +138,10 @@ export function EvidenceVerifier() {
             <span>Total: {result.inputs.total}</span>
           </div>
           <p className={styles.explain}>
-            A verdict of Supported or Contradicted needs at least{' '}
-            {Math.round(MIN_AGREEMENT_TO_CONCLUDE * 100)}% of evidence to agree; below that the
-            claim stays Unverifiable rather than assert a weakly-backed conclusion.
+            The demo highlights whichever side has at least{' '}
+            {Math.round(MIN_AGREEMENT_TO_CONCLUDE * 100)}% of the entries. This threshold has no
+            statistical calibration and does not establish factual correctness, independence or
+            source quality. For actual research, review the open methodology and original records.
           </p>
           <span className={styles.algo}>algorithm: {result.algorithm}</span>
         </div>
