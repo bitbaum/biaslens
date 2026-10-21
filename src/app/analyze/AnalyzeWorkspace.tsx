@@ -225,6 +225,25 @@ function AboutAnalysis() {
 function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
   const analysis = report.analysis;
 
+  const saveJson = () => {
+    const exported = {
+      schema: 'biaslens-analysis@1',
+      warning: 'Provisional AI-generated interpretation; not independently fact-checked.',
+      ...report,
+    };
+    const blob = new Blob([JSON.stringify(exported, null, 2)], {
+      type: 'application/json;charset=utf-8',
+    });
+    const location = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = location;
+    link.download = 'biaslens-report-' + report.run.generatedAt.slice(0, 10) + '.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(location), 0);
+  };
+
   return (
     <article className={styles.report} aria-label="Provisional article analysis">
       <div className={styles.reportFlag}>
@@ -327,7 +346,21 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
           {(report.durationMs / 1_000).toFixed(1)}s{report.modelId ? ' · ' + report.modelId : ''}
         </span>
         <Link href="/methodology">Question or challenge the methodology ↗</Link>
+        <button className={styles.exportBtn} type="button" onClick={saveJson}>
+          Save report JSON ↓
+        </button>
       </div>
+      <p className={styles.exportNote}>
+        Method {report.run.methodVersion} · Prompt {report.run.promptVersion} ·{' '}
+        {report.run.generatedAt}
+      </p>
+      <p className={styles.exportNote}>
+        SHA-256 of the analysed text: <code>{report.origin.textSha256}</code>
+      </p>
+      <p className={styles.exportNote}>
+        The digest identifies only the text processed, not its author, authenticity or accuracy.
+        Source text is not included in the export, and the report is not saved on our server.
+      </p>
     </article>
   );
 }
