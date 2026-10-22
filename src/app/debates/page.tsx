@@ -34,7 +34,7 @@ export default function DebatePage() {
           <h2>What this analysis cannot decide</h2>
           <p>
             Equal airtime does not prove equal treatment. Unequal airtime does not prove bias. The
-            moderator's question types, answer opportunities and relevant context require
+            moderator&apos;s question types, answer opportunities and relevant context require
             independent, timestamped review.
           </p>
           <Link href="/blog/how-to-measure-a-political-debate">
