@@ -8,7 +8,8 @@ import styles from './blog.module.css';
 
 export const metadata = {
   title: 'Journal',
-  description: 'Notes on journalism, evidence, public reasoning, debates and methodological corrections.',
+  description:
+    'Notes on journalism, evidence, public reasoning, debates and methodological corrections.',
 };
 
 export default function JournalPage() {
@@ -22,8 +23,8 @@ export default function JournalPage() {
           <p className={styles.eyebrow}>{BRAND.name} / Journal</p>
           <h1>Arguments deserve better questions.</h1>
           <p className={styles.lead}>
-            Essays, investigations and research notes. We will challenge public claims, including our
-            own, while distinguishing documented findings from hypotheses and opinion.
+            Essays, investigations and research notes. We will challenge public claims, including
+            our own, while distinguishing documented findings from hypotheses and opinion.
           </p>
         </header>
         {posts.length === 0 ? (
