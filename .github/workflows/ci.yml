@@ -54,6 +54,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Report Arena JSX wrapping
+        run: pnpm exec prettier --write src/app/debates/DebateArena.tsx && git diff -- src/app/debates/DebateArena.tsx
+
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
