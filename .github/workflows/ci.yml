@@ -54,6 +54,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Diagnose Arena formatting
+        run: pnpm exec prettier --write src/app/debates/arena.module.css src/app/debates/DebateArena.tsx src/app/debates/page.tsx src/lib/debates/airtime.ts && git diff -- src/app/debates/arena.module.css src/app/debates/DebateArena.tsx src/app/debates/page.tsx src/lib/debates/airtime.ts
+
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
