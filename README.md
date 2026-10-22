@@ -23,6 +23,20 @@ not currently an independent fact-check.
 
 The downloadable report contains analysis, model and method versions, timestamp, and a digest of the analysed text. It is not stored server-side; a digest does **not** authenticate the original source or reproduce an unavailable model. No full source text is included in the export.
 
+### Timed-transcript Debate Arena
+
+`/debates` now accepts a **user-supplied timestamped transcript** and computes
+speaker airtime, relative speaker-seconds, intervals of cross-speaker overlap,
+and time without an assigned speaker. The calculation is pure, tested and
+performed entirely in the browser; no uploaded transcript is transmitted or
+persisted. The demo example uses fictional speakers.
+
+This is **not** automatic diarisation or proof of a political interruption,
+bias, equal moderation, or historical accuracy. The recording, speaker labels
+and transcript timestamps must be externally verified before publishing
+comparative findings. Future audiovisual analysis should preserve source
+timestamps and a public correction trail.
+
 **Not yet delivered:** independent multi-source verification, calibrated
 confidence, persistent public reports, accounts and moderated discussion,
 audio/video debates, historical record provenance, cross-outlet comparisons,
