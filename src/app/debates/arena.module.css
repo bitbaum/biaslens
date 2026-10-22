@@ -26,7 +26,9 @@
   color: var(--color-text-muted);
   margin-top: 23px;
 }
-.note, .warning, .footnote {
+.note,
+.warning,
+.footnote {
   max-width: 78ch;
   margin-top: 16px;
   color: var(--color-text-muted);
@@ -86,7 +88,8 @@
 .results {
   padding-block: 65px;
 }
-.results h2, .next h2 {
+.results h2,
+.next h2 {
   margin-top: 13px;
   font-family: var(--font-editorial);
   font-size: clamp(30px, 4vw, 48px);
@@ -169,7 +172,14 @@
   font-weight: 700;
 }
 @media (max-width: 650px) {
-  .totals { grid-template-columns: 1fr; gap: 12px; }
-  .totals > div { padding-top: 12px; }
-  .speakerHeader { flex-direction: column; }
+  .totals {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .totals > div {
+    padding-top: 12px;
+  }
+  .speakerHeader {
+    flex-direction: column;
+  }
 }
