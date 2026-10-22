@@ -17,9 +17,18 @@ export function SiteHeader({ current }: { current: Section }) {
         <div className={`${styles.frame} bb-frame`}>
           <Link aria-label={`${BRAND.name} home`} className={styles.wordmark} href="/">
             {BRAND.logoPath ? (
-              <Image className={styles.markImage} src={BRAND.logoPath} width={44} height={44} alt="" unoptimized />
+              <Image
+                className={styles.markImage}
+                src={BRAND.logoPath}
+                width={44}
+                height={44}
+                alt=""
+                unoptimized
+              />
             ) : (
-              <span className={styles.mark} aria-hidden="true">{BRAND.mark}</span>
+              <span className={styles.mark} aria-hidden="true">
+                {BRAND.mark}
+              </span>
             )}
             <span>{BRAND.name}</span>
           </Link>
