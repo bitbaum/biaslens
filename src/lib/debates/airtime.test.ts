@@ -24,8 +24,8 @@ describe('manual debate airtime', () => {
     const report = measureAirtime(parsed.turns);
     expect(report.speakers.map((s) => [s.speaker, s.airtimeSeconds])).toEqual([
       ['Speaker A', 50],
-      ['Speaker B', 20],
       ['Moderator', 20],
+      ['Speaker B', 20],
     ]);
     expect(report.recordedWindowSeconds).toBe(90);
     expect(report.coveredSeconds).toBe(80);
