@@ -25,15 +25,16 @@ export default function DebatePage() {
           </p>
           <p className={styles.note}>
             This beta works with a manually timed transcript. Automatic video transcription,
-            diarisation, speaker correction and independent source verification are not yet available.
+            diarisation, speaker correction and independent source verification are not yet
+            available.
           </p>
         </header>
         <DebateArena />
         <aside className={styles.next}>
           <h2>What this analysis cannot decide</h2>
           <p>
-            Equal airtime does not prove equal treatment. Unequal airtime does not prove bias.
-            The moderator's question types, answer opportunities and relevant context require
+            Equal airtime does not prove equal treatment. Unequal airtime does not prove bias. The
+            moderator's question types, answer opportunities and relevant context require
             independent, timestamped review.
           </p>
           <Link href="/blog/how-to-measure-a-political-debate">
