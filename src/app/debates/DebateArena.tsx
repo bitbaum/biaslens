@@ -69,16 +69,22 @@ export function DebateArena() {
           maxLength={65_000}
           value={transcript}
           onChange={(event) => change(event.target.value)}
-          placeholder={'00:00-00:15 | Speaker A | Opening statement.\n00:15-00:34 | Speaker B | Response.'}
+          placeholder={
+            '00:00-00:15 | Speaker A | Opening statement.\n00:15-00:34 | Speaker B | Response.'
+          }
           spellCheck={false}
           required
         />
         <p className={styles.hint}>
-          One line per turn: <code>00:00-00:15 | Speaker | Speech text</code>. Use MM:SS or
-          HH:MM:SS timestamps. The text stays in your browser and is not submitted to a server.
+          One line per turn: <code>00:00-00:15 | Speaker | Speech text</code>. Use MM:SS or HH:MM:SS
+          timestamps. The text stays in your browser and is not submitted to a server.
         </p>
         <div className="bb-actions">
-          <button type="submit" className="bb-button bb-button--primary" disabled={!transcript.trim()}>
+          <button
+            type="submit"
+            className="bb-button bb-button--primary"
+            disabled={!transcript.trim()}
+          >
             Measure speaker airtime →
           </button>
           <button
@@ -98,14 +104,18 @@ export function DebateArena() {
       </form>
 
       {report && (
-        <section className={styles.results} aria-label="Transcript airtime results" aria-live="polite">
+        <section
+          className={styles.results}
+          aria-label="Transcript airtime results"
+          aria-live="polite"
+        >
           <p className={styles.eyebrow}>
             {isFictional ? 'Fictional illustration' : 'User-supplied transcript'} / Unverified
           </p>
           <h2>Who spoke, according to these timestamps?</h2>
           <p className={styles.warning}>
-            Speaker names and timestamps were provided by the user. This is a deterministic calculation,
-            not an authentication of the recording or a finding of moderator bias.
+            Speaker names and timestamps were provided by the user. This is a deterministic
+            calculation, not an authentication of the recording or a finding of moderator bias.
           </p>
           <div className={styles.totals}>
             <div>
@@ -127,8 +137,10 @@ export function DebateArena() {
               <li key={person.speaker}>
                 <div className={styles.speakerHeader}>
                   <strong>{person.speaker}</strong>
-                  <span>{formatAirtime(person.airtimeSeconds)} · {person.turns} turns ·{' '}
-                    {person.shareOfSpeakerSeconds.toFixed(1)}% of speaker-seconds</span>
+                  <span>
+                    {formatAirtime(person.airtimeSeconds)} · {person.turns} turns ·{' '}
+                    {person.shareOfSpeakerSeconds.toFixed(1)}% of speaker-seconds
+                  </span>
                 </div>
                 <div className={styles.track} aria-hidden="true">
                   <span style={{ width: `${person.shareOfSpeakerSeconds}%` }} />
@@ -137,9 +149,9 @@ export function DebateArena() {
             ))}
           </ol>
           <p className={styles.footnote}>
-            Shares total 100% of summed speaker airtime, including cross-speaker overlap.
-            Individual speakers' overlapping turns are counted only once.
-            Overlapping speech must be manually reviewed before labelling it an interruption.
+            Shares total 100% of summed speaker airtime, including cross-speaker overlap. Individual
+            speakers' overlapping turns are counted only once. Overlapping speech must be manually
+            reviewed before labelling it an interruption.
           </p>
         </section>
       )}
