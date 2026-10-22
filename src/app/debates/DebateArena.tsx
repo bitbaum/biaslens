@@ -69,7 +69,7 @@ export function DebateArena() {
           maxLength={65_000}
           value={transcript}
           onChange={(event) => change(event.target.value)}
-          placeholder="00:00-00:15 | Speaker A | Opening statement.&#10;00:15-00:34 | Speaker B | Response."
+          placeholder={'00:00-00:15 | Speaker A | Opening statement.\n00:15-00:34 | Speaker B | Response.'}
           spellCheck={false}
           required
         />
