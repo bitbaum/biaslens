@@ -40,6 +40,13 @@
   min-height: 44px;
 }
 
+.markImage {
+  object-fit: contain;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
 .mark {
   display: grid;
   grid-auto-flow: column;
