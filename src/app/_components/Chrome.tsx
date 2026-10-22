@@ -5,7 +5,7 @@ import { BRAND } from '@/lib/config/brand';
 
 import styles from './Chrome.module.css';
 
-type Section = 'home' | 'analyze' | 'methodology' | 'blog';
+type Section = 'home' | 'analyze' | 'methodology' | 'blog' | 'arena';
 
 export function SiteHeader({ current }: { current: Section }) {
   return (
@@ -42,6 +42,9 @@ export function SiteHeader({ current }: { current: Section }) {
             <Link href="/blog" aria-current={current === 'blog' ? 'page' : undefined}>
               Journal
             </Link>
+            <Link href="/debates" aria-current={current === 'arena' ? 'page' : undefined}>
+              Arena
+            </Link>
             <Link href="/methodology" aria-current={current === 'methodology' ? 'page' : undefined}>
               Method
             </Link>
@@ -72,6 +75,7 @@ export function SiteFooter() {
           <Link href="/analyze">Examine an article</Link>
           <Link href="/methodology">Methodology</Link>
           <Link href="/blog">Journal</Link>
+          <Link href="/debates">Debate Arena</Link>
           <a href="https://github.com/bitbaum/biaslens">GitHub ↗</a>
         </nav>
       </div>
