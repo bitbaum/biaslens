@@ -54,9 +54,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Diagnose formatting
-        run: pnpm exec prettier --write src/app/_components/Chrome.tsx src/app/blog/page.tsx src/app/page.tsx && git diff -- src/app/_components/Chrome.tsx src/app/blog/page.tsx src/app/page.tsx
-
       # SSOT: lint + typecheck + test, defined once in package.json `verify`.
       - name: Verify
         run: pnpm run verify
