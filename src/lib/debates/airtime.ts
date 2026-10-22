@@ -30,9 +30,7 @@ export interface DebateAirtime {
   sourceVerified: false;
 }
 
-export type ParseResult =
-  | { ok: true; turns: SpeakerTurn[] }
-  | { ok: false; error: string };
+export type ParseResult = { ok: true; turns: SpeakerTurn[] } | { ok: false; error: string };
 
 const MAX_TURNS = 600;
 const MAX_INPUT_CHARS = 65_000;
@@ -66,7 +64,10 @@ export function parseTimedTranscript(input: string): ParseResult {
     if (turns.length >= MAX_TURNS) {
       return { ok: false, error: 'Too many turns (600 maximum).' };
     }
-    const match = /^\s*(\d{1,3}:\d{2}(?::\d{2})?)\s*-\s*(\d{1,3}:\d{2}(?::\d{2})?)\s*\|\s*([^|]+)\s*\|\s*(.+?)\s*$/.exec(line);
+    const match =
+      /^\s*(\d{1,3}:\d{2}(?::\d{2})?)\s*-\s*(\d{1,3}:\d{2}(?::\d{2})?)\s*\|\s*([^|]+)\s*\|\s*(.+?)\s*$/.exec(
+        line,
+      );
     if (!match) {
       return {
         ok: false,
@@ -76,7 +77,10 @@ export function parseTimedTranscript(input: string): ParseResult {
     const start = parseTimestamp(match[1]);
     const end = parseTimestamp(match[2]);
     if (start === null || end === null || end <= start) {
-      return { ok: false, error: 'Line ' + (index + 1) + ': timestamps must increase and be valid.' };
+      return {
+        ok: false,
+        error: 'Line ' + (index + 1) + ': timestamps must increase and be valid.',
+      };
     }
     const speaker = match[3].trim();
     const text = match[4].trim();
