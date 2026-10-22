@@ -1,26 +1,40 @@
+# Auto-merge — nobody is in the merge loop.
+#
+# Green, ready PRs merge themselves and deploy themselves. The policy lives in
+# ONE place for the whole fleet — bitbaum/fleet,
+# scripts/ci/auto-merge-sweep.sh — and this file only says "run it, with these
+# settings".
+#
+# It used to be a copy of that script. Twenty-two repos held such a copy and
+# they drifted into EIGHT versions: fixes written for real outages (a cancelled
+# CI run stranding the queue; a red base trapping the very PR that repairs it)
+# reached only the repo that wrote them, because nothing could carry them
+# across. That is what a copy costs.
+#
+# The triggers stay here on purpose — they are genuinely per-repo: workflow_run
+# must name the CI workflow exactly, and that name differs across the fleet.
+#
+# To stop all of this: delete this file, or add a `hold` label to a PR.
 name: Auto-merge
 
-# A green PR on this site merges itself; nobody has to open GitHub. The policy
-# lives once, in bitbaum/fleet (auto-merge-sweep.yml); this file only says
-# which workflow is CI and which one deploys. Without it every PR an agent
-# opens on a fresh site waits for a human forever — the last manual click on
-# the brief → repo → live site → feedback → live change loop (2026-09-11).
-#
-# `token` is optional: without an org PAT the sweep uses GITHUB_TOKEN, which
-# can merge anything except a PR that edits .github/workflows/*.
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ['CI']
     types: [completed]
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: '*/10 * * * *'
   workflow_dispatch: {}
 
+# Declared on the CALLER as well as inside the reusable workflow: a called
+# workflow's token is capped by what the caller grants, so relying on the
+# callee's block alone can hand it a read-only token — and the sweep would then
+# merge nothing while still exiting 0, which is indistinguishable from having
+# nothing to merge.
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
-  checks: read
+  contents: write # merge the PR
+  pull-requests: write # read PR state, delete the branch
+  actions: write # dispatch the re-arm workflows
+  checks: read # statusCheckRollup — only load-bearing on private repos
   statuses: read
 
 jobs:
@@ -29,7 +43,28 @@ jobs:
     with:
       base_branch: main
       ci_workflow: ci.yml
-      rearm_workflows: "ci.yml"
-      deploy_workflow: deploy.yml
+      # SPACE-separated: the sweep word-splits this. A comma would become one
+      # bogus token, every dispatch would fail, and the only symptom would be
+      # that nothing deploys — while the sweep still reported success.
+      rearm_workflows: 'ci.yml'
     secrets:
+      # Why a PAT and not the default token: THROUGHPUT.
+      #
+      # A dispatch made with GITHUB_TOKEN triggers no workflows — the same rule
+      # that makes the deploy reconciler necessary. So after the sweep merges a
+      # PR and re-arms CI, that CI run's completion fires no workflow_run, and
+      # nothing wakes the sweep to take the next PR. It waits for the cron, and
+      # GitHub throttles scheduled workflows regardless of what the cron says:
+      # measured in loki, sweeps land 50-65 minutes apart against */10.
+      # A PAT-created dispatch does emit workflow_run, so a queue drains at CI
+      # speed instead.
+      #
+      # NOT the reason, though an earlier version of this comment said so:
+      # "GITHUB_TOKEN cannot merge a PR touching .github/workflows". That is
+      # contradicted here — github-actions[bot] merged datacat#253 and
+      # ai-kit#42, both of which change a workflow file. Recorded so the wrong
+      # reason does not get re-derived from this file.
+      #
+      # Undefined resolves to empty and the reusable workflow falls back to
+      # github.token, so this line is inert until the org secret exists.
       token: ${{ secrets.FLEET_PAT }}

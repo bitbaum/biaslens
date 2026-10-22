@@ -150,8 +150,8 @@ export function DebateArena() {
           </ol>
           <p className={styles.footnote}>
             Shares total 100% of summed speaker airtime, including cross-speaker overlap. Individual
-            speakers&apos; overlapping turns are counted only once. Overlapping speech must be manually
-            reviewed before labelling it an interruption.
+            speakers&apos; overlapping turns are counted only once. Overlapping speech must be
+            manually reviewed before labelling it an interruption.
           </p>
         </section>
       )}
