@@ -55,6 +55,33 @@ The database model is `src/lib/db/schema.ts`; analysis contracts are in
 Never promote an extracted or user-supplied article claim to verified status
 without an independently reviewed source and method.
 
+## Rebranding and editorial publishing
+
+The name **BiasLens** is temporary. The repository slug, internal AI prefix,
+deployment slug and database name are implementation identifiers, **not** public
+brand commitments. All rendered names, the logo slot and social metadata are
+derived from `src/lib/config/brand.ts`:
+
+```dotenv
+NEXT_PUBLIC_PRODUCT_NAME="Your future name"
+NEXT_PUBLIC_PRODUCT_MARK="YN"
+NEXT_PUBLIC_PRODUCT_LOGO="/brand/logo.svg"
+NEXT_PUBLIC_SITE_URL="https://your-real-domain.example"
+```
+
+The logo URL points to a first-party static asset under `public/`, which can
+be replaced independently of the app. Set `NEXT_PUBLIC_SITE_URL` only after
+the real hostname is registered; pages are **noindex** in the absence of a
+canonical URL. The application must be rebuilt after these build-time public
+values change. Identity/roadmap content remains canonical in Loki/Fleet.
+
+The journal is `/blog`, with `/blog/[slug]` and `/blog/feed.xml` (RSS is
+available after a real origin is configured). Markdown lives in `content/blog`
+and renders via the shared `bip-kit` reader and React renderer. Publishing
+is a source-controlled PR with a reviewed date, title, evidence and explicit
+uncertainty; there is no unattended AI publishing or invented public findings.
+The roadmap and changelog stay in Loki and are not maintained as blog copies.
+
 ## Run locally
 
 Requires Node.js 24 (CI version), pnpm 11 and optionally PostgreSQL for the
