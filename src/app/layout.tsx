@@ -4,6 +4,8 @@ import { BRAND } from '@/lib/config/brand';
 import './globals.css';
 // Opt-in shared geometry comes after the app reset; local CSS modules own the brand.
 import '@bitbaum/design-tokens/composition.css';
+import 'bip-kit/styles.css';
+import './blog/journal.css';
 
 export const metadata: Metadata = {
   ...(BRAND.siteOrigin ? { metadataBase: new URL(BRAND.siteOrigin) } : {}),
