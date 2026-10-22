@@ -17,6 +17,9 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
+      bip-kit:
+        specifier: ^0.6.0
+        version: 0.6.0(react@19.3.0)
       drizzle-orm:
         specifier: ^0.45.4
         version: 0.45.4(@types/pg@8.23.1)(pg@8.23.1)
@@ -65,6 +68,22 @@ importers:
         version: 5.0.4(@types/node@26.6.5)(vite@8.2.2(@types/node@26.6.5)(esbuild@0.28.2)(tsx@4.23.13))
 
 packages:
+
+  bip-kit@0.6.0:
+    resolution: {integrity: sha512-evyb2/RtTK7EXrQBde3misyHj/vCZYxJLVBv285iPa3nKl8Mr60sAIspCaSL6SFY0872Jz5MX7gf/uJ0Avvtew==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      katex: '>=0.16'
+      mermaid: '>=10'
+      react: '>=18'
+      shiki: '>=1'
+    peerDependenciesMeta:
+      katex:
+        optional: true
+      mermaid:
+        optional: true
+      shiki:
+        optional: true
 
   '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff':
     resolution: {gitHosted: true, tarball: https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff}
@@ -2817,6 +2836,11 @@ packages:
 
 
 snapshots:
+
+  bip-kit@0.6.0(react@19.3.0):
+    dependencies:
+      react: 19.3.0
+
 
   '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff': {}
 

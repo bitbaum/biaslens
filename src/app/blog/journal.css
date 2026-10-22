@@ -1,0 +1,15 @@
+/* Scoped theme adapter: no fork of bip-kit's article renderer. */
+.journalTheme {
+  --bp-bg: var(--color-bg);
+  --bp-surface: var(--color-surface-muted);
+  --bp-fg: var(--color-text);
+  --bp-fg-muted: var(--color-text-muted);
+  --bp-fg-faint: var(--color-text-muted);
+  --bp-border: var(--color-border);
+  --bp-accent: var(--color-brand);
+  --bp-accent-contrast: var(--color-on-action);
+  --bp-font-sans: var(--font-sans);
+  --bp-font-mono: var(--font-mono);
+  --bp-measure: 69ch;
+  --bp-radius: var(--radius-card);
+}

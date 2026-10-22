@@ -40,6 +40,21 @@
   min-height: 44px;
 }
 
+.wordmark > span:last-child {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(40vw, 260px);
+}
+
+.markImage {
+  object-fit: contain;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
 .mark {
   display: grid;
   grid-auto-flow: column;
@@ -146,8 +161,19 @@
 
 @media (max-width: 760px) {
   .frame {
-    gap: 4px;
+    flex-wrap: wrap;
+    column-gap: 4px;
+    row-gap: 0;
     min-height: 70px;
+    padding-block: 9px;
+  }
+  .wordmark > span:last-child {
+    max-width: 65vw;
+  }
+  .nav {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: space-between;
   }
 
   .wordmark {

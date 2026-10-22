@@ -25,6 +25,7 @@
     "@bitbaum/ai-kit": "^1.21.0",
     "@bitbaum/design-tokens": "github:bitbaum/design-tokens#8e786a43220d267ccf6b5cd6119a012f1a52dfff",
     "@paralleldrive/cuid2": "^3.3.0",
+    "bip-kit": "^0.6.0",
     "drizzle-orm": "^0.45.4",
     "limitkit": "^0.2.0",
     "next": "^16",
