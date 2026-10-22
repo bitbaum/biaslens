@@ -46,9 +46,9 @@ export default function Home() {
                 <em>Examine it.</em>
               </h1>
               <p className={styles.lead}>
-                News, arguments, historical accounts—every story is made of claims. {BRAND.name} helps
-                you see how those claims are built, what supports them, and what we still cannot
-                know.
+                News, arguments, historical accounts—every story is made of claims. {BRAND.name}{' '}
+                helps you see how those claims are built, what supports them, and what we still
+                cannot know.
               </p>
               <div className={`${styles.actions} bb-actions`}>
                 <Link href="/analyze" className={`${styles.primary} bb-button bb-button--primary`}>
