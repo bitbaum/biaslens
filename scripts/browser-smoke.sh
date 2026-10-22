@@ -41,7 +41,7 @@ if [[ "$ready" -ne 1 ]]; then
   exit 1
 fi
 
-for page in 'home|/|Examine it.' 'analyze|/analyze|What is this article really claiming?' 'method|/methodology|Truth is not a vote.'; do
+for page in 'home|/|Examine it.' 'analyze|/analyze|What is this article really claiming?' 'method|/methodology|Truth is not a vote.' 'journal|/blog|Arguments deserve better questions.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage'; do
   IFS='|' read -r slug route expected <<< "$page"
   url="http://127.0.0.1:3000$route"
 
