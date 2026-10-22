@@ -9,7 +9,7 @@ import {
 import styles from './methodology.module.css';
 
 export const metadata = {
-  title: 'Open Epistemic Method · BiasLens',
+  title: 'Open Epistemic Method',
   description:
     'An open, challengeable protocol for investigating claims, evidence, causal links and history.',
 };
