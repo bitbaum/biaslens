@@ -35,6 +35,7 @@ export interface AnalysisDeps {
 
 export interface ArticleAnalysisResult {
   analysis: FirstPrinciplesAnalysis;
+  sourceText?: string;
   origin: {
     kind: 'retrieved-page' | 'user-pasted-text';
     url: string | null;
@@ -125,7 +126,8 @@ export async function analyzeArticle(
 
   let parsed: unknown;
   try {
-    parsed = JSON.parse(generated.text);
+    const json = generated.text.trim().replace(/^```(?:json)?\s*\n([\s\S]*?)\n```$/i, '$1');
+    parsed = JSON.parse(json);
   } catch {
     throw new AnalysisFailure('MODEL_INVALID', 502, 'The model returned an invalid report. Retry.');
   }
@@ -138,8 +140,14 @@ export async function analyzeArticle(
     );
   }
 
+  // A plausible-looking model quote is never rendered as a quotation unless
+  // its exact bytes occur in the text the model actually received.
+  for (const claim of valid.data.core_claims) {
+    if (claim.source_quote && !text.includes(claim.source_quote)) claim.source_quote = null;
+  }
   return {
     analysis: valid.data,
+    sourceText: text,
     origin: {
       kind: input.mode === 'url' ? 'retrieved-page' : 'user-pasted-text',
       url: sourceUrl,

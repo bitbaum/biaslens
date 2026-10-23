@@ -95,7 +95,7 @@ describe('POST /api/analyze', () => {
     expect(output.result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(output.result.run).toMatchObject({
       methodVersion: '0.1.0',
-      promptVersion: 'first-principles@1',
+      promptVersion: 'first-principles@2',
     });
     expect(output.result.origin).toMatchObject({
       attribution: 'user-asserted',

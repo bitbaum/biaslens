@@ -2,7 +2,9 @@ name: Deploy
 
 on:
   workflow_dispatch: {}
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
 
 # The shared deploy refuses a commit whose CI is red by reading this commit's
@@ -12,10 +14,73 @@ permissions:
   contents: read
   actions: read
 
+concurrency:
+  group: biaslens-release
+  cancel-in-progress: false
+
 jobs:
+  prepare:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.event != 'pull_request')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Prepare existing Fleet services
+        env:
+          SSH_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
+          HETZNER_IP: ${{ vars.HETZNER_IP }}
+        run: |
+          set -euo pipefail
+          test -n "$HETZNER_IP"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$HETZNER_IP" >> ~/.ssh/known_hosts 2>/dev/null
+          git clone --quiet --depth 1 https://github.com/bitbaum/loki.git "$RUNNER_TEMP/tooling"
+          tooling="$RUNNER_TEMP/tooling/scripts/hetzner"
+          # Shared provisioner creates only this app's database and secrets.
+          # Values remain on the box; the script reports key names only.
+          bash "$tooling/provision-db-on-box.sh" biaslens
+          # Update only this app's existing registration, on the box. Never
+          # replace the manifest with an earlier snapshot of other apps.
+          ssh "ubuntu@$HETZNER_IP" 'python3 -' <<'PYCODE'
+          import pathlib
+          path = pathlib.Path('/home/ubuntu/dev/loki/scripts/hetzner/apps.conf')
+          rows = path.read_text().splitlines()
+          found = 0
+          for i, row in enumerate(rows):
+              if row.startswith('biaslens|'):
+                  cells = row.split('|')
+                  assert cells[5] in ('-', 'biaslens'), 'Unexpected database; refusing to change it'
+                  cells[5] = 'biaslens'
+                  rows[i] = '|'.join(cells)
+                  found += 1
+          assert found == 1, 'Expected one existing BiasLens registration'
+          path.write_text('\n'.join(rows) + '\n')
+          PYCODE
+          ssh "ubuntu@$HETZNER_IP" 'cat /home/ubuntu/dev/loki/scripts/hetzner/apps.conf' > "$RUNNER_TEMP/apps.conf"
+          # Reuse the Fleet's guarded forward-only migration applier.
+          bash "$tooling/apply-schema.sh" biaslens "$GITHUB_WORKSPACE" biaslens .
+          # The shared free-tier keys have one owner. Seed through that owner,
+          # never copy credentials into this repository or workflow logs.
+          remote_dir="/tmp/biaslens-fleet-${GITHUB_RUN_ID}"
+          ssh "ubuntu@$HETZNER_IP" "mkdir -p '$remote_dir'"
+          scp -q "$tooling/fleet-env.sh" "$tooling/fleet-keys.conf" "ubuntu@$HETZNER_IP:$remote_dir/"
+          ssh "ubuntu@$HETZNER_IP" "bash '$remote_dir/fleet-env.sh' seed; rm -rf '$remote_dir'"
+          # Refresh this app's generated launcher to read shared Fleet keys.
+          MANIFEST="$RUNNER_TEMP/apps.conf" bash "$tooling/sync-infra.sh" biaslens
   deploy:
+    needs: prepare
     uses: bitbaum/loki/.github/workflows/selfhost-deploy.yml@main
     with:
       app: biaslens
+      git-ref: ${{ github.event.workflow_run.head_sha || github.sha }}
     secrets:
       HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}

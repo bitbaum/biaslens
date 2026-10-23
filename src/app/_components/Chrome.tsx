@@ -53,14 +53,9 @@ export function SiteHeader({ current }: { current: Section }) {
               </Link>
             ))}
           </nav>
-          <a
-            className={styles.repository}
-            href={PROJECT_LINKS.repository}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Source code <span aria-hidden="true">↗</span>
-          </a>
+          <Link className={styles.repository} href="/account">
+            Your account →
+          </Link>
         </div>
       </header>
     </>
@@ -82,6 +77,7 @@ export function SiteFooter() {
           <Link href={ROUTES.whitepaper}>White paper</Link>
           <Link href={ROUTES.development}>Build in public</Link>
           <Link href={ROUTES.blog}>Journal</Link>
+          <Link href="/account">Your account</Link>
           <Link href={ROUTES.arena}>Debate Arena</Link>
           <a href={PROJECT_LINKS.repository}>GitHub ↗</a>
         </nav>

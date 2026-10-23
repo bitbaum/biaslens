@@ -3,6 +3,7 @@ export const ROUTES = {
   home: '/',
   explore: '/explore',
   analyze: '/analyze',
+  account: '/account',
   methodology: '/methodology',
   whitepaper: '/whitepaper',
   development: '/development',
