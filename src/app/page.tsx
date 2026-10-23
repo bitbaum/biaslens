@@ -37,28 +37,28 @@ export default function Home() {
           <div className={`${styles.heroInner} bb-frame`}>
             <div className={styles.heroContent}>
               <p className={styles.eyebrow}>
-                <span className={styles.dot} aria-hidden="true" />
-                AN OPEN LAB FOR BETTER QUESTIONS
+                <span className={styles.dot} aria-hidden="true" />A WORKSPACE FOR UNDERSTANDING THE
+                WORLD
               </p>
               <h1>
-                Don&apos;t just read
-                <span className={styles.line}>the story.</span>
-                <em>Examine it.</em>
+                Understand the world.
+                <span className={styles.line}>One question</span>
+                <em>at a time.</em>
               </h1>
               <p className={styles.lead}>
-                News, arguments, historical accounts—every story is made of claims. {BRAND.name}{' '}
-                helps you see how those claims are built, what supports them, and what we still
-                cannot know.
+                {BRAND.name} brings questions, evidence, and competing explanations into focus.
+                Explore science, history, economics, and public arguments. Follow the sources. Find
+                the assumptions. Keep asking what would change your mind.
               </p>
               <div className={`${styles.actions} bb-actions`}>
-                <Link href="/analyze" className={`${styles.primary} bb-button bb-button--primary`}>
-                  Examine an article <span aria-hidden="true">↗</span>
+                <Link href="/explore" className={`${styles.primary} bb-button bb-button--primary`}>
+                  Explore a question <span aria-hidden="true">↗</span>
                 </Link>
                 <Link
-                  href="/methodology"
+                  href="/analyze"
                   className={`${styles.secondary} bb-button bb-button--secondary`}
                 >
-                  Explore our method <span aria-hidden="true">→</span>
+                  Examine an article <span aria-hidden="true">→</span>
                 </Link>
               </div>
               <p className={styles.notice}>
@@ -106,6 +106,59 @@ export default function Home() {
                 <span>↑</span>A question is the beginning of an investigation, not a verdict.
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className={`${styles.directory} bb-frame`} aria-labelledby="workspace-heading">
+          <div className={styles.sectionHeading}>
+            <div>
+              <p className={styles.sectionNumber}>ONE OPEN INVESTIGATION WORKSPACE</p>
+              <h2 id="workspace-heading">Choose a way in.</h2>
+            </div>
+            <p>Start with a question or a text. Read the method. Inspect the work behind it.</p>
+          </div>
+          <div className={styles.directoryRows}>
+            {[
+              [
+                '/explore',
+                '01',
+                'Explore a question',
+                'Keep exact source references, reasoning, and open challenges in a browser-local notebook.',
+              ],
+              [
+                '/analyze',
+                '02',
+                'Examine an argument',
+                'Inspect a supplied article with provisional AI analysis. Requires a configured model provider.',
+              ],
+              [
+                '/debates',
+                '03',
+                'Measure a debate',
+                'Calculate airtime and overlap from user-supplied timed transcripts. No automatic transcription.',
+              ],
+              [
+                '/whitepaper',
+                '04',
+                'Read the technical paper',
+                'Inspect the evidence model, evaluation requirements, implementation boundaries, and failure cases.',
+              ],
+              [
+                '/development',
+                '05',
+                'Follow the work',
+                'Open the canonical project records, reviewed code changes, journal, and challenge channel.',
+              ],
+            ].map(([href, number, title, description]) => (
+              <Link href={href} key={href} className={styles.directoryRow}>
+                <span>{number}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </div>
+                <span aria-hidden="true">↗</span>
+              </Link>
+            ))}
           </div>
         </section>
 

@@ -1,5 +1,14 @@
 # AGENTS.md — BiasLens
 
+## One product integration target
+
+All truth-seeking product feature work belongs in this repository. Do not
+restart the TruthSeeker migration or deploy the superseded standalone
+prototype. Read `docs/consolidation.md` for source inventory and
+owner-approved public branding; preserve technical repository/hosting keys.
+Before editing, inspect current main and open pull requests and use your own
+branch. Canonical mission, roadmap and changelog remain in Loki/Fleet.
+
 Media bias analysis engine. See `CLAUDE.md` for the product contract and
 `README.md` for the vision; this file is the short operational guide for agents.
 
@@ -51,3 +60,4 @@ Separate facts (`Claim`/`Evidence`) from framing (`Narrative`/`Frame`). Scores a
 functions of stored evidence — never hard-coded — so they recompute and stay
 auditable. Every score documents its input, algorithm, evidence, confidence, and
 failure modes.
+

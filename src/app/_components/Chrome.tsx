@@ -2,10 +2,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { BRAND } from '@/lib/config/brand';
+import { PROJECT_LINKS, ROUTES } from '@/lib/config/routes';
 
 import styles from './Chrome.module.css';
 
-type Section = 'home' | 'analyze' | 'methodology' | 'blog' | 'arena';
+type Section = keyof typeof ROUTES;
+
+const NAVIGATION = [
+  ['explore', 'Explore'],
+  ['analyze', 'Examine'],
+  ['arena', 'Arena'],
+  ['whitepaper', 'White paper'],
+  ['development', 'Build in public'],
+  ['methodology', 'Method'],
+] as const;
 
 export function SiteHeader({ current }: { current: Section }) {
   return (
@@ -15,7 +25,7 @@ export function SiteHeader({ current }: { current: Section }) {
       </a>
       <header className={styles.header}>
         <div className={`${styles.frame} bb-frame`}>
-          <Link aria-label={`${BRAND.name} home`} className={styles.wordmark} href="/">
+          <Link aria-label={`${BRAND.name} home`} className={styles.wordmark} href={ROUTES.home}>
             {BRAND.logoPath ? (
               <Image
                 className={styles.markImage}
@@ -33,25 +43,19 @@ export function SiteHeader({ current }: { current: Section }) {
             <span>{BRAND.name}</span>
           </Link>
           <nav className={styles.nav} aria-label="Main navigation">
-            <Link href="/" aria-current={current === 'home' ? 'page' : undefined}>
-              Overview
-            </Link>
-            <Link href="/analyze" aria-current={current === 'analyze' ? 'page' : undefined}>
-              Examine
-            </Link>
-            <Link href="/blog" aria-current={current === 'blog' ? 'page' : undefined}>
-              Journal
-            </Link>
-            <Link href="/debates" aria-current={current === 'arena' ? 'page' : undefined}>
-              Arena
-            </Link>
-            <Link href="/methodology" aria-current={current === 'methodology' ? 'page' : undefined}>
-              Method
-            </Link>
+            {NAVIGATION.map(([section, label]) => (
+              <Link
+                key={section}
+                href={ROUTES[section]}
+                aria-current={current === section ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
           <a
             className={styles.repository}
-            href="https://github.com/bitbaum/biaslens"
+            href={PROJECT_LINKS.repository}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -72,11 +76,14 @@ export function SiteFooter() {
           <p>Evidence before conclusions. An open, revisable methodology.</p>
         </div>
         <nav aria-label="Footer navigation">
-          <Link href="/analyze">Examine an article</Link>
-          <Link href="/methodology">Methodology</Link>
-          <Link href="/blog">Journal</Link>
-          <Link href="/debates">Debate Arena</Link>
-          <a href="https://github.com/bitbaum/biaslens">GitHub ↗</a>
+          <Link href={ROUTES.explore}>Explore a question</Link>
+          <Link href={ROUTES.analyze}>Examine an article</Link>
+          <Link href={ROUTES.methodology}>Methodology</Link>
+          <Link href={ROUTES.whitepaper}>White paper</Link>
+          <Link href={ROUTES.development}>Build in public</Link>
+          <Link href={ROUTES.blog}>Journal</Link>
+          <Link href={ROUTES.arena}>Debate Arena</Link>
+          <a href={PROJECT_LINKS.repository}>GitHub ↗</a>
         </nav>
       </div>
     </footer>

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildBrand } from './brand';
 
 describe('buildBrand: public identity can change without a repo rename', () => {
-  it('uses temporary defaults when no public identity has been set', () => {
+  it('uses the owner-selected defaults when no public identity has been set', () => {
     expect(buildBrand({})).toEqual({
       name: 'BiasLens',
       mark: 'B/L',
