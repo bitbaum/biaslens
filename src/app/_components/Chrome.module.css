@@ -81,6 +81,9 @@
   align-items: center;
   gap: clamp(4px, 1vw, 16px);
   margin-inline-start: auto;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .nav a,
@@ -217,3 +220,7 @@
     font-size: 11px;
   }
 }
+
+
+.nav a { flex-shrink: 0; }
+@media (min-width: 761px) and (max-width: 1100px) { .repository { display: none; } }

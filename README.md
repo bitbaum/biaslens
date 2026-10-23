@@ -1,6 +1,10 @@
-# BiasLens
+# Biosense
 
-Open-source, evidence-first analysis of media, historical narratives and public arguments.
+Public product name: **Biosense**. Canonical product repository: `bitbaum/biaslens`.
+
+Open-source investigation of questions, evidence, media, historical narratives and public arguments.
+See the [consolidation ledger](docs/consolidation-biosense.md) for donor history,
+source inventory and coordinated runtime identity application.
 The first working slice takes **an article URL or pasted text** and produces a
 provisional, first-principles analysis. It separates an article's factual,
 normative and causal claims, notes apparent support *inside* the text, surfaces
@@ -14,6 +18,9 @@ not currently an independent fact-check.
 
 | Surface | Status |
 | --- | --- |
+| `/explore` | Browser-local question notebook with exact source locators, unverified annotations, notes, challenges and JSON export; no source retrieval or authentication |
+| `/whitepaper` | Versioned technical working paper rendered with existing bip-kit |
+| `/development` | Links canonical project context, roadmap/changelog, reviewed changes, journal and challenges |
 | `/analyze` | Browser workspace for fetching an article or pasting text; provisional report, source attribution, truncation notices and downloadable versioned JSON report with a SHA-256 digest of the text actually examined |
 | `POST /api/analyze` | Validated, bounded request, shared URL reader, LLM fallback and rate limiting; structured JSON responses |
 | `/methodology` | Public Open Epistemic Method with a worked causal-hypothesis example and a GitHub challenge path |
@@ -71,7 +78,7 @@ without an independently reviewed source and method.
 
 ## Rebranding and editorial publishing
 
-The name **BiasLens** is temporary. The repository slug, internal AI prefix,
+The owner-selected public name is **Biosense**. BiasLens is the historical technical identifier. The repository slug, internal AI prefix,
 deployment slug and database name are implementation identifiers, **not** public
 brand commitments. All rendered names, the logo slot and social metadata are
 derived from `src/lib/config/brand.ts`:
@@ -140,3 +147,4 @@ The code is MIT-licensed. The methodology is published with its limitations
 and [a public challenge template](.github/ISSUE_TEMPLATE/methodology-challenge.yml).
 AI replies to future challenges must remain identifiable as AI and never
 automatically erase or close a human disagreement.
+

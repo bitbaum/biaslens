@@ -11,11 +11,11 @@ export const metadata: Metadata = {
   ...(BRAND.siteOrigin ? { metadataBase: new URL(BRAND.siteOrigin) } : {}),
   title: { default: BRAND.name, template: `%s · ${BRAND.name}` },
   description:
-    'Examine claims, evidence, historical narratives and media framing with an open, challengeable method.',
+    'Explore the world through questions, source evidence, competing explanations and an open, challengeable method.',
   openGraph: {
     siteName: BRAND.name,
     title: BRAND.name,
-    description: 'An open, challengeable method for investigating claims and media framing.',
+    description: 'Explore questions. Inspect evidence. Challenge explanations.',
     type: 'website',
   },
   robots: { index: !!BRAND.siteOrigin, follow: !!BRAND.siteOrigin },
@@ -28,3 +28,4 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     </html>
   );
 }
+

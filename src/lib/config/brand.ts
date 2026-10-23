@@ -48,11 +48,12 @@ function validLogoPath(path?: string): string | null {
 
 export function buildBrand(env: PublicEnv): ProductBrand {
   return {
-    name: env.NEXT_PUBLIC_PRODUCT_NAME?.trim().slice(0, 60) || 'BiasLens',
-    mark: env.NEXT_PUBLIC_PRODUCT_MARK?.trim().slice(0, 9) || 'B/L',
+    name: env.NEXT_PUBLIC_PRODUCT_NAME?.trim().slice(0, 60) || 'Biosense',
+    mark: env.NEXT_PUBLIC_PRODUCT_MARK?.trim().slice(0, 9) || 'BS',
     logoPath: validLogoPath(env.NEXT_PUBLIC_PRODUCT_LOGO),
     siteOrigin: validOrigin(env.NEXT_PUBLIC_SITE_URL),
   };
 }
 
 export const BRAND: Readonly<ProductBrand> = Object.freeze(buildBrand(process.env));
+

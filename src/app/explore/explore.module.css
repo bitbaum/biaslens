@@ -1,0 +1,22 @@
+.page { padding-block: clamp(48px, 7vw, 100px); }
+.hero { max-width: 780px; padding-bottom: 40px; }
+.eyebrow { font: 700 11px/1.6 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand); }
+.hero h1 { font: 400 clamp(42px, 6vw, 76px)/1.08 var(--font-editorial); letter-spacing: -.05em; margin-block: 20px; }
+.hero p:last-child { max-width: 64ch; color: var(--color-text-muted); line-height: 1.8; }
+.desk { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.section { border-top: 1px solid var(--color-border); padding-block: 26px; min-width: 0; }
+.section h2 { font: 400 30px/1.2 var(--font-editorial); letter-spacing: -.03em; margin-bottom: 18px; }
+.section p, .section li { font-size: 14px; line-height: 1.8; }
+.section label { display: block; font-size: 13px; margin-block: 18px; }
+.section input, .section select, .section textarea { display: block; width: 100%; margin-top: 8px; padding: 12px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); border-radius: var(--radius-btn); font: inherit; min-height: 48px; }
+.section textarea { resize: vertical; }
+.notice { background: var(--color-surface-muted); padding: 18px; margin-bottom: 28px; font-size: 13px; line-height: 1.8; }
+.sources { list-style: none; }
+.sources li { padding-block: 18px; border-bottom: 1px solid var(--color-border); overflow-wrap: anywhere; }
+.sources a { color: var(--color-brand); min-height: 44px; display: inline-flex; align-items: center; }
+.sources blockquote { padding: 10px 16px; border-left: 2px solid var(--color-brand); margin-block: 10px; white-space: pre-wrap; }
+.sources button, .section summary { min-height: 44px; padding: 8px 0; cursor: pointer; color: var(--color-text); font-weight: 600; background: none; border: none; font-size: 13px; }
+.audit { padding-left: 20px; color: var(--color-text-muted); }
+.state { display: block; margin-block: 16px; color: var(--color-brand); font: 600 12px/1.6 var(--font-mono); }
+.actions { margin-top: 24px; }
+@media(max-width: 760px) { .desk { grid-template-columns: 1fr; gap: 10px; } }
