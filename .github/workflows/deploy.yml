@@ -66,6 +66,8 @@ jobs:
           path.write_text('\n'.join(rows) + '\n')
           PYCODE
           ssh "ubuntu@$HETZNER_IP" 'cat /home/ubuntu/dev/loki/scripts/hetzner/apps.conf' > "$RUNNER_TEMP/apps.conf"
+          # Inspect structure only; never print user records or credentials.
+          ssh "ubuntu@$HETZNER_IP" "sudo -u postgres psql -d biaslens -qtAX -c \"SELECT table_schema, table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name, ordinal_position\""
           # Reuse the Fleet's guarded forward-only migration applier.
           bash "$tooling/apply-schema.sh" biaslens "$GITHUB_WORKSPACE" biaslens .
           # The shared free-tier keys have one owner. Seed through that owner,
