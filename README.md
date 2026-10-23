@@ -47,8 +47,11 @@ timestamps and a public correction trail.
 **Not yet delivered:** independent multi-source verification, calibrated
 confidence, persistent public reports, accounts and moderated discussion,
 audio/video debates, historical record provenance, cross-outlet comparisons,
-and a deployed public service. No production model-provider smoke test has
-been performed.
+and independent production model-provider verification. No production model-provider
+smoke test has been performed. The public beta pages are now served through the
+existing Fleet host; `/api/health` still reports `credentials-missing`, so
+model-driven article analysis is unavailable until server-side provider setup.
+Deployment evidence: [successful release](https://github.com/bitbaum/biaslens/actions/runs/39983722076).
 
 The implementation incorporates the core first-principles analysis shape from
 the earlier `bitbaum/truthseeker` repository. The original repository is
