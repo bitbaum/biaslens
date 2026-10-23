@@ -22,32 +22,46 @@ export function InquiryDesk() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const restored = parseInquiryRecord(JSON.parse(raw));
-        if (restored) setRecord(restored);
-        else {
-          setStatus(
-            'Saved data could not be read and has been left untouched. Clear local storage to enable saving a new notebook.',
-          );
-          return;
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const restored = parseInquiryRecord(JSON.parse(raw));
+          if (restored) setRecord(restored);
+          else {
+            setStatus(
+              'Saved data could not be read and has been left untouched. Clear local storage to enable saving a new notebook.',
+            );
+            return;
+          }
         }
+        setReady(true);
+      } catch {
+        setStatus('Browser storage is unavailable. Export your notes before leaving.');
       }
-      setReady(true);
-    } catch {
-      setStatus('Browser storage is unavailable. Export your notes before leaving.');
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
     if (!ready) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
-      setStatus('Saved in this browser only. Export a copy to keep it.');
-    } catch {
-      setStatus('Could not save. Export your notes before leaving.');
-    }
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
+        setStatus('Saved in this browser only. Export a copy to keep it.');
+      } catch {
+        setStatus('Could not save. Export your notes before leaving.');
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [record, ready]);
 
   function exportRecord() {

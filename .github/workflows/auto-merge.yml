@@ -33,4 +33,3 @@ jobs:
       deploy_workflow: deploy.yml
     secrets:
       token: ${{ secrets.FLEET_PAT }}
-
