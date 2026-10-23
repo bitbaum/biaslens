@@ -8,7 +8,9 @@ author: Product engineering desk
 
 The existing BiasLens repository is the integration target for the broader truth-seeking product. TruthSeeker's first article-analysis slice has already been brought across. Its donor history remains available for comparison and rollback. A later standalone interface experiment is superseded rather than becoming another product to maintain.
 
-The owner has selected **Biosense** as the public name. The technical repository and host identifiers can stay stable while the display identity changes through the existing brand configuration. A source change does not prove that a running host or the canonical project profile has been updated.
+**BiasLens is the product name.** Development stays in its existing repository,
+with the same hosting and project identifiers. The broader scope does not
+require a second app or a rebrand.
 
 ## Explore more than an article
 

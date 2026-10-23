@@ -5,8 +5,8 @@ import { buildBrand } from './brand';
 describe('buildBrand: public identity can change without a repo rename', () => {
   it('uses the owner-selected defaults when no public identity has been set', () => {
     expect(buildBrand({})).toEqual({
-      name: 'Biosense',
-      mark: 'BS',
+      name: 'BiasLens',
+      mark: 'B/L',
       logoPath: null,
       siteOrigin: null,
     });

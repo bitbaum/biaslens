@@ -1,9 +1,9 @@
-# Biosense
+# BiasLens
 
-Public product name: **Biosense**. Canonical product repository: `bitbaum/biaslens`.
+Public product name: **BiasLens**. Canonical product repository: `bitbaum/biaslens`.
 
 Open-source investigation of questions, evidence, media, historical narratives and public arguments.
-See the [consolidation ledger](docs/consolidation-biosense.md) for donor history,
+See the [consolidation ledger](docs/consolidation.md) for donor history,
 source inventory and coordinated runtime identity application.
 The first working slice takes **an article URL or pasted text** and produces a
 provisional, first-principles analysis. It separates an article's factual,
@@ -78,7 +78,7 @@ without an independently reviewed source and method.
 
 ## Rebranding and editorial publishing
 
-The owner-selected public name is **Biosense**. BiasLens is the historical technical identifier. The repository slug, internal AI prefix,
+The product name is **BiasLens**. The existing repository and host identifiers remain unchanged. The repository slug, internal AI prefix,
 deployment slug and database name are implementation identifiers, **not** public
 brand commitments. All rendered names, the logo slot and social metadata are
 derived from `src/lib/config/brand.ts`:

@@ -3,8 +3,8 @@
 ## One product integration target
 
 All truth-seeking product feature work belongs in this repository. Do not
-restart the TruthSeeker migration or deploy the superseded World Unfold
-prototype. Read `docs/consolidation-biosense.md` for source inventory and
+restart the TruthSeeker migration or deploy the superseded standalone prototype
+prototype. Read `docs/consolidation.md` for source inventory and
 owner-approved public branding; preserve technical repository/hosting keys.
 Before editing, inspect current main and open pull requests and use your own
 branch. Canonical mission, roadmap and changelog remain in Loki/Fleet.

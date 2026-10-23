@@ -1,10 +1,9 @@
 # Product consolidation implementation ledger
 
-Owner direction, 22 October 2026: use **Biosense** as the public product name
-and concentrate all truth-seeking product development in the existing
-`bitbaum/biaslens` repository. The technical slug is retained to preserve
-deployment, database and historical links. No repository rename or new domain
-purchase is part of this change.
+Owner clarification, 23 October 2026: **BiasLens is the sole product name**.
+All truth-seeking product development belongs in `bitbaum/biaslens`.
+Keep the existing repository, deployment, database and project identifiers.
+No repository rename, alternative brand, new hosting stack or domain purchase.
 
 This is an engineering migration record, not a duplicate mission, roadmap or
 changelog. Those remain in the [canonical project profile](https://loki.orangecat.ch/fleet/biaslens).
@@ -15,27 +14,21 @@ changelog. Those remain in the [canonical project profile](https://loki.orangeca
 | --- | --- |
 | BiasLens main | Canonical product implementation; article analysis, graph protocol, methodology, Arena, publishing and brand seam retained. |
 | TruthSeeker | First analysis slice already integrated in PR #49; preserve donor history and rollback until parity and deployment acceptance. No new feature work there. |
-| World Unfold local prototype | Superseded, not deployed. Its question/source/notebook concept is integrated into `/explore` using the existing product design and no duplicate frontend stack. Do not publish the old Sites project. |
+| Retired standalone prototype | Superseded, not deployed. Its question/source/notebook concept is integrated into `/explore` using the existing product design and no duplicate frontend stack. Do not publish the old Sites project. |
 | Historical July 2026 blueprint | Named in the supplied conversation as `Media_Bias_Analysis_Tool_Blueprint-1.md`; not found in the current repository, local library or connected Drive searches. Original not silently replaced or independently validated. |
 | Technical paper | New, explicitly dated working specification in `content/research`; rendered by existing bip-kit on `/whitepaper`. Not represented as the recovered historical document. |
 | Publishing | Existing bip-kit Markdown reader/renderer and RSS retained; journal, source, challenges and canonical development records exposed through `/development`. |
 | Shared packages | Reuse ai-kit, limitkit, design-tokens and bip-kit. No new dependency or copied package implementation. |
 | Hosting | Existing Loki/Fleet registration and `biaslens.orangecat.ch` remain the operational path; do not create a second host. |
 
-## Coordinated identity application
+## Identity stays unchanged
 
-The owner authorized the public name here. `src/lib/config/brand.ts` and
-`.env.example` now default to Biosense. On the existing box, update only the
-public values `NEXT_PUBLIC_PRODUCT_NAME=Biosense` and
-`NEXT_PUBLIC_PRODUCT_MARK=BS`, then rebuild using the existing deployment
-process. Do not copy, print or replace model credentials. An existing
-`NEXT_PUBLIC_PRODUCT_NAME=BiasLens` overrides the source default until changed.
-
-Apply the owner-approved name to the **existing** Loki project Context, then
-regenerate its derived public profile through the normal Loki/Fleet workflow.
-The runtime project profile is not writable through this checkout. Do not
-invent another profile, change `apps.conf` manually or claim synchronization
-before that operation is verified. Retain the stable `biaslens` project join.
+`src/lib/config/brand.ts` and `.env.example` use BiasLens and B/L.
+No product rename or canonical-profile rename is required. Do not apply
+alternative-name instructions from superseded PR descriptions or commits.
+Continue to use the existing Loki/Fleet project and deployment workflow.
+Do not copy, print or replace model credentials, create another profile,
+or change `apps.conf` manually.
 
 ## Completion evidence
 

@@ -13,7 +13,7 @@ import {
 
 import styles from './explore.module.css';
 
-const STORAGE_KEY = 'biosense:inquiry:v1';
+const STORAGE_KEY = 'biaslens:inquiry:v1';
 
 export function InquiryDesk() {
   const [record, setRecord] = useState<InquiryRecord>(EMPTY_INQUIRY);
@@ -82,7 +82,7 @@ export function InquiryDesk() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = 'biosense-investigation.json';
+    anchor.download = 'biaslens-investigation.json';
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();

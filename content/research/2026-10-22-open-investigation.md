@@ -92,7 +92,7 @@ A future public review service needs abuse controls, conflict disclosures, revie
 
 ## 10. Architecture and shared components
 
-One product repository contains the Next.js interface, request handlers, pure domain modules, source-controlled research content and Drizzle/PostgreSQL schema. The original TruthSeeker repository is retained as historical donor code. It is not a second destination for new feature work. The separate World Unfold experiment is superseded; useful ideas are integrated into this product rather than deploying its duplicate frontend.
+One product repository contains the Next.js interface, request handlers, pure domain modules, source-controlled research content and Drizzle/PostgreSQL schema. The original TruthSeeker repository is retained as historical donor code. It is not a second destination for new feature work. The separate standalone prototype experiment is superseded; useful ideas are integrated into this product rather than deploying its duplicate frontend.
 
 The existing shared packages have distinct responsibilities: ai-kit provides model access and page-reading behavior; limitkit supplies request throttling; design-tokens supplies optional composition primitives; bip-kit reads and renders publishing content. Product-specific visual identity, interpretation and schema stay within the product. Loki/Fleet owns canonical project records and hosting orchestration.
 
