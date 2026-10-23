@@ -145,6 +145,7 @@ export function InquiryDesk() {
             <label>
               Question
               <textarea
+                aria-label="Question"
                 rows={3}
                 maxLength={2000}
                 value={record.question}
@@ -155,6 +156,7 @@ export function InquiryDesk() {
             <label>
               Scope
               <input
+                aria-label="Scope"
                 maxLength={2000}
                 value={record.scope}
                 onChange={(e) => setRecord({ ...record, scope: e.target.value })}
@@ -235,6 +237,7 @@ export function InquiryDesk() {
             <label>
               Reasoning & alternative explanations
               <textarea
+                aria-label="Reasoning & alternative explanations"
                 rows={5}
                 maxLength={20000}
                 value={record.notes}
@@ -244,6 +247,7 @@ export function InquiryDesk() {
             <label>
               Strongest challenge & what would change your mind
               <textarea
+                aria-label="Strongest challenge & what would change your mind"
                 rows={4}
                 maxLength={20000}
                 value={record.challenge}

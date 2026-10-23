@@ -3,7 +3,7 @@
 ## One product integration target
 
 All truth-seeking product feature work belongs in this repository. Do not
-restart the TruthSeeker migration or deploy the superseded standalone prototype
+restart the TruthSeeker migration or deploy the superseded standalone
 prototype. Read `docs/consolidation.md` for source inventory and
 owner-approved public branding; preserve technical repository/hosting keys.
 Before editing, inspect current main and open pull requests and use your own
