@@ -39,6 +39,22 @@ function deps(): AnalysisDeps {
 }
 
 describe('analyzeArticle', () => {
+  it('retains only verbatim quotes found in the exact analysed source', async () => {
+    const data = JSON.parse(response);
+    data.core_claims[0].source_quote = 'A factual news report';
+    const providers = deps();
+    providers.complete = vi.fn(async () => ({ text: JSON.stringify(data), modelId: 'mock' }));
+    const valid = await analyzeArticle({ mode: 'text', url: null, text: articleText }, providers);
+    expect(valid.analysis.core_claims[0].source_quote).toBe('A factual news report');
+    expect(valid.sourceText).toBe(articleText);
+    data.core_claims[0].source_quote = 'An invented quote that sounds plausible';
+    const invented = await analyzeArticle(
+      { mode: 'text', url: null, text: articleText },
+      providers,
+    );
+    expect(invented.analysis.core_claims[0].source_quote).toBeNull();
+  });
+
   it('fetches a URL and never reports the analysis as independently verified', async () => {
     const providers = deps();
     const result = await analyzeArticle(
@@ -137,7 +153,7 @@ describe('analyzeArticle', () => {
     expect(result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.origin.attribution).toBe('user-asserted');
     expect(result.run.methodVersion).toBe('0.1.0');
-    expect(result.run.promptVersion).toBe('first-principles@1');
+    expect(result.run.promptVersion).toBe('first-principles@2');
     expect(Number.isNaN(Date.parse(result.run.generatedAt))).toBe(false);
     expect(result.independentlyVerified).toBe(false);
   });

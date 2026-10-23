@@ -5,6 +5,7 @@ import './globals.css';
 // Opt-in shared geometry comes after the app reset; local CSS modules own the brand.
 import '@bitbaum/design-tokens/composition.css';
 import 'bip-kit/styles.css';
+import '@bitbaum/accountkit/styles.css';
 import './blog/journal.css';
 
 export const metadata: Metadata = {

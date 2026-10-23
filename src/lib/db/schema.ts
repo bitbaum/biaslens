@@ -244,3 +244,6 @@ export type Evidence = typeof evidence.$inferSelect;
 export type Narrative = typeof narratives.$inferSelect;
 export type EditorialDna = typeof editorialDna.$inferSelect;
 export type HomepageSnapshot = typeof homepageSnapshots.$inferSelect;
+
+// Shared account schema owns credentials, sessions, passkeys and second factors.
+export * from '@bitbaum/accountkit/auth/schema';

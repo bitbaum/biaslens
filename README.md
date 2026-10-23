@@ -28,7 +28,7 @@ not currently an independent fact-check.
 | `/api/claims/verify` | Legacy evidence **counting demonstration**, not calibrated verification |
 | PostgreSQL / Drizzle | Baseline schema for outlets, articles, claims, evidence and narratives; **analysis results are not persisted yet** |
 
-The downloadable report contains analysis, model and method versions, timestamp, and a digest of the analysed text. It is not stored server-side; a digest does **not** authenticate the original source or reproduce an unavailable model. No full source text is included in the export.
+The downloadable report contains analysis, model and method versions, timestamp, and a digest of the analysed text. It is not stored server-side; a digest does **not** authenticate the original source or reproduce an unavailable model. The exact examined source text is included in the export; invented model quotations are suppressed before rendering.
 
 ### Timed-transcript Debate Arena
 
@@ -45,13 +45,18 @@ comparative findings. Future audiovisual analysis should preserve source
 timestamps and a public correction trail.
 
 **Not yet delivered:** independent multi-source verification, calibrated
-confidence, persistent public reports, accounts and moderated discussion,
+confidence, persistent public reports and moderated discussion,
 audio/video debates, historical record provenance, cross-outlet comparisons,
-and independent production model-provider verification. No production model-provider
-smoke test has been performed. The public beta pages are now served through the
-existing Fleet host; `/api/health` still reports `credentials-missing`, so
-model-driven article analysis is unavailable until server-side provider setup.
-Deployment evidence: [successful release](https://github.com/bitbaum/biaslens/actions/runs/39983722076).
+and independent production model-provider verification. Provider availability is reported by `/api/health`; a configured credential is not proof of a successful analysis.
+
+### Accounts and runtime setup
+
+`/sign-in`, `/sign-up` and `/account` use **@bitbaum/accountkit** for the complete account flow: password accounts, sessions, passkeys, TOTP, profile editing, linking configured OIDC methods and deletion. Mail uses **@bitbaum/mail-kit**; mail-dependent methods are shown only when configured. Account security logic and table definitions stay in the shared package. The package is pinned to its reviewed GitHub commit because its current auth release is not published on npm.
+
+Deploy preparation reuses Loki's database provisioner, guarded migration applier, shared free-tier credential owner and infrastructure generator for BiasLens alone. It generates secrets on the existing box without printing values. Production setup requires the existing repository deploy secret and org host variable. This adds no paid service.
+
+`pnpm run verify` includes an isolated Postgres-compatible integration test that executes the committed migrations and checks registration, session persistence, password rejection, sign-out and sign-in. Real provider and public deployment checks are separate.
+
 
 The implementation incorporates the core first-principles analysis shape from
 the earlier `bitbaum/truthseeker` repository. The original repository is

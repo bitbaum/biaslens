@@ -3,8 +3,9 @@
 import Link from 'next/link';
 
 import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
-import { useState, type FormEvent } from 'react';
+import { useState, useRef, type FormEvent } from 'react';
 
+import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
 import type { ArticleAnalysisResult } from '@/lib/analysis/run';
 
 import styles from './analyze.module.css';
@@ -26,6 +27,8 @@ export function AnalyzeWorkspace() {
   const [report, setReport] = useState<ArticleAnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const canSubmit = mode === 'url' ? url.trim().length > 0 : text.trim().length >= MIN_TEXT_LENGTH;
 
@@ -36,9 +39,12 @@ export function AnalyzeWorkspace() {
     setError(null);
     setReport(null);
 
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
+        signal: controller.signal,
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           url: url.trim() || undefined,
@@ -58,8 +64,18 @@ export function AnalyzeWorkspace() {
         throw new Error(result.error?.message || 'The article could not be analysed.');
       }
       setReport(result.result);
+      window.setTimeout(() => {
+        reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        reportRef.current?.focus({ preventScroll: true });
+      }, 50);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not reach the service.');
+      setError(
+        controller.signal.aborted
+          ? 'Examination stopped. Your article is still here.'
+          : reason instanceof Error
+            ? reason.message
+            : 'Could not reach the service.',
+      );
     } finally {
       setBusy(false);
     }
@@ -71,10 +87,10 @@ export function AnalyzeWorkspace() {
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>First-principles analysis / Beta</p>
-          <h1>What is this article really claiming?</h1>
+          <h1>Read between the lines.</h1>
           <p className={styles.lead}>
-            Trace the argument, separate facts from judgements, examine possible framing, and find
-            out what evidence would change the assessment.
+            Drop in an article. See its argument, uncover the assumptions, and discover the question
+            that changes how you read it.
           </p>
         </header>
 
@@ -107,7 +123,23 @@ export function AnalyzeWorkspace() {
               Paste article text
             </button>
           </div>
-
+          <div className={styles.exampleRow}>
+            <span>Bring your own article, or start with a fictional practice story.</span>
+            <button
+              type="button"
+              onClick={() => {
+                if (busy) return;
+                setMode('text');
+                setUrl('');
+                setText(EXAMPLE_ARTICLE);
+                setReport(null);
+                setError(null);
+              }}
+              disabled={busy}
+            >
+              Load practice article →
+            </button>
+          </div>
           <form onSubmit={submit} className={styles.form}>
             <label className={styles.fieldLabel} htmlFor="article-url">
               {mode === 'url' ? 'Article URL' : 'Source URL (optional, supplied by you)'}
@@ -169,7 +201,22 @@ export function AnalyzeWorkspace() {
           </form>
 
           <div role="status" aria-live="polite">
-            {busy && <p className={styles.progress}>Reading claims and composing an analysis…</p>}
+            {busy && (
+              <div className={styles.progress}>
+                <p>Tracing claims, checking passages, finding the hinge of the argument…</p>
+                <p className={styles.hint}>
+                  Usually takes 15–60 seconds. Your article is sent to our model provider for
+                  analysis.
+                </p>
+                <button
+                  type="button"
+                  className={styles.pasteFallback}
+                  onClick={() => abortRef.current?.abort()}
+                >
+                  Stop examination
+                </button>
+              </div>
+            )}
             {error && (
               <div role="alert" className={styles.error}>
                 <strong>Analysis unavailable</strong>
@@ -188,7 +235,9 @@ export function AnalyzeWorkspace() {
           </div>
         </section>
 
-        {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
+        <div ref={reportRef} tabIndex={-1} className={styles.reportTarget}>
+          {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
+        </div>
       </main>
       <SiteFooter />
     </>
@@ -248,13 +297,9 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
 
   return (
     <article className={styles.report} aria-label="Provisional article analysis">
-      <div className={styles.reportFlag}>
-        <strong>AI-generated interpretation · Not independently fact-checked</strong>
-        <p>
-          Article evidence is not independent verification. Names, affiliations and historical
-          patterns require a separate investigation. Treat bias observations as hypotheses.
-        </p>
-      </div>
+      <p className={styles.meta}>
+        AI interpretation · Evidence within this article, not independent fact-checking
+      </p>
 
       <header className={styles.reportTitle}>
         <p className={styles.eyebrow}>Article examination</p>
@@ -284,8 +329,25 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         )}
       </header>
 
+      {analysis.insight && (
+        <section className={styles.insight} aria-label="The key insight">
+          <p className={styles.eyebrow}>The hinge of the argument</p>
+          <h3>{analysis.insight.headline}</h3>
+          <p>{analysis.insight.explanation}</p>
+          <div className={styles.insightGrid}>
+            <div>
+              <h4>The assumption</h4>
+              <p>{analysis.insight.assumption}</p>
+            </div>
+            <div>
+              <h4>Put it to the test</h4>
+              <p>{analysis.insight.test}</p>
+            </div>
+          </div>
+        </section>
+      )}
       <section className={styles.reportSection}>
-        <h3>Summary of the argument</h3>
+        <h3>The argument in brief</h3>
         <p>{analysis.summary}</p>
       </section>
 
@@ -299,6 +361,18 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
                 <span>Support in article: {claim.evidence_quality}</span>
               </div>
               <p>{claim.claim}</p>
+              {claim.source_quote ? (
+                <details className={styles.evidence}>
+                  <summary>Inspect the article passage</summary>
+                  <blockquote>{claim.source_quote}</blockquote>
+                  <p className={styles.hint}>
+                    Exact text found in the submitted article. This confirms the attribution, not
+                    the truth of the statement.
+                  </p>
+                </details>
+              ) : (
+                <p className={styles.hint}>No exact supporting passage identified.</p>
+              )}
               <p className={styles.claimHint}>
                 {claim.supported_in_article
                   ? 'Some support is presented in the article; not independently checked.'
@@ -342,6 +416,14 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         <p>{analysis.what_would_change_assessment}</p>
       </section>
 
+      {report.sourceText && (
+        <details className={styles.sourceText}>
+          <summary>
+            Inspect the full text examined ({report.origin.modelChars.toLocaleString()} characters)
+          </summary>
+          <pre>{report.sourceText}</pre>
+        </details>
+      )}
       <div className={styles.reportFooter}>
         <span>
           Analysed {report.origin.modelChars.toLocaleString()} characters ·{' '}
@@ -364,8 +446,8 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         SHA-256 of the analysed text: <code>{report.origin.textSha256}</code>
       </p>
       <p className={styles.exportNote}>
-        The digest identifies only the text processed, not its author, authenticity or accuracy.
-        Source text is not included in the export, and the report is not saved on our server.
+        The digest identifies only the text processed, not its author, authenticity or accuracy. The
+        examined source text is included in your export. The report is not saved on our server.
       </p>
     </article>
   );

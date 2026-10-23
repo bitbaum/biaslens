@@ -111,10 +111,11 @@ export async function POST(request: Request) {
         const response = await complete({
           chain,
           messages,
-          signal: request.signal,
+          signal: AbortSignal.any([request.signal, AbortSignal.timeout(75_000)]),
           timeoutMs: 22_000,
           maxTokens: 3_600,
           temperature: 0.2,
+          reasoning: 'light',
         });
         return { text: response.text, modelId: response.id };
       },

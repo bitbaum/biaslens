@@ -22,9 +22,13 @@
     "browser:smoke": "bash scripts/browser-smoke.sh"
   },
   "dependencies": {
+    "@better-auth/passkey": "^1.7.12",
+    "@bitbaum/accountkit": "github:bitbaum/accountkit#4b99dfda73dbcd94869a56b6ac873ec7729971c6",
     "@bitbaum/ai-kit": "^1.21.0",
     "@bitbaum/design-tokens": "github:bitbaum/design-tokens#8e786a43220d267ccf6b5cd6119a012f1a52dfff",
+    "@bitbaum/mail-kit": "^0.2.0",
     "@paralleldrive/cuid2": "^3.3.0",
+    "better-auth": "^1.7.12",
     "bip-kit": "^0.6.0",
     "drizzle-orm": "^0.45.4",
     "limitkit": "^0.2.0",
@@ -34,6 +38,7 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.11",
     "@types/node": "^26.6.5",
     "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",

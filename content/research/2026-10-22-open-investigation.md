@@ -1,7 +1,7 @@
 ---
 title: Open investigation, inspectable evidence
 date: 2026-10-22
-summary: A technical specification for investigating the world through traceable sources, explicit reasoning, visible uncertainty and accountable correction. Working draft 0.1; implementation and proposed capabilities are distinguished throughout.
+summary: A technical specification for investigating the world through traceable sources, explicit reasoning, visible uncertainty and accountable correction. Working draft 0.2; implementation and proposed capabilities are distinguished throughout.
 tags: [whitepaper, epistemology, evidence, provenance]
 author: Product research desk
 ---
@@ -13,6 +13,8 @@ This is a technical working paper, not a certification that a system can determi
 The product's canonical problem, solution, mission, vision, roadmap and changelog remain in its [Loki project profile](https://loki.orangecat.ch/fleet/biaslens). This paper specifies methods and engineering requirements; it does not establish a second project registry. Public display names can change without replacing the existing repository or historical records.
 
 Implementation statements below refer to source code, not observed production behavior. A passing test, a merged pull request and a reachable service are different facts. [Source](https://github.com/bitbaum/biaslens), [development records](/development), and [the public method](/methodology) should be read together.
+
+Implementation update, 23 October 2026: article reports now lead with an explicit assumption and a test that could challenge it. Claim quotations are displayed only after an exact match against the input text. The examined text is included in the user's export, not retained server-side. Native account screens and account persistence use `@bitbaum/accountkit`; mail-dependent methods and external sign-in providers appear only when configured. These changes do not implement independent verification.
 
 ## 2. Epistemic boundaries
 
@@ -96,7 +98,7 @@ One product repository contains the Next.js interface, request handlers, pure do
 
 The existing shared packages have distinct responsibilities: ai-kit provides model access and page-reading behavior; limitkit supplies request throttling; design-tokens supplies optional composition primitives; bip-kit reads and renders publishing content. Product-specific visual identity, interpretation and schema stay within the product. Loki/Fleet owns canonical project records and hosting orchestration.
 
-The article workflow currently produces provisional AI analysis from a URL or pasted text. Model credentials are required for that route; without them the service returns an explicit unavailable response. The schema is a persistence foundation, not evidence that reports, challenges or accounts are being durably stored. A deployment must validate provider access separately from credential presence.
+The article workflow currently produces provisional AI analysis from a URL or pasted text. Model credentials are required for that route; without them the service returns an explicit unavailable response. The schema is a persistence foundation, not evidence that reports or challenges are being durably stored. Account persistence uses the shared accountkit schema and its own Postgres tables. A deployment must validate provider access separately from credential presence.
 
 ## 11. Evaluation before stronger claims
 
@@ -120,7 +122,7 @@ No new paid domain, hosted database or model subscription is a prerequisite of t
 
 Source-implemented components include URL/pasted-text argument analysis, explicit unverified-output notices, versioned JSON analysis export, the graph protocol and gap audit, timed-transcript calculations, a journal, and the source-controlled technical paper. This consolidation adds a browser-local question notebook and a development index that points to canonical records.
 
-Independent verification, complete six-dimensional media scoring, automatic audio/video processing, native accounts and community review, authenticated evidence snapshots, persistent public report URLs, and calibrated confidence remain unimplemented. They must not be advertised as working simply because their contracts or documentation exist.
+Independent verification, complete six-dimensional media scoring, automatic audio/video processing, community review, authenticated evidence snapshots, persistent public report URLs, and calibrated confidence remain unimplemented. They must not be advertised as working simply because their contracts or documentation exist.
 
 For a public beta, require strict formatting, lint, type checking, domain tests and a production build; render every public page at phone, tablet and desktop widths; inspect keyboard navigation and the visual artifacts; confirm the existing host is reachable; and run a real provider request with a non-sensitive sample. A successful environment-variable check alone is insufficient. Publish failures as failures. The canonical project profile carries prioritization and progress; the source and tests carry the implementation evidence.
 
