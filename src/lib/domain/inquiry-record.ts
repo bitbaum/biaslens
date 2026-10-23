@@ -19,7 +19,14 @@ export interface InquiryRecord {
   sources: InquirySource[];
 }
 
-export const EMPTY_INQUIRY: InquiryRecord = { version: 1, question: '', scope: '', notes: '', challenge: '', sources: [] };
+export const EMPTY_INQUIRY: InquiryRecord = {
+  version: 1,
+  question: '',
+  scope: '',
+  notes: '',
+  challenge: '',
+  sources: [],
+};
 
 export function isSourceURL(value: string): boolean {
   try {
@@ -51,4 +58,3 @@ export function parseInquiryRecord(input: unknown): InquiryRecord | null {
   }
   return r as unknown as InquiryRecord;
 }
-

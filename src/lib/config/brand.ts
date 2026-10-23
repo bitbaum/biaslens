@@ -56,4 +56,3 @@ export function buildBrand(env: PublicEnv): ProductBrand {
 }
 
 export const BRAND: Readonly<ProductBrand> = Object.freeze(buildBrand(process.env));
-

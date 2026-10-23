@@ -48,4 +48,3 @@ describe('buildBrand: public identity can change without a repo rename', () => {
     expect(brand.siteOrigin).toBe('http://localhost:3000');
   });
 });
-

@@ -14,6 +14,5 @@ export const PROJECT_LINKS = {
   repository: 'https://github.com/bitbaum/biaslens',
   profile: 'https://loki.orangecat.ch/fleet/biaslens',
   changes: 'https://github.com/bitbaum/biaslens/pulls?q=is%3Apr+is%3Amerged',
-  challenge:
-    'https://github.com/bitbaum/biaslens/issues/new?template=methodology-challenge.yml',
+  challenge: 'https://github.com/bitbaum/biaslens/issues/new?template=methodology-challenge.yml',
 } as const;

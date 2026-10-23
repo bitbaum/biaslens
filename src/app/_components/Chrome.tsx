@@ -9,8 +9,12 @@ import styles from './Chrome.module.css';
 type Section = keyof typeof ROUTES;
 
 const NAVIGATION = [
-  ['explore', 'Explore'], ['analyze', 'Examine'], ['arena', 'Arena'],
-  ['whitepaper', 'White paper'], ['development', 'Build in public'], ['methodology', 'Method'],
+  ['explore', 'Explore'],
+  ['analyze', 'Examine'],
+  ['arena', 'Arena'],
+  ['whitepaper', 'White paper'],
+  ['development', 'Build in public'],
+  ['methodology', 'Method'],
 ] as const;
 
 export function SiteHeader({ current }: { current: Section }) {
@@ -40,7 +44,13 @@ export function SiteHeader({ current }: { current: Section }) {
           </Link>
           <nav className={styles.nav} aria-label="Main navigation">
             {NAVIGATION.map(([section, label]) => (
-              <Link key={section} href={ROUTES[section]} aria-current={current === section ? 'page' : undefined}>{label}</Link>
+              <Link
+                key={section}
+                href={ROUTES[section]}
+                aria-current={current === section ? 'page' : undefined}
+              >
+                {label}
+              </Link>
             ))}
           </nav>
           <a
@@ -79,4 +89,3 @@ export function SiteFooter() {
     </footer>
   );
 }
-
