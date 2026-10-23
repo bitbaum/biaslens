@@ -53,7 +53,7 @@ and independent production model-provider verification. Provider availability is
 
 `/sign-in`, `/sign-up` and `/account` use **@bitbaum/accountkit** for the complete account flow: password accounts, sessions, passkeys, TOTP, profile editing, linking configured OIDC methods and deletion. Mail uses **@bitbaum/mail-kit**; mail-dependent methods are shown only when configured. Account security logic and table definitions stay in the shared package. The package is pinned to its reviewed GitHub commit because its current auth release is not published on npm.
 
-Deploy preparation reuses Loki's database provisioner, guarded migration applier, shared free-tier credential owner and infrastructure generator for BiasLens alone. It generates secrets on the existing box without printing values. Production setup requires the existing repository deploy secret and org host variable. This adds no paid service.
+Deploy preparation reuses Loki's database provisioner, guarded migration applier, shared free-tier credential owner and infrastructure generator for BiasLens alone. It generates secrets on the existing box without printing values. The observed older three-column Prisma Article table is preserved under `Article_prisma_legacy_20261023` before applying the canonical schema; records are not deleted or backfilled with invented content. Production setup requires the existing repository deploy secret and org host variable. This adds no paid service.
 
 `pnpm run verify` includes an isolated Postgres-compatible integration test that executes the committed migrations and checks registration, session persistence, password rejection, sign-out and sign-in. Real provider and public deployment checks are separate.
 
