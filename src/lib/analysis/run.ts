@@ -51,6 +51,7 @@ export interface ArticleAnalysisResult {
     generatedAt: string;
     methodVersion: string;
     promptVersion: string;
+    repairAttempts?: number;
   };
   durationMs: number;
   /** The text is model-generated analysis and has NOT been independently checked. */
@@ -119,34 +120,63 @@ export async function analyzeArticle(
     text: text + (fetchTruncated || clipped ? '\n[Source text truncated before analysis]' : ''),
   });
 
-  const generated = await deps.complete([
+  const messages: Array<{ role: 'system' | 'user'; content: string }> = [
     { role: 'system', content: FIRST_PRINCIPLES_SYSTEM_PROMPT },
     { role: 'user', content: prompt },
-  ]);
-
-  let parsed: unknown;
-  try {
-    const json = generated.text.trim().replace(/^```(?:json)?\s*\n([\s\S]*?)\n```$/i, '$1');
-    parsed = JSON.parse(json);
-  } catch {
-    throw new AnalysisFailure('MODEL_INVALID', 502, 'The model returned an invalid report. Retry.');
+  ];
+  let generated: ModelResult = { text: '', modelId: null };
+  let analysis: FirstPrinciplesAnalysis | null = null;
+  let issue = '';
+  let repairAttempts = 0;
+  // One bounded schema repair; never silently downgrade to the older report
+  // shape when a model omits the insight/grounding fields. Reuse the original
+  // article, not the malformed report, so a repair does not inflate context.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    repairAttempts = attempt;
+    generated = await deps.complete(
+      attempt === 0
+        ? messages
+        : [
+            ...messages,
+            {
+              role: 'user',
+              content:
+                'The previous attempt failed output validation: ' +
+                issue +
+                '. Return a complete JSON object with EVERY required key. Keep all JSON keys and enum values in English; use the article language only for explanatory text. Include insight with headline, explanation, assumption, test and a source_quote (exact short excerpt or null) for each core claim.',
+            },
+          ],
+    );
+    try {
+      const json = generated.text.trim().replace(/^```(?:json)?\s*\n([\s\S]*?)\n```$/i, '$1');
+      const valid = parseFirstPrinciplesAnalysis(JSON.parse(json));
+      if (!valid.success) issue = valid.error;
+      else if (!valid.data.insight) issue = 'insight is missing';
+      else if (valid.data.core_claims.some((claim) => claim.source_quote === undefined))
+        issue = 'source_quote is missing from a claim';
+      else {
+        analysis = valid.data;
+        break;
+      }
+    } catch {
+      issue = 'not valid JSON';
+    }
   }
-  const valid = parseFirstPrinciplesAnalysis(parsed);
-  if (!valid.success) {
+  if (!analysis) {
     throw new AnalysisFailure(
       'MODEL_INVALID',
       502,
-      'The model returned an incomplete report. Retry.',
+      'The model could not produce a complete report after one repair. Your article is unchanged; please retry.',
     );
   }
 
   // A plausible-looking model quote is never rendered as a quotation unless
   // its exact bytes occur in the text the model actually received.
-  for (const claim of valid.data.core_claims) {
+  for (const claim of analysis.core_claims) {
     if (claim.source_quote && !text.includes(claim.source_quote)) claim.source_quote = null;
   }
   return {
-    analysis: valid.data,
+    analysis,
     sourceText: text,
     origin: {
       kind: input.mode === 'url' ? 'retrieved-page' : 'user-pasted-text',
@@ -163,6 +193,7 @@ export async function analyzeArticle(
       generatedAt: new Date().toISOString(),
       methodVersion: METHOD_VERSION,
       promptVersion: FIRST_PRINCIPLES_PROMPT_VERSION,
+      repairAttempts,
     },
     durationMs: Date.now() - started,
     independentlyVerified: false,

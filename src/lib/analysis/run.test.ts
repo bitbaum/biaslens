@@ -12,12 +12,19 @@ const response = JSON.stringify({
   publication_date: null,
   language: 'en',
   summary: 'A proposal is under discussion.',
+  insight: {
+    headline: 'A proposal is not an outcome.',
+    explanation: 'Predictions need a comparison.',
+    assumption: 'Other conditions stay the same.',
+    test: 'Compare matched cases.',
+  },
   core_claims: [
     {
       claim: 'The reform reduces costs.',
       type: 'causal',
       supported_in_article: true,
       evidence_quality: 'weak',
+      source_quote: null,
     },
   ],
   first_principles_critique: 'There are missing controls.',
@@ -39,6 +46,32 @@ function deps(): AnalysisDeps {
 }
 
 describe('analyzeArticle', () => {
+  it('repairs an older-shaped report once rather than silently omitting the insight', async () => {
+    const old = JSON.parse(response);
+    delete old.insight;
+    const providers = deps();
+    providers.complete = vi
+      .fn()
+      .mockResolvedValueOnce({ text: JSON.stringify(old), modelId: 'first' })
+      .mockResolvedValueOnce({ text: response, modelId: 'repaired' });
+    const result = await analyzeArticle({ mode: 'text', url: null, text: articleText }, providers);
+    expect(result.analysis.insight).toBeDefined();
+    expect(result.modelId).toBe('repaired');
+    expect(result.run.repairAttempts).toBe(1);
+    expect(providers.complete).toHaveBeenCalledTimes(2);
+  });
+
+  it('stops after one unsuccessful repair and does not present a degraded report', async () => {
+    const old = JSON.parse(response);
+    delete old.insight;
+    const providers = deps();
+    providers.complete = vi.fn(async () => ({ text: JSON.stringify(old), modelId: 'incomplete' }));
+    await expect(
+      analyzeArticle({ mode: 'text', url: null, text: articleText }, providers),
+    ).rejects.toMatchObject({ code: 'MODEL_INVALID' });
+    expect(providers.complete).toHaveBeenCalledTimes(2);
+  });
+
   it('retains only verbatim quotes found in the exact analysed source', async () => {
     const data = JSON.parse(response);
     data.core_claims[0].source_quote = 'A factual news report';
@@ -153,7 +186,7 @@ describe('analyzeArticle', () => {
     expect(result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.origin.attribution).toBe('user-asserted');
     expect(result.run.methodVersion).toBe('0.1.0');
-    expect(result.run.promptVersion).toBe('first-principles@2');
+    expect(result.run.promptVersion).toBe('first-principles@3');
     expect(Number.isNaN(Date.parse(result.run.generatedAt))).toBe(false);
     expect(result.independentlyVerified).toBe(false);
   });
