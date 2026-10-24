@@ -1,0 +1,90 @@
+{
+  "blocks": {
+    "shell": {
+      "package": "@bitbaum/sitekit",
+      "bindings": [
+        {
+          "file": "src/app/_components/Chrome.tsx",
+          "symbols": ["SiteMasthead"]
+        },
+        {
+          "file": "src/app/_components/Footer.tsx",
+          "symbols": ["SharedFooter"]
+        },
+        {
+          "file": "src/app/page.tsx",
+          "symbols": ["HeroSection"]
+        }
+      ]
+    },
+    "identity": {
+      "package": "@bitbaum/accountkit",
+      "bindings": [
+        {
+          "file": "src/lib/auth.ts",
+          "symbols": ["createAuthRuntime"]
+        },
+        {
+          "file": "src/app/account/AccountForms.tsx",
+          "symbols": ["SignInForm", "SignUpForm", "AccountPanel"]
+        },
+        {
+          "file": "src/app/_components/AccountControl.tsx",
+          "symbols": ["AccountMenu"]
+        }
+      ]
+    },
+    "publishing": {
+      "package": "bip-kit",
+      "bindings": [
+        {
+          "file": "src/app/_components/DevelopmentRecords.tsx",
+          "symbols": ["DevelopmentPage", "loadDevelopmentProfile"]
+        },
+        {
+          "file": "src/app/blog/[slug]/page.tsx",
+          "symbols": ["ArticleBody", "ReadingProgress"]
+        }
+      ]
+    },
+    "design": {
+      "package": "@bitbaum/design-tokens",
+      "bindings": [
+        {
+          "file": "src/app/layout.tsx"
+        }
+      ]
+    },
+    "ai": {
+      "package": "@bitbaum/ai-kit",
+      "bindings": [
+        {
+          "file": "src/app/api/analyze/route.ts",
+          "symbols": ["complete", "readPage"]
+        }
+      ]
+    },
+    "mail": {
+      "package": "@bitbaum/mail-kit",
+      "bindings": [
+        {
+          "file": "src/lib/auth.ts",
+          "symbols": ["sendMail"]
+        }
+      ]
+    },
+    "limits": {
+      "package": "limitkit",
+      "bindings": [
+        {
+          "file": "src/app/api/analyze/route.ts",
+          "symbols": ["slidingWindow", "clientIp"]
+        }
+      ]
+    }
+  },
+  "productOwned": {
+    "investigation": "Article reasoning, evidence/provenance contracts, research notebook and transcript metrics are BiasLens domain behavior; no fleet package implements these domain decisions.",
+    "theme": "Product identity, editorial content and semantic adapters configure the shared blocks; they do not copy shared markup or state machines."
+  }
+}

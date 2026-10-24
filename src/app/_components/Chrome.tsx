@@ -1,87 +1,52 @@
+'use client';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import { SiteMasthead } from '@bitbaum/sitekit/react';
 import { BRAND } from '@/lib/config/brand';
-import { PROJECT_LINKS, ROUTES } from '@/lib/config/routes';
-
+import { ROUTES } from '@/lib/config/routes';
+import { AccountControl } from './AccountControl';
 import styles from './Chrome.module.css';
 
-type Section = keyof typeof ROUTES;
-
-const NAVIGATION = [
-  ['explore', 'Explore'],
-  ['analyze', 'Examine'],
-  ['arena', 'Arena'],
-  ['whitepaper', 'White paper'],
-  ['development', 'Build in public'],
-  ['methodology', 'Method'],
+const chrome = {
+  name: BRAND.name,
+  tagline: 'Evidence before conclusions',
+  footerNote:
+    'Explore questions, inspect evidence and challenge explanations. An open, revisable method.',
+};
+const navigation = [
+  { path: 'analyze', label: 'Examine' },
+  { path: 'explore', label: 'Explore' },
+  { path: 'debates', label: 'Debate Arena' },
+  { path: 'whitepaper', label: 'White paper' },
+  { path: 'development', label: 'Build in public' },
 ] as const;
 
-export function SiteHeader({ current }: { current: Section }) {
+/** Product configuration only; sitekit owns all shared shell markup and behavior. */
+export function SiteHeader({ current }: { current?: keyof typeof ROUTES }) {
+  const pathname = usePathname() || '/';
   return (
-    <>
-      <a className={styles.skip} href="#main-content">
-        Skip to content
-      </a>
-      <header className={styles.header}>
-        <div className={`${styles.frame} bb-frame`}>
-          <Link aria-label={`${BRAND.name} home`} className={styles.wordmark} href={ROUTES.home}>
-            {BRAND.logoPath ? (
-              <Image
-                className={styles.markImage}
-                src={BRAND.logoPath}
-                width={44}
-                height={44}
-                alt=""
-                unoptimized
-              />
-            ) : (
-              <span className={styles.mark} aria-hidden="true">
-                {BRAND.mark}
-              </span>
-            )}
-            <span>{BRAND.name}</span>
-          </Link>
-          <nav className={styles.nav} aria-label="Main navigation">
-            {NAVIGATION.map(([section, label]) => (
-              <Link
-                key={section}
-                href={ROUTES[section]}
-                aria-current={current === section ? 'page' : undefined}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-          <Link className={styles.repository} href="/account">
-            Your account →
-          </Link>
-        </div>
-      </header>
-    </>
-  );
-}
-
-export function SiteFooter() {
-  return (
-    <footer className={styles.footer}>
-      <div className={`${styles.footerFrame} bb-frame`}>
-        <div>
-          <strong>{BRAND.name}</strong>
-          <p>Evidence before conclusions. An open, revisable methodology.</p>
-        </div>
-        <nav aria-label="Footer navigation">
-          <Link href={ROUTES.explore}>Explore a question</Link>
-          <Link href={ROUTES.analyze}>Examine an article</Link>
-          <Link href={ROUTES.methodology}>Methodology</Link>
-          <Link href={ROUTES.whitepaper}>White paper</Link>
-          <Link href={ROUTES.development}>Build in public</Link>
-          <Link href={ROUTES.blog}>Journal</Link>
-          <Link href="/account">Your account</Link>
-          <Link href={ROUTES.arena}>Debate Arena</Link>
-          <a href={PROJECT_LINKS.repository}>GitHub ↗</a>
-        </nav>
-      </div>
-    </footer>
+    <SiteMasthead
+      appearance="application"
+      chrome={chrome}
+      navItems={[...navigation]}
+      currentPath={(current ? ROUTES[current] : pathname).replace(/^\//, '')}
+      mainId="main-content"
+      Link={Link}
+      brand={
+        <>
+          {BRAND.logoPath ? (
+            <Image src={BRAND.logoPath} width={38} height={38} alt="" unoptimized />
+          ) : (
+            <span className={styles.mark} aria-hidden="true">
+              {BRAND.mark}
+            </span>
+          )}
+          <span>{BRAND.name}</span>
+          <span className={styles.beta}>Beta</span>
+        </>
+      }
+      actions={<AccountControl />}
+    />
   );
 }

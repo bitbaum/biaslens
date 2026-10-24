@@ -10,12 +10,12 @@
   --primitive-paper: #faf8f5;
   --primitive-white: #ffffff;
 
-  --color-bg: var(--primitive-paper);
-  --color-surface: var(--primitive-white);
-  --color-surface-muted: var(--primitive-stone-50);
-  --color-border: var(--primitive-stone-200);
-  --color-text: var(--primitive-ink-900);
-  --color-text-muted: var(--primitive-stone-500);
+  --color-bg: hsl(var(--surface-page));
+  --color-surface: hsl(var(--surface-base));
+  --color-surface-muted: hsl(var(--surface-raised));
+  --color-border: hsl(var(--border-subtle));
+  --color-text: hsl(var(--text-primary));
+  --color-text-muted: hsl(var(--text-secondary));
   --color-brand: var(--primitive-teal-600);
   --color-action: var(--primitive-teal-600);
   --color-on-action: var(--primitive-white);
@@ -37,16 +37,39 @@
   --bb-focus: var(--color-focus);
   --bb-radius-control: var(--radius-btn);
 
+  /* Theme adapters only: the packages own geometry, interaction and fonts. */
+  --sk-bg: var(--color-bg);
+  --sk-fg: var(--color-text);
+  --sk-muted: var(--color-text-muted);
+  --sk-raised: var(--color-surface-muted);
+  --sk-line: var(--color-border);
+  --sk-focus: var(--color-focus);
+  --sk-font: var(--font-sans);
+  --sk-display: var(--font-display);
+  --sk-mono: var(--font-mono);
+  --sk-width: var(--layout-shell);
+  --sk-gutter: var(--layout-gutter);
+  --sk-radius: var(--radius-btn);
+  --sk-hero-space: clamp(2.5rem, 6vw, 5rem);
+  --acct-action: var(--color-text);
+  --acct-on-action: var(--color-surface);
+  --acct-focus: var(--color-focus);
+  --acct-panel: var(--color-surface);
+  --acct-fg: var(--color-text);
+  --acct-fg-2: var(--color-text-muted);
+  --acct-fg-3: var(--color-text-muted);
+  --acct-line: var(--color-border);
+  --acct-line-2: var(--color-border);
+
   /* Spatial and typographic roles shared by this product's screens. */
-  --layout-shell: 1160px;
+  --layout-shell: var(--shell-max);
   --layout-gutter: clamp(16px, 3.5vw, 40px);
-  --layout-section: clamp(60px, 8vw, 116px);
-  --measure-copy: 67ch;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-editorial: 'Iowan Old Style', 'Baskerville', Georgia, serif;
-  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-  --radius-card: 12px;
-  --radius-btn: 7px;
+  --layout-section: var(--section-py);
+
+  --font-editorial: var(--font-display);
+
+  --radius-card: var(--radius-surface);
+  --radius-btn: var(--radius-control);
 }
 
 *,
@@ -66,6 +89,8 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   min-width: 320px;
   min-height: 100vh;
   background: var(--color-bg);
@@ -114,4 +139,8 @@ summary:focus-visible {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+body > main {
+  flex: 1;
 }

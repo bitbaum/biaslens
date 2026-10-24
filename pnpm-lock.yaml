@@ -18,11 +18,14 @@ importers:
         specifier: ^1.21.3
         version: 1.21.3(react@19.3.1)
       '@bitbaum/design-tokens':
-        specifier: github:bitbaum/design-tokens#8e786a43220d267ccf6b5cd6119a012f1a52dfff
-        version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff
+        specifier: github:bitbaum/design-tokens#v1.2.0
+        version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0
       '@bitbaum/mail-kit':
         specifier: ^0.2.0
         version: 0.2.0
+      '@bitbaum/sitekit':
+        specifier: 0.4.0
+        version: 0.4.0(react@19.3.1)
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -72,6 +75,9 @@ importers:
       eslint-config-next:
         specifier: ^16
         version: 16.4.2(@typescript-eslint/parser@8.68.0(eslint@10.13.0)(typescript@6.0.3))(eslint@10.13.0)(typescript@6.0.3)
+      playwright:
+        specifier: ^1.64.1
+        version: 1.64.1
       prettier:
         specifier: 3.9.10
         version: 3.9.10
@@ -269,14 +275,20 @@ packages:
       react:
         optional: true
 
-  '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff':
-    resolution: {gitHosted: true, integrity: sha512-henmOzj7OGmR4+HstNareRk7leYKNZ7sZbyr66OrGAnTA5m3yK18Wvq7qfQejO678lUydaYI4ifLLGbkrPj3tQ==, tarball: https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff}
+  '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0':
+    resolution: {gitHosted: true, integrity: sha512-+mbpCQtD9yphGFDOIDP0HSRabf/w4loKc0OYd1bfFAr7GBSiVGk7IRzukbKOuxGuH3WVkYgsHM7m2RXiEfKhIA==, tarball: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0}
     version: 1.2.0
     engines: {node: '>=20'}
 
   '@bitbaum/mail-kit@0.2.0':
     resolution: {integrity: sha512-YkgMFRQ6HuzIB0q/Ao4FB4zb/YxVc0iKyVdRkFe2psJ4CQJvGxBfDlURomZMkgQfpBQox4QiT/iN9IGRz6SeTg==}
     engines: {node: '>=20'}
+
+  '@bitbaum/sitekit@0.4.0':
+    resolution: {integrity: sha512-bzcwJMOS94hVS043feZHqMlGj0CDCnvCHlMX25VbKNENqWNu3B84M+v+TE0P0eOqP/TFRqMwF14OcXYr9kCY0w==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18'
 
   '@cacheable/memory@2.2.0':
     resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
@@ -2747,6 +2759,16 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
+  playwright-core@1.64.1:
+    resolution: {integrity: sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.64.1:
+    resolution: {integrity: sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
@@ -3408,9 +3430,14 @@ snapshots:
     transitivePeerDependencies:
       - canvas
 
-  '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/8e786a43220d267ccf6b5cd6119a012f1a52dfff': {}
+  '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0': {}
 
   '@bitbaum/mail-kit@0.2.0': {}
+
+  '@bitbaum/sitekit@0.4.0(react@19.3.1)':
+    dependencies:
+      react: 19.3.1
+      zod: 4.5.4
 
   '@cacheable/memory@2.2.0':
     dependencies:
@@ -5661,6 +5688,12 @@ snapshots:
   picomatch@2.3.2: {}
 
   picomatch@4.0.7: {}
+
+  playwright-core@1.64.1: {}
+
+  playwright@1.64.1:
+    dependencies:
+      playwright-core: 1.64.1
 
   possible-typed-array-names@1.1.0: {}
 

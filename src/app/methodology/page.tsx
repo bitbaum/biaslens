@@ -1,5 +1,3 @@
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
-
 import {
   METHOD_VERSION,
   auditEpistemicGraph,
@@ -73,7 +71,6 @@ const steps = [
 export default function MethodologyPage() {
   return (
     <>
-      <SiteHeader current="methodology" />
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>Public method / Version {METHOD_VERSION} / Provisional</p>
@@ -184,7 +181,6 @@ export default function MethodologyPage() {
           </a>
         </section>
       </main>
-      <SiteFooter />
     </>
   );
 }

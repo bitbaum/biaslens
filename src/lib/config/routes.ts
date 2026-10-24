@@ -7,6 +7,8 @@ export const ROUTES = {
   methodology: '/methodology',
   whitepaper: '/whitepaper',
   development: '/development',
+  roadmap: '/roadmap',
+  changelog: '/changelog',
   blog: '/blog',
   arena: '/debates',
 } as const;

@@ -7,3 +7,4 @@ allowBuilds:
 # Reviewed first-party reader fix, exercised by BiasLens user tests.
 minimumReleaseAgeExclude:
   - '@bitbaum/ai-kit@1.21.3'
+  - '@bitbaum/sitekit@0.4.0'

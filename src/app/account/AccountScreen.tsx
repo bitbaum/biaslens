@@ -6,7 +6,6 @@ import { returnPath } from '@bitbaum/accountkit/orangecat';
 import { account } from '@bitbaum/accountkit/auth/schema';
 import { authStatus, getSession, mailConfigured } from '@/lib/auth';
 import { db } from '@/lib/db/client';
-import { SiteHeader, SiteFooter } from '@/app/_components/Chrome';
 import { AccountForms } from './AccountForms';
 import './account.css';
 
@@ -32,7 +31,6 @@ export async function AccountScreen({
     : [];
   return (
     <>
-      <SiteHeader current="account" />
       <main id="main-content" className="bb-frame account-screen">
         <header>
           <p>YOUR BIASLENS ACCOUNT</p>
@@ -65,7 +63,6 @@ export async function AccountScreen({
           )}
         </div>
       </main>
-      <SiteFooter />
     </>
   );
 }

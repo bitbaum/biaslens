@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArticleBody } from 'bip-kit/react';
+import { ArticleBody, ReadingProgress } from 'bip-kit/react';
 
-import { SiteHeader, SiteFooter } from '@/app/_components/Chrome';
 import { BRAND } from '@/lib/config/brand';
 import { getPublishedPost, listPublishedPosts } from '@/lib/content/blog';
 
@@ -41,7 +40,8 @@ export default async function JournalPost({ params }: { params: Promise<{ slug: 
 
   return (
     <>
-      <SiteHeader current="blog" />
+      <ReadingProgress />
+
       <main id="main-content" className={`${styles.article} bb-frame`}>
         <Link href="/blog" className={styles.back}>
           ← All articles
@@ -66,7 +66,6 @@ export default async function JournalPost({ params }: { params: Promise<{ slug: 
           <Link href="/blog">Back to the journal →</Link>
         </footer>
       </main>
-      <SiteFooter />
     </>
   );
 }

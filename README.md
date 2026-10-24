@@ -158,3 +158,18 @@ and [a public challenge template](.github/ISSUE_TEMPLATE/methodology-challenge.y
 AI replies to future challenges must remain identifiable as AI and never
 automatically erase or close a human disagreement.
 
+
+## Package composition
+
+`package-plan.json` records the feature-to-package bindings. Review Fleet
+`SHARED.md` and update this plan before implementing a feature. Sitekit renders
+the root shell and public entry blocks; accountkit supplies account screens,
+runtime and menu; bip-kit renders articles, reading progress, roadmap and
+changelog; design-tokens supplies the complete theme and self-hosted fonts.
+Local modules configure identity, content and theme roles or implement BiasLens
+investigation behavior. Shared blocks are fixed in their owning repositories.
+
+The shared composition workflow checks actual imports/usages and the dependency
+update path. `browser:smoke` checks the real responsive menu, keyboard dismissal,
+active state, root-shell coverage and font loading. Shared improvements propagate
+through released versions, dependency PRs, checks, merge and the existing deploy.

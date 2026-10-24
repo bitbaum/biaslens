@@ -1,7 +1,5 @@
 import Link from 'next/link';
 
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
-
 import { DebateArena } from './DebateArena';
 import styles from './arena.module.css';
 
@@ -14,7 +12,6 @@ export const metadata = {
 export default function DebatePage() {
   return (
     <>
-      <SiteHeader current="arena" />
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>Debate Arena / First measurable layer</p>
@@ -42,7 +39,6 @@ export default function DebatePage() {
           </Link>
         </aside>
       </main>
-      <SiteFooter />
     </>
   );
 }

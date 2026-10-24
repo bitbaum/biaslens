@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { HeroSection } from '@bitbaum/sitekit/react';
 
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 import { useState, useRef, type FormEvent } from 'react';
 
 import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
@@ -88,16 +88,18 @@ export function AnalyzeWorkspace() {
 
   return (
     <>
-      <SiteHeader current="analyze" />
       <main id="main-content" className={`${styles.page} bb-frame`}>
-        <header className={styles.hero}>
-          <p className={styles.eyebrow}>First-principles analysis / Beta</p>
-          <h1>Read between the lines.</h1>
-          <p className={styles.lead}>
-            Drop in an article. See its argument, uncover the assumptions, and discover the question
-            that changes how you read it.
-          </p>
-        </header>
+        <HeroSection
+          appearance="application"
+          section={{
+            kind: 'hero',
+            eyebrow: 'Article examination / Beta',
+            statement: 'Read between the lines.',
+            lead: [
+              'Drop in an article. See its argument, uncover the assumptions, and discover the question that changes how you read it.',
+            ],
+          }}
+        />
 
         <section className={styles.tool} aria-label="Analyse an article">
           <div
@@ -248,7 +250,6 @@ export function AnalyzeWorkspace() {
           {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
         </div>
       </main>
-      <SiteFooter />
     </>
   );
 }
