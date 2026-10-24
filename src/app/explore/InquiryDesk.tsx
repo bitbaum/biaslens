@@ -133,9 +133,8 @@ export function InquiryDesk() {
   return (
     <>
       <p className={styles.notice}>
-        Browser-local research notebook. Sources and excerpts are user supplied; this tool does not
-        retrieve, authenticate, or independently verify them. It makes your investigation
-        inspectable to you and exportable for others.
+        Saved in this browser. Added sources are your research notes, not independently verified
+        evidence.
       </p>
       <div className={styles.desk}>
         <div>
@@ -256,33 +255,31 @@ export function InquiryDesk() {
           </section>
         </div>
         <aside className={styles.section} aria-labelledby="audit-heading">
-          <p className={styles.eyebrow}>Keep the gaps visible</p>
-          <h2 id="audit-heading">An honest research record.</h2>
+          <p className={styles.eyebrow}>Your research</p>
+          <h2 id="audit-heading">Investigation summary.</h2>
           <ul className={styles.audit}>
-            <li>
-              {record.question.trim() ? 'Question recorded.' : 'The question is still undefined.'}
-            </li>
+            <li>{record.question.trim() ? 'Question recorded.' : 'Add a question to begin.'}</li>
             <li>
               {record.scope.trim()
                 ? 'Scope supplied by you.'
-                : 'Place, time, and terms need definition.'}
+                : 'Define the scope of your question.'}
             </li>
             <li>{record.sources.length} user-supplied references; none independently verified.</li>
             <li>
               {record.challenge.trim()
                 ? 'A challenge has been recorded.'
-                : 'What would disconfirm your explanation?'}
+                : 'Add a challenge or alternative explanation.'}
             </li>
-            <li>Source independence and completeness have not been assessed.</li>
+            <li>Sources have not been checked for independence or completeness.</li>
           </ul>
           <p className={styles.state} role="status">
             {status}
           </p>
           <div className={`${styles.actions} bb-actions`}>
-            <button className="bb-button bb-button--secondary" onClick={exportRecord}>
+            <button className="bb-button bb-button--primary" onClick={exportRecord}>
               Export investigation ↓
             </button>
-            <Link className="bb-button bb-button--secondary" href={ROUTES.methodology}>
+            <Link className={styles.methodLink} href={ROUTES.methodology}>
               Inspect the method →
             </Link>
           </div>

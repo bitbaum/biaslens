@@ -1,0 +1,101 @@
+:root {
+  /* Product theme adapter. Shared packages consume these same roles. */
+  --primitive-ink-900: #1c2028;
+  --primitive-slate-600: #5d6470;
+  --primitive-accent-600: #3949ab;
+  --primitive-paper: #f7f8fa;
+  --primitive-white: #ffffff;
+  --surface-page: 220 23% 97%;
+  --surface-base: 0 0% 100%;
+  --surface-raised: 220 18% 95%;
+  --text-primary: 220 18% 13%;
+  --text-secondary: 218 9% 40%;
+  --text-muted: 218 9% 40%;
+  --border-subtle: 220 15% 89%;
+  --accent: 232 50% 45%;
+  --color-bg: var(--primitive-paper);
+  --color-surface: var(--primitive-white);
+  --color-surface-muted: hsl(var(--surface-raised));
+  --color-border: hsl(var(--border-subtle));
+  --color-text: var(--primitive-ink-900);
+  --color-text-muted: var(--primitive-slate-600);
+  --color-brand: var(--primitive-accent-600);
+  --color-action: var(--color-text);
+  --color-on-action: var(--primitive-white);
+  --color-focus: var(--color-brand);
+  --color-tone-positive: var(--color-text);
+  --color-tone-negative: var(--color-text);
+  --color-tone-neutral: var(--color-text-muted);
+  --font-display: var(--font-sans);
+  --font-display-weight: 600;
+  --font-display-tracking: -0.04em;
+  --type-page-title: 600 clamp(30px, 3.5vw, 44px)/1.16 var(--font-sans);
+  --type-section-title: 600 clamp(23px, 2.5vw, 30px)/1.25 var(--font-sans);
+  --type-card-title: 600 19px/1.35 var(--font-sans);
+  --type-body: 400 15px/1.7 var(--font-sans);
+  --type-lead: 400 18px/1.7 var(--font-sans);
+  --type-label: 600 13px/1.5 var(--font-sans);
+  --type-meta: 400 12px/1.6 var(--font-sans);
+  --space-page: clamp(32px, 5vw, 64px);
+  --space-section: 48px;
+  --radius-surface: 16px;
+  --radius-control: 8px;
+  --shadow-soft: none;
+
+  /* Shared brand-neutral composition maps to our editorial palette. */
+  --bb-frame-max: var(--layout-shell);
+  --bb-gutter: var(--layout-gutter);
+  --bb-measure: var(--measure-copy);
+  --bb-action-bg: var(--color-text);
+  --bb-action-fg: var(--color-surface);
+  --bb-control-bg: var(--color-bg);
+  --bb-control-fg: var(--color-text);
+  --bb-line: var(--color-border);
+  --bb-muted: var(--color-text-muted);
+  --bb-focus: var(--color-focus);
+  --bb-radius-control: var(--radius-btn);
+
+  /* Theme adapters only: the packages own geometry, interaction and fonts. */
+  --sk-bg: var(--color-surface);
+  --sk-fg: var(--color-text);
+  --sk-muted: var(--color-text-muted);
+  --sk-raised: var(--color-surface-muted);
+  --sk-line: var(--color-border);
+  --sk-focus: var(--color-focus);
+  --sk-font: var(--font-sans);
+  --sk-display: var(--font-sans);
+  --sk-display-weight: 600;
+  --sk-display-leading: 1.16;
+  --sk-display-tracking: -0.04em;
+  --sk-title-size: clamp(30px, 3.5vw, 44px);
+  --sk-lead-size: 18px;
+  --sk-lead-leading: 1.7;
+  --sk-header-height: 68px;
+  --sk-mobile-header-height: 64px;
+  --sk-footer-gap: 64px;
+  --sk-mono: var(--font-sans);
+  --sk-width: var(--layout-shell);
+  --sk-gutter: var(--layout-gutter);
+  --sk-radius: var(--radius-btn);
+  --sk-hero-space: 0px;
+  --acct-action: var(--color-text);
+  --acct-on-action: var(--color-surface);
+  --acct-focus: var(--color-focus);
+  --acct-panel: var(--color-surface);
+  --acct-fg: var(--color-text);
+  --acct-fg-2: var(--color-text-muted);
+  --acct-fg-3: var(--color-text-muted);
+  --acct-line: var(--color-border);
+  --acct-line-2: var(--color-border);
+  --acct-danger: var(--color-text);
+
+  /* Spatial and typographic roles shared by this product's screens. */
+  --layout-shell: 1200px;
+  --layout-gutter: clamp(20px, 4vw, 40px);
+  --layout-section: var(--space-section);
+
+  --font-editorial: var(--font-display);
+
+  --radius-card: var(--radius-surface);
+  --radius-btn: var(--radius-control);
+}

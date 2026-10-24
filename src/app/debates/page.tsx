@@ -14,17 +14,15 @@ export default function DebatePage() {
     <>
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>Conversation analysis / Timed transcripts</p>
-          <h1>Who actually got the floor?</h1>
+          <p className={styles.eyebrow}>Timed transcripts</p>
+          <h1>Conversation analysis.</h1>
           <p className={styles.lead}>
-            Bring a debate, interview, earnings call or panel as timestamped speaker turns. Compare
-            speaking time and overlap without pretending a stopwatch proves fairness, intentions or
-            factual truth.
+            Measure speaking time and overlap in a debate, interview, panel or earnings call. Start
+            with a timestamped transcript.
           </p>
           <p className={styles.note}>
-            This beta works with a manually timed transcript. Automatic video transcription,
-            diarisation, speaker correction and independent source verification are not yet
-            available.
+            Transcripts stay in your browser. Audio/video upload and automatic transcription are not
+            available yet.
           </p>
         </header>
         <DebateArena />

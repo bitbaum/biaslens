@@ -74,7 +74,7 @@ export default function MethodologyPage() {
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>Public method / Version {METHOD_VERSION} / Provisional</p>
-          <h1>Truth is not a vote. It is an investigation.</h1>
+          <h1>How BiasLens works. It is an investigation.</h1>
           <p className={styles.lead}>
             Every claim should be open to inspection. Every piece of evidence should have an origin.
             Every connection should say why it exists. Every conclusion should be challengeable.

@@ -1,27 +1,25 @@
 .page {
-  padding-top: clamp(64px, 8vw, 116px);
+  padding-top: var(--space-page);
   padding-bottom: 84px;
 }
 
 .eyebrow {
-  color: var(--color-brand);
-  font: 700 11px / 1.6 var(--font-mono);
+  color: var(--color-text-muted);
+  font: 700 11px / 1.6 var(--font-sans);
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
 .hero {
   max-width: 830px;
-  padding-bottom: clamp(42px, 5vw, 72px);
+  padding-bottom: 32px;
 }
 
 .hero h1 {
   margin-top: 19px;
-  font-family: var(--font-editorial);
-  font-size: clamp(46px, 7vw, 82px);
-  line-height: 1.07;
-  letter-spacing: -0.055em;
-  font-weight: 400;
+
+  font: var(--type-page-title);
+  letter-spacing: -0.03em;
 }
 
 .lead {
@@ -54,11 +52,9 @@
 .list h2 {
   margin-top: 14px;
   max-width: 28ch;
-  font-family: var(--font-editorial);
-  font-size: clamp(27px, 3.3vw, 41px);
-  line-height: 1.2;
-  font-weight: 400;
-  letter-spacing: -0.035em;
+
+  font: var(--type-section-title);
+  letter-spacing: -0.03em;
 }
 
 .list p {
@@ -69,13 +65,13 @@
 }
 
 .meta {
-  font: 500 12px / 1.5 var(--font-mono);
+  font: 500 12px / 1.5 var(--font-sans);
   color: var(--color-text-muted);
 }
 
 .article {
   max-width: 900px;
-  padding-top: clamp(52px, 8vw, 112px);
+  padding-top: var(--space-page);
 }
 
 .back {
@@ -96,11 +92,9 @@
 .articleHead h1 {
   margin-top: 19px;
   max-width: 19ch;
-  font-family: var(--font-editorial);
-  font-size: clamp(42px, 6vw, 72px);
-  line-height: 1.09;
-  letter-spacing: -0.05em;
-  font-weight: 400;
+
+  font: var(--type-page-title);
+  letter-spacing: -0.03em;
 }
 
 .articleHead p {
@@ -135,7 +129,7 @@
 
 @media (max-width: 640px) {
   .page {
-    padding-top: 54px;
+    padding-top: var(--space-page);
   }
   .list li {
     padding: 23px 0;

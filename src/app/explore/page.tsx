@@ -2,7 +2,7 @@ import { InquiryDesk } from './InquiryDesk';
 import styles from './explore.module.css';
 
 export const metadata = {
-  title: 'Explore a question',
+  title: 'Research notebook',
   description:
     'Keep a question, exact source references and open challenges together in a browser-local investigation.',
 };
@@ -12,11 +12,11 @@ export default function ExplorePage() {
     <>
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>An investigation starts with curiosity</p>
-          <h1>What do you want to understand?</h1>
+          <p className={styles.eyebrow}>Your investigation</p>
+          <h1>Research notebook.</h1>
           <p>
-            Explore science, history, economics, or an explanation you want to test. Keep source
-            references and criticism beside the question.
+            Keep your question, sources and competing explanations together. Saved in this browser;
+            export a copy to take it with you.
           </p>
         </header>
         <InquiryDesk />

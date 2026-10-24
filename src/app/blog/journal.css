@@ -13,4 +13,16 @@
   --bp-font-mono: var(--font-mono);
   --bp-measure: 69ch;
   --bp-radius: var(--radius-card);
+  --bp-note: var(--color-text);
+  --bp-tip: var(--color-text);
+  --bp-warn: var(--color-text);
+  --bp-danger: var(--color-text);
+  --bp-note-bg: var(--color-surface-muted);
+  --bp-tip-bg: var(--color-surface-muted);
+  --bp-warn-bg: var(--color-surface-muted);
+  --bp-danger-bg: var(--color-surface-muted);
+}
+
+.journalTheme {
+  --bp-font-display: var(--font-sans);
 }

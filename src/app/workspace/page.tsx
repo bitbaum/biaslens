@@ -8,7 +8,7 @@ const tools = [
   {
     number: '01',
     href: '/analyze',
-    title: 'Examine a source',
+    title: 'Examine text',
     description:
       'Unpack an argument. Trace the quotes, assumptions and evidence that could change your mind.',
     input: 'Article URL or pasted text',
@@ -17,7 +17,7 @@ const tools = [
   {
     number: '02',
     href: '/explore',
-    title: 'Investigate a question',
+    title: 'Research notebook',
     description:
       'Keep sources, competing explanations and open challenges beside the question you are exploring.',
     input: 'A question in any field',
@@ -26,7 +26,7 @@ const tools = [
   {
     number: '03',
     href: '/debates',
-    title: 'Analyse a conversation',
+    title: 'Conversation analysis',
     description:
       'See who spoke, for how long, and where speakers overlapped. Inspect the timeline behind the numbers.',
     input: 'Timestamped transcript',
@@ -41,10 +41,8 @@ export default function Workspace() {
         section={{
           kind: 'hero',
           eyebrow: 'Your investigation workspace',
-          statement: 'Follow a question.',
-          lead: [
-            'A scientific finding. A financial forecast. A conversation that left you wondering. Start with what you want to understand.',
-          ],
+          statement: 'Your workspace.',
+          lead: ['Choose an investigation tool, or continue the question you were working on.'],
         }}
       />
       <NotebookResume />
@@ -65,7 +63,7 @@ export default function Workspace() {
       </section>
       <section className={styles.context}>
         <div>
-          <h2>One workspace. Any subject.</h2>
+          <h2>Bring any subject.</h2>
           <p>
             Science, markets, history, health, policy or everyday decisions. The tools examine
             reasoning and evidence; a familiar source or a confident answer is never a substitute
@@ -73,7 +71,7 @@ export default function Workspace() {
           </p>
         </div>
         <div>
-          <h2>Know what is saved.</h2>
+          <h2>Keep a copy of your research.</h2>
           <p>
             Your notebook stays in this browser. Accounts manage identity and security; cloud
             history and cross-device sync are not available yet. Export notes to keep a copy.

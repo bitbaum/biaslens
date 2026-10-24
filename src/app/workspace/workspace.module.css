@@ -1,18 +1,18 @@
 .page {
-  padding-block: clamp(40px, 6vw, 80px);
+  padding-block: var(--space-page);
   --sk-hero-space: 0px;
 }
 .tools {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-  margin-block: 42px;
+  gap: 16px;
+  margin-block: 32px;
 }
 .tool {
   color: var(--color-text);
   display: flex;
   flex-direction: column;
-  padding: 28px;
+  padding: 24px;
   min-width: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
@@ -23,16 +23,15 @@
     border-color 0.15s;
 }
 .tool:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-brand);
+  border-color: var(--color-text-muted);
 }
 .tool:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 4px;
 }
 .number {
-  color: var(--color-brand);
-  font: 600 10px/1.7 var(--font-mono);
+  color: var(--color-text-muted);
+  font: var(--type-meta);
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
@@ -41,7 +40,7 @@
   justify-content: space-between;
   gap: 16px;
   margin-block: 26px 16px;
-  font: 400 32px/1.15 var(--font-editorial);
+  font: var(--type-card-title);
   letter-spacing: -0.035em;
 }
 .tool h2 span {
@@ -66,14 +65,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 28px;
+  padding: 24px;
   margin-top: 36px;
   background: var(--color-surface);
-  border-left: 3px solid var(--color-brand);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
 }
 .resume h2 {
   margin-top: 8px;
-  font: 400 28px/1.3 var(--font-editorial);
+  font: var(--type-card-title);
   overflow-wrap: anywhere;
 }
 .context {
@@ -122,6 +122,5 @@
     transition: none;
   }
   .tool:hover {
-    transform: none;
   }
 }

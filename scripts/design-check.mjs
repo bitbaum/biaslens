@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const chrome = read('src/app/_components/Chrome.tsx') + read('src/app/_components/Footer.tsx');
 const layout = read('src/app/layout.tsx');
 const packageJson = JSON.parse(read('package.json'));
 const shell = read('src/app/_components/Chrome.module.css');
-const globals = read('src/app/globals.css');
+const globals = read('src/app/globals.css') + read('src/app/theme.css');
 const home = read('src/app/page.tsx');
 const homeCss = read('src/app/home.module.css');
 const method = read('src/app/methodology/page.tsx');
@@ -38,10 +38,10 @@ function contrast(first, second) {
 
 test('core text/action palette passes WCAG AA normal-text contrast', () => {
   const pairs = [
-    ['--primitive-teal-600', '--primitive-white'],
+    ['--primitive-accent-600', '--primitive-white'],
     ['--primitive-ink-900', '--primitive-paper'],
-    ['--primitive-stone-500', '--primitive-paper'],
-    ['--primitive-stone-500', '--primitive-white'],
+    ['--primitive-slate-600', '--primitive-paper'],
+    ['--primitive-slate-600', '--primitive-white'],
   ];
   for (const [foreground, background] of pairs) {
     const ratio = contrast(color(foreground), color(background));
@@ -112,4 +112,40 @@ test('focus and reduced motion are explicit, not browser-dependent promises', ()
   assert.match(globals, /button:focus-visible/);
   assert.match(globals, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(homeCss, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
+function stylesUnder(directory) {
+  return readdirSync(new URL('../' + directory, import.meta.url), { withFileTypes: true }).flatMap(
+    (entry) => {
+      const path = directory + '/' + entry.name;
+      return entry.isDirectory() ? stylesUnder(path) : path.endsWith('.module.css') ? [path] : [];
+    },
+  );
+}
+test('component styles consume palette roles rather than introducing colours', () => {
+  for (const path of stylesUnder('src/app')) {
+    assert.doesNotMatch(
+      read(path),
+      /#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl)a?\(/,
+      path + ' introduces a colour outside the theme',
+    );
+    assert.doesNotMatch(
+      read(path),
+      /(?:linear|radial)-gradient\(/,
+      path + ' introduces a decorative gradient',
+    );
+  }
+});
+test('application typography is governed by shared roles', () => {
+  assert.match(globals, /--font-display:\s*var\(--font-sans\)/);
+  assert.match(globals, /--type-page-title:/);
+  assert.match(read('src/app/workspace/workspace.module.css'), /font:\s*var\(--type-card-title\)/);
+  assert.match(read('src/app/account/account.css'), /font:\s*var\(--type-page-title\)/);
+  assert.match(read('src/app/_components/Footer.tsx'), /groups=/);
+});
+
+test('product roles load after package defaults so account colours cannot drift', () => {
+  assert.ok(layout.indexOf("'./theme.css'") > layout.indexOf("'@bitbaum/accountkit/styles.css'"));
+  assert.ok(layout.indexOf("'./theme.css'") > layout.indexOf("'bip-kit/styles.css'"));
+  assert.match(read('src/app/theme.css'), /--acct-action:\s*var\(--color-text\)/);
 });

@@ -19,7 +19,7 @@ export default function JournalPage() {
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>{BRAND.name} / Journal</p>
-          <h1>Arguments deserve better questions.</h1>
+          <h1>The BiasLens journal.</h1>
           <p className={styles.lead}>
             Essays, investigations and research notes. We will challenge public claims, including
             our own, while distinguishing documented findings from hypotheses and opinion.

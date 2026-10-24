@@ -24,8 +24,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       '@bitbaum/sitekit':
-        specifier: 0.4.0
-        version: 0.4.0(react@19.3.1)
+        specifier: 0.4.2
+        version: 0.4.2(react@19.3.1)
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -284,8 +284,8 @@ packages:
     resolution: {integrity: sha512-YkgMFRQ6HuzIB0q/Ao4FB4zb/YxVc0iKyVdRkFe2psJ4CQJvGxBfDlURomZMkgQfpBQox4QiT/iN9IGRz6SeTg==}
     engines: {node: '>=20'}
 
-  '@bitbaum/sitekit@0.4.0':
-    resolution: {integrity: sha512-bzcwJMOS94hVS043feZHqMlGj0CDCnvCHlMX25VbKNENqWNu3B84M+v+TE0P0eOqP/TFRqMwF14OcXYr9kCY0w==}
+  '@bitbaum/sitekit@0.4.2':
+    resolution: {integrity: sha512-Q8MsZcn8w1ljvrsQrOvTisC+nGzVpNX+ZcChzIGXCDLy3yRzU0HuhGD9c1YuH7gBz/HXgYXPDRPJT5UZ0B2lBg==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -3434,7 +3434,7 @@ snapshots:
 
   '@bitbaum/mail-kit@0.2.0': {}
 
-  '@bitbaum/sitekit@0.4.0(react@19.3.1)':
+  '@bitbaum/sitekit@0.4.2(react@19.3.1)':
     dependencies:
       react: 19.3.1
       zod: 4.5.4

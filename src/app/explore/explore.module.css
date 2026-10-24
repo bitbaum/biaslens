@@ -1,41 +1,17 @@
 .page {
-  padding-block: clamp(48px, 7vw, 100px);
-}
-.hero {
-  max-width: 780px;
-  padding-bottom: 40px;
+  padding-block: var(--space-page);
 }
 .eyebrow {
-  font: 700 11px/1.6 var(--font-mono);
+  font: 700 11px/1.6 var(--font-sans);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-brand);
-}
-.hero h1 {
-  font: 400 clamp(42px, 6vw, 76px)/1.08 var(--font-editorial);
-  letter-spacing: -0.05em;
-  margin-block: 20px;
-}
-.hero p:last-child {
-  max-width: 64ch;
   color: var(--color-text-muted);
-  line-height: 1.8;
 }
 .desk {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 40px;
   align-items: start;
-}
-.section {
-  border-top: 1px solid var(--color-border);
-  padding-block: 26px;
-  min-width: 0;
-}
-.section h2 {
-  font: 400 30px/1.2 var(--font-editorial);
-  letter-spacing: -0.03em;
-  margin-bottom: 18px;
 }
 .section p,
 .section li {
@@ -63,13 +39,6 @@
 }
 .section textarea {
   resize: vertical;
-}
-.notice {
-  background: var(--color-surface-muted);
-  padding: 18px;
-  margin-bottom: 28px;
-  font-size: 13px;
-  line-height: 1.8;
 }
 .sources {
   list-style: none;
@@ -109,8 +78,8 @@
 .state {
   display: block;
   margin-block: 16px;
-  color: var(--color-brand);
-  font: 600 12px/1.6 var(--font-mono);
+  color: var(--color-text-muted);
+  font: 600 12px/1.6 var(--font-sans);
 }
 .actions {
   margin-top: 24px;
@@ -120,4 +89,49 @@
     grid-template-columns: 1fr;
     gap: 10px;
   }
+}
+.section {
+  border-top: 1px solid var(--color-border);
+  padding-block: 26px;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  background: var(--color-surface);
+  margin-bottom: 20px;
+}
+.section h2 {
+  margin-bottom: 18px;
+  letter-spacing: -0.03em;
+  font: var(--type-card-title);
+}
+.notice {
+  padding: 18px;
+  margin-bottom: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  font: var(--type-meta);
+}
+.hero {
+  max-width: 780px;
+  padding-bottom: 32px;
+}
+.hero h1 {
+  font: var(--type-page-title);
+  letter-spacing: -0.03em;
+  margin-block: 16px;
+}
+.hero p:last-child {
+  max-width: 64ch;
+  color: var(--color-text-muted);
+  font: var(--type-body);
+}
+
+.methodLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font: var(--type-label);
+  color: var(--color-text);
 }

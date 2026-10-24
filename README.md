@@ -175,3 +175,10 @@ active state, root-shell coverage and font loading. Shared improvements propagat
 through released versions, dependency PRs, checks, merge and the existing deploy.
 
 Roadmap and changelog use the canonical Loki profile. Empty or unavailable records remain explicit; this application does not generate a second set of project records.
+
+Interface work follows [the design contract](docs/design-contract.md). Package
+styles load before `src/app/theme.css`, so shared defaults cannot replace the
+product's roles. Browser checks cover rendered auth colours, responsive geometry,
+input/error/loading/results, export and notebook continuation. Controlled report
+fixtures exercise the interface without model costs; they are not evidence of
+model reasoning quality.

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Browser QA uses the built Next app, not a static mock. No provider keys or
-# public deployment are required: only the three public GET screens are tested.
+# public deployment are required: public screens and controlled investigation flows are tested.
 out="${BROWSER_SMOKE_DIR:-browser-smoke-artifacts}"
 mkdir -p "$out"
 
@@ -14,6 +14,9 @@ fi
 
 echo "Browser: $("$browser" --version)"
 
+# A throwaway secret enables the real shared auth screens in this isolated test.
+# No test credentials are written to disk or sent to a provider.
+export BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-$(node -e 'process.stdout.write(require("node:crypto").randomBytes(48).toString("base64"))')}"
 pnpm run start --hostname 127.0.0.1 --port 3000 > "$out/server.log" 2>&1 &
 app_pid="$!"
 cleanup() {
@@ -41,7 +44,7 @@ if [[ "$ready" -ne 1 ]]; then
   exit 1
 fi
 
-for page in 'home|/|Understand the world.' 'workspace|/workspace|Follow a question.' 'analyze|/analyze|Read between the lines.' 'method|/methodology|Truth is not a vote.' 'journal|/blog|Arguments deserve better questions.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage' 'arena|/debates|Who actually got the floor?' 'explore|/explore|What do you want to understand?' 'whitepaper|/whitepaper|Open investigation, inspectable evidence' 'development|/development|See how it is built.' 'roadmap|/roadmap|Roadmap' 'changelog|/changelog|Changelog' 'signin|/sign-in|Welcome back.' 'signup|/sign-up|Keep asking better questions.'; do
+for page in 'home|/|Look closer.' 'workspace|/workspace|Your workspace.' 'analyze|/analyze|Examine text.' 'method|/methodology|How BiasLens works.' 'journal|/blog|The BiasLens journal.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage' 'arena|/debates|Conversation analysis.' 'explore|/explore|Research notebook.' 'whitepaper|/whitepaper|Open investigation, inspectable evidence' 'development|/development|Building BiasLens.' 'roadmap|/roadmap|Roadmap' 'changelog|/changelog|Changelog' 'signin|/sign-in|Welcome back.' 'signup|/sign-up|Create your account.'; do
   IFS='|' read -r slug route expected <<< "$page"
   url="http://127.0.0.1:3000$route"
 
@@ -86,3 +89,5 @@ done
 
 
 BROWSER_EXECUTABLE="$browser" node scripts/shared-shell-browser-check.mjs
+
+BROWSER_EXECUTABLE="$browser" BROWSER_SMOKE_DIR="$out" node scripts/investigation-browser-check.mjs
