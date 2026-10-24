@@ -173,3 +173,5 @@ The shared composition workflow checks actual imports/usages and the dependency
 update path. `browser:smoke` checks the real responsive menu, keyboard dismissal,
 active state, root-shell coverage and font loading. Shared improvements propagate
 through released versions, dependency PRs, checks, merge and the existing deploy.
+
+Roadmap and changelog use the canonical Loki profile. Empty or unavailable records remain explicit; this application does not generate a second set of project records.
