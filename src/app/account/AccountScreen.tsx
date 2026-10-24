@@ -32,22 +32,27 @@ export async function AccountScreen({
     : [];
   return (
     <>
-      <main id="main-content" className="bb-frame account-screen">
+      <main
+        id="main-content"
+        className={'bb-frame account-screen' + (mode === 'account' ? '' : ' account-screen--auth')}
+      >
         <header>
           <p>YOUR BIASLENS ACCOUNT</p>
           <h1>
             {mode === 'account'
               ? 'Profile & security'
               : mode === 'sign-up'
-                ? 'Keep asking better questions.'
+                ? 'Create your account.'
                 : 'Welcome back.'}
           </h1>
-          <p>Choose a display name. Manage your identity and sign-in methods.</p>
+          <p>
+            {mode === 'account'
+              ? 'Update your profile and manage how you sign in.'
+              : mode === 'sign-up'
+                ? 'Choose a display name and a secure sign-in method.'
+                : 'Sign in to manage your profile and security.'}
+          </p>
         </header>
-        <p className="account-storage-note">
-          Article examination and investigations work without an account. Your current notebook is
-          saved in this browser, not synced to your account. Export a copy before changing devices.
-        </p>
         <div className="account-card">
           {status.ready ? (
             <AccountForms
@@ -67,6 +72,10 @@ export async function AccountScreen({
             </div>
           )}
         </div>
+        <p className="account-storage-note">
+          Article examination and investigations work without an account. Your current notebook is
+          saved in this browser, not synced to your account. Export a copy before changing devices.
+        </p>
       </main>
     </>
   );

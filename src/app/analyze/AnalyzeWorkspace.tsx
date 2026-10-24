@@ -93,161 +93,162 @@ export function AnalyzeWorkspace() {
           appearance="application"
           section={{
             kind: 'hero',
-            eyebrow: 'Article examination / Beta',
-            statement: 'Read between the lines.',
+            eyebrow: 'Source examination',
+            statement: 'Examine text.',
             lead: [
-              'Drop in an article. See its argument, uncover the assumptions, and discover the question that changes how you read it.',
+              'Find the claims, inspect the supporting passages and test the assumptions behind an argument.',
             ],
           }}
         />
 
-        <section className={styles.tool} aria-label="Analyse an article">
-          <div
-            className={`${styles.modeSwitch} bb-choice-row`}
-            role="group"
-            aria-label="Choose source format"
-          >
-            <button
-              type="button"
-              className={mode === 'url' ? styles.activeMode : styles.modeButton}
-              disabled={busy}
-              aria-pressed={mode === 'url'}
-              onClick={() => {
-                setMode('url');
-                setError(null);
-              }}
+        <div className={styles.inputGrid}>
+          <section className={styles.tool} aria-label="Examine a source">
+            <div
+              className={`${styles.modeSwitch} bb-choice-row`}
+              role="group"
+              aria-label="Choose source format"
             >
-              Article URL
-            </button>
-            <button
-              type="button"
-              className={mode === 'text' ? styles.activeMode : styles.modeButton}
-              disabled={busy}
-              aria-pressed={mode === 'text'}
-              onClick={() => {
-                setMode('text');
-                setError(null);
-              }}
-            >
-              Paste article text
-            </button>
-          </div>
-          <div className={styles.exampleRow}>
-            <span>Bring your own article, or start with a fictional practice story.</span>
-            <button
-              type="button"
-              onClick={() => {
-                if (busy) return;
-                setMode('text');
-                setUrl('');
-                setText(EXAMPLE_ARTICLE);
-                setReport(null);
-                setError(null);
-              }}
-              disabled={busy}
-            >
-              Load practice article →
-            </button>
-          </div>
-          <form onSubmit={submit} className={styles.form}>
-            <label className={styles.fieldLabel} htmlFor="article-url">
-              {mode === 'url' ? 'Article URL' : 'Source URL (optional, supplied by you)'}
-            </label>
-            <input
-              id="article-url"
-              disabled={busy}
-              className={`${styles.input} bb-control`}
-              type="url"
-              placeholder="https://example.com/news/article"
-              value={url}
-              onChange={(event) => {
-                setUrl(event.target.value);
-                setReport(null);
-              }}
-              required={mode === 'url'}
-              maxLength={2048}
-              autoComplete="url"
-            />
-
-            {mode === 'text' && (
-              <>
-                <label className={styles.fieldLabel} htmlFor="article-text">
-                  Article body
-                </label>
-                <textarea
-                  id="article-text"
-                  disabled={busy}
-                  className={`${styles.textarea} bb-control`}
-                  placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
-                  rows={9}
-                  value={text}
-                  onChange={(event) => {
-                    setText(event.target.value);
-                    setReport(null);
-                  }}
-                  minLength={MIN_TEXT_LENGTH}
-                  maxLength={30_000}
-                  required
-                />
-                <p className={styles.hint}>
-                  {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL, we
-                  will not independently check that your pasted text matches it.
-                </p>
-              </>
-            )}
-
-            <div className={`${styles.formBottom} bb-actions`}>
               <button
-                className={`${styles.submit} bb-button bb-button--primary`}
-                type="submit"
-                disabled={!canSubmit || busy}
+                type="button"
+                className={mode === 'url' ? styles.activeMode : styles.modeButton}
+                disabled={busy}
+                aria-pressed={mode === 'url'}
+                onClick={() => {
+                  setMode('url');
+                  setError(null);
+                }}
               >
-                {busy ? 'Examining…' : 'Examine article →'}
+                From a URL
               </button>
-              <p className={styles.hint}>
-                This tool analyses arguments; it does not certify their truth or make accusations
-                about authors.
-              </p>
+              <button
+                type="button"
+                className={mode === 'text' ? styles.activeMode : styles.modeButton}
+                disabled={busy}
+                aria-pressed={mode === 'text'}
+                onClick={() => {
+                  setMode('text');
+                  setError(null);
+                }}
+              >
+                Paste text
+              </button>
             </div>
-          </form>
+            <div className={styles.exampleRow}>
+              <span>Start with your own source, or try a fictional example.</span>
+              <button
+                type="button"
+                onClick={() => {
+                  if (busy) return;
+                  setMode('text');
+                  setUrl('');
+                  setText(EXAMPLE_ARTICLE);
+                  setReport(null);
+                  setError(null);
+                }}
+                disabled={busy}
+              >
+                Try an example
+              </button>
+            </div>
+            <form onSubmit={submit} className={styles.form}>
+              <label className={styles.fieldLabel} htmlFor="article-url">
+                {mode === 'url' ? 'Source URL' : 'Source URL (optional)'}
+              </label>
+              <input
+                id="article-url"
+                disabled={busy}
+                className={`${styles.input} bb-control`}
+                type="url"
+                placeholder="https://example.com/news/article"
+                value={url}
+                onChange={(event) => {
+                  setUrl(event.target.value);
+                  setReport(null);
+                }}
+                required={mode === 'url'}
+                maxLength={2048}
+                autoComplete="url"
+              />
 
-          <div role="status" aria-live="polite">
-            {busy && (
-              <div className={styles.progress}>
-                <p>Tracing claims, checking passages, finding the hinge of the argument…</p>
-                <p className={styles.hint}>
-                  Usually takes 15–60 seconds. Your article is sent to our model provider for
-                  analysis.
-                </p>
+              {mode === 'text' && (
+                <>
+                  <label className={styles.fieldLabel} htmlFor="article-text">
+                    Text to examine
+                  </label>
+                  <textarea
+                    id="article-text"
+                    disabled={busy}
+                    className={`${styles.textarea} bb-control`}
+                    placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
+                    rows={9}
+                    value={text}
+                    onChange={(event) => {
+                      setText(event.target.value);
+                      setReport(null);
+                    }}
+                    minLength={MIN_TEXT_LENGTH}
+                    maxLength={30_000}
+                    required
+                  />
+                  <p className={styles.hint}>
+                    {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL,
+                    we will not independently check that your pasted text matches it.
+                  </p>
+                </>
+              )}
+
+              <div className={`${styles.formBottom} bb-actions`}>
                 <button
-                  type="button"
-                  className={styles.pasteFallback}
-                  onClick={() => abortRef.current?.abort()}
+                  className={`${styles.submit} bb-button bb-button--primary`}
+                  type="submit"
+                  disabled={!canSubmit || busy}
                 >
-                  Stop examination
+                  {busy ? 'Examining…' : 'Examine text'}
                 </button>
+                <p className={styles.hint}>
+                  AI-generated interpretation. Check the sources before relying on a conclusion.
+                </p>
               </div>
-            )}
-            {error && (
-              <div role="alert" className={styles.error}>
-                <strong>Analysis unavailable</strong>
-                <p>{error}</p>
-                {mode === 'url' && sourceFailed && (
+            </form>
+
+            <div role="status" aria-live="polite">
+              {busy && (
+                <div className={styles.progress}>
+                  <p>Tracing claims, checking passages, finding the hinge of the argument…</p>
+                  <p className={styles.hint}>
+                    Usually takes 15–60 seconds. Your article is sent to our model provider for
+                    analysis.
+                  </p>
                   <button
                     type="button"
                     className={styles.pasteFallback}
-                    onClick={() => setMode('text')}
+                    onClick={() => abortRef.current?.abort()}
                   >
-                    Paste article text instead →
+                    Stop examination
                   </button>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-
+                </div>
+              )}
+              {error && (
+                <div role="alert" className={styles.error}>
+                  <strong>Analysis unavailable</strong>
+                  <p>{error}</p>
+                  {mode === 'url' && sourceFailed && (
+                    <button
+                      type="button"
+                      className={styles.pasteFallback}
+                      onClick={() => setMode('text')}
+                    >
+                      Paste article text instead →
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </section>
+          <AboutAnalysis />
+        </div>
         <div ref={reportRef} tabIndex={-1} className={styles.reportTarget}>
-          {report ? <AnalysisReport report={report} /> : <AboutAnalysis />}
+          {report && <AnalysisReport report={report} />}
         </div>
       </main>
     </>
@@ -256,30 +257,36 @@ export function AnalyzeWorkspace() {
 
 function AboutAnalysis() {
   return (
-    <section className={styles.about}>
-      <h2>A structure to question, not an answer to obey.</h2>
+    <aside className={styles.about}>
+      <h2>What you’ll get</h2>
       <div className={styles.aboutGrid}>
         <div>
-          <h3>01 · Separate</h3>
-          <p>Distinguish empirical assertions, value judgements and alleged causal links.</p>
+          <span>01</span>
+          <div>
+            <h3>The argument</h3>
+            <p>A concise explanation of the claims and the passages behind them.</p>
+          </div>
         </div>
         <div>
-          <h3>02 · Challenge</h3>
-          <p>Ask which assumptions support the strongest interpretation of the argument.</p>
+          <span>02</span>
+          <div>
+            <h3>The assumptions</h3>
+            <p>What the conclusion depends on, and which alternatives deserve attention.</p>
+          </div>
         </div>
         <div>
-          <h3>03 · Investigate</h3>
-          <p>
-            See what would change the assessment and where independent evidence is still needed.
-          </p>
+          <span>03</span>
+          <div>
+            <h3>A way to test it</h3>
+            <p>The evidence that could strengthen or challenge the explanation.</p>
+          </div>
         </div>
       </div>
       <p className={styles.aboutNote}>
-        External evidence retrieval, historical corroboration, cross-outlet comparison and
-        calibrated verification are separate development stages. This page currently analyses the
-        content of one article only.
+        This examines one text. It does not independently retrieve or verify outside evidence.
       </p>
-    </section>
+      <Link href="/methodology">How the analysis works →</Link>
+    </aside>
   );
 }
 
@@ -339,9 +346,29 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         )}
       </header>
 
+      <div className={styles.reportOverview} aria-label="Analysis overview">
+        <div>
+          <strong>{analysis.core_claims.length}</strong>
+          <span>Claims examined</span>
+        </div>
+        <div>
+          <strong>{analysis.core_claims.filter((claim) => claim.source_quote).length}</strong>
+          <span>Quoted passages</span>
+        </div>
+        <div>
+          <strong>{analysis.named_sources.length}</strong>
+          <span>Named sources</span>
+        </div>
+      </div>
+      <nav className={styles.reportNav} aria-label="Report sections">
+        <a href="#report-claims">Claims</a>
+        <a href="#report-framing">Context</a>
+        <a href="#report-test">Tests</a>
+      </nav>
+
       {analysis.insight && (
         <section className={styles.insight} aria-label="The key insight">
-          <p className={styles.eyebrow}>The hinge of the argument</p>
+          <p className={styles.eyebrow}>The key assumption</p>
           <h3>{analysis.insight.headline}</h3>
           <p>{analysis.insight.explanation}</p>
           <div className={styles.insightGrid}>
@@ -361,7 +388,7 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         <p>{analysis.summary}</p>
       </section>
 
-      <section className={styles.reportSection}>
+      <section id="report-claims" className={styles.reportSection}>
         <h3>Core claims</h3>
         <ol className={styles.claims}>
           {analysis.core_claims.map((claim, index) => (
@@ -394,7 +421,7 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
       </section>
 
       <section className={styles.reportSection}>
-        <h3>First-principles critique</h3>
+        <h3>Reasoning to examine</h3>
         <p className={styles.longText}>{analysis.first_principles_critique}</p>
       </section>
 
@@ -416,12 +443,12 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         </section>
       )}
 
-      <section className={styles.reportSection}>
+      <section id="report-framing" className={styles.reportSection}>
         <h3>Possible framing and selection bias</h3>
         <p>{analysis.biases_to_consider}</p>
       </section>
 
-      <section className={styles.reportSection}>
+      <section id="report-test" className={styles.reportSection}>
         <h3>What could change the assessment?</h3>
         <p>{analysis.what_would_change_assessment}</p>
       </section>
@@ -445,20 +472,23 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
           type="button"
           onClick={saveJson}
         >
-          Save report JSON ↓
+          Download JSON report
         </button>
       </div>
-      <p className={styles.exportNote}>
-        Method {report.run.methodVersion} · Prompt {report.run.promptVersion} ·{' '}
-        {report.run.generatedAt}
-      </p>
-      <p className={styles.exportNote}>
-        SHA-256 of the analysed text: <code>{report.origin.textSha256}</code>
-      </p>
-      <p className={styles.exportNote}>
-        The digest identifies only the text processed, not its author, authenticity or accuracy. The
-        examined source text is included in your export. The report is not saved on our server.
-      </p>
+      <details className={styles.sourceText}>
+        <summary>Analysis details & provenance</summary>
+        <p className={styles.exportNote}>
+          Method {report.run.methodVersion} · Prompt {report.run.promptVersion} ·{' '}
+          {report.run.generatedAt}
+        </p>
+        <p className={styles.exportNote}>
+          SHA-256 of the examined text: <code>{report.origin.textSha256}</code>
+        </p>
+        <p className={styles.exportNote}>
+          The digest identifies the text processed, not its authenticity or accuracy. The examined
+          text is included in your export. This report is not saved on our server.
+        </p>
+      </details>
     </article>
   );
 }

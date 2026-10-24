@@ -58,7 +58,7 @@ export default function DevelopmentPage() {
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>Open work / Inspectable decisions</p>
-          <h1>See how it is built.</h1>
+          <h1>Building BiasLens.</h1>
           <p className={styles.lead}>
             The code, the method, the changes, and the unresolved questions belong in the open.
             Follow the original records and help improve them.

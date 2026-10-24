@@ -80,3 +80,10 @@ a copy of the package registry or a second roadmap.
 Shared package composition CI checks adoption and the update path. Dependency
 updates pass tests and browser checks, merge under the fleet policy, then deploy
 through the existing host. A dependency listed but unused is not adoption.
+
+## Design acceptance
+
+Read `docs/design-contract.md` before interface work. All screens use its theme,
+type and spacing roles. Validate input, loading, error and result states and both
+account states at phone/tablet/desktop sizes before merging. Public design gates
+are part of verify and browser:smoke, not optional screenshot polish.

@@ -49,7 +49,7 @@ export function DebateArena() {
     <>
       <form className={styles.form} onSubmit={submit}>
         <div className={styles.formHeader}>
-          <label htmlFor="timed-transcript">Timestamped speaker turns</label>
+          <label htmlFor="timed-transcript">Timestamped transcript</label>
           <button
             type="button"
             onClick={() => {
@@ -59,7 +59,7 @@ export function DebateArena() {
               setFictional(true);
             }}
           >
-            Load fictional example →
+            Try an example
           </button>
         </div>
         <textarea
@@ -85,7 +85,7 @@ export function DebateArena() {
             className="bb-button bb-button--primary"
             disabled={!transcript.trim()}
           >
-            Measure speaker airtime →
+            Analyse transcript
           </button>
           <button
             type="button"
@@ -112,7 +112,7 @@ export function DebateArena() {
           <p className={styles.eyebrow}>
             {isFictional ? 'Fictional illustration' : 'User-supplied transcript'} / Unverified
           </p>
-          <h2>Who spoke, according to these timestamps?</h2>
+          <h2>Speaking time.</h2>
           <p className={styles.warning}>
             Speaker names and timestamps were provided by the user. This is a deterministic
             calculation, not an authentication of the recording or a finding of moderator bias.
@@ -120,7 +120,7 @@ export function DebateArena() {
           <div className={styles.totals}>
             <div>
               <strong>{formatAirtime(report.recordedWindowSeconds)}</strong>
-              <span>Window covered by first and last timestamps</span>
+              <span>Transcript duration</span>
             </div>
             <div>
               <strong>{formatAirtime(report.simultaneousSpeakerSeconds)}</strong>
@@ -128,7 +128,7 @@ export function DebateArena() {
             </div>
             <div>
               <strong>{formatAirtime(report.unattributedSeconds)}</strong>
-              <span>Unattributed time, not necessarily silence</span>
+              <span>Unattributed time</span>
             </div>
           </div>
 

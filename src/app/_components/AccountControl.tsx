@@ -8,6 +8,7 @@ export function AccountControl() {
   const { data: session } = authClient.useSession();
   const path = usePathname();
   const router = useRouter();
+  if (!session && ['/sign-in', '/sign-up'].includes(path)) return null;
   if (!session)
     return (
       <Link

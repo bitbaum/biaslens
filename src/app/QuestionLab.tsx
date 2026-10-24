@@ -38,8 +38,8 @@ export function QuestionLab() {
   return (
     <div className={styles.diagram} aria-label="Try an illustrative investigation">
       <div className={styles.diagramTop}>
-        <span>CHANGE THE QUESTION</span>
-        <span>ILLUSTRATIVE / NOT A FINDING</span>
+        <span>A question worth asking</span>
+        <span>Illustrative example</span>
       </div>
       <div className={styles.labTopics} role="group" aria-label="Example subject">
         {examples.map((item, index) => (
@@ -64,25 +64,25 @@ export function QuestionLab() {
         </div>
         <div className={styles.diagramRow}>
           <div>
-            <span className={styles.diagramLabel}>THE FIRST IMPRESSION</span>
+            <span className={styles.diagramLabel}>What is being claimed</span>
             <p>{example.claim}</p>
           </div>
         </div>
         <div className={styles.diagramRow}>
           <div>
-            <span className={styles.diagramLabel}>AN ALTERNATIVE TO TEST</span>
+            <span className={styles.diagramLabel}>An alternative explanation</span>
             <p>{example.alternative}</p>
           </div>
         </div>
         <div className={styles.diagramRow}>
           <div>
-            <span className={styles.diagramLabel}>WHAT WOULD HELP US KNOW?</span>
+            <span className={styles.diagramLabel}>Evidence to look for</span>
             <p>{example.test}</p>
           </div>
         </div>
       </div>
       <div className={styles.diagramFooter}>
-        <Link href="/workspace">Bring your own question →</Link>
+        <Link href="/workspace">Open your workspace →</Link>
       </div>
     </div>
   );

@@ -1,198 +1,138 @@
-import { HeroSection } from '@bitbaum/sitekit/react';
 import Link from 'next/link';
-
-import { BRAND } from '@/lib/config/brand';
-
+import { HeroSection } from '@bitbaum/sitekit/react';
 import { QuestionLab } from './QuestionLab';
-
 import { EvidenceVerifier } from './EvidenceVerifier';
-
 import styles from './home.module.css';
-
-const STEPS = [
+const tools = [
   {
     number: '01',
-    title: 'Read the actual claim',
+    title: 'Examine text',
     description:
-      'Begin with what was said, by whom, and in which context. Separate observation from interpretation.',
+      'Bring an article or a passage. Find the claims, supporting quotes and assumptions.',
+    href: '/analyze',
+    input: 'URL or pasted text',
   },
   {
     number: '02',
-    title: 'Inspect the evidence',
+    title: 'Build an investigation',
     description:
-      'See which sources the text names, what is merely asserted and what still needs independent checking.',
+      'Keep a question, its sources and competing explanations together in your notebook.',
+    href: '/explore',
+    input: 'Your question and sources',
   },
   {
     number: '03',
-    title: 'Challenge the reasoning',
-    description:
-      'Find hidden assumptions, rival explanations, causal leaps and the evidence that would change the result.',
+    title: 'Analyse a conversation',
+    description: 'Measure speaking time and overlap in an interview, debate or earnings call.',
+    href: '/debates',
+    input: 'Timestamped transcript',
   },
-] as const;
-
+];
 export default function Home() {
   return (
-    <>
-      <main id="main-content">
-        <section className={styles.hero}>
-          <div className={`${styles.heroInner} bb-frame`}>
-            <div className={styles.heroContent}>
-              <HeroSection
-                appearance="application"
-                section={{
-                  kind: 'hero',
-                  eyebrow: 'A workspace for understanding the world',
-                  statement: 'Understand the world. One question at a time.',
-                  lead: [
-                    `${BRAND.name} brings questions, evidence, and competing explanations into focus. Explore science, history, economics, and public arguments. Follow the sources. Find the assumptions.`,
-                  ],
-                  actions: [
-                    { href: '/analyze', label: 'Examine an article →' },
-                    { href: '/workspace', label: 'Open your workspace →' },
-                  ],
-                }}
-              />
-              <p className={styles.notice}>
-                Beta research tool · AI-generated interpretations are not independent fact-checks
-              </p>
-            </div>
-
-            <QuestionLab />
+    <main id="main-content">
+      <section className={`bb-frame ${styles.hero}`}>
+        <div className={styles.heroContent}>
+          <p className={styles.kicker}>
+            <span aria-hidden="true" />A clearer view of the world
+          </p>
+          <HeroSection
+            appearance="application"
+            section={{
+              kind: 'hero',
+              statement: 'Look closer.\nThink further.',
+              lead: [
+                'Turn a source into a better question. Examine the claims, follow the evidence and see what could change your mind.',
+              ],
+              actions: [
+                { href: '/analyze', label: 'Examine an article' },
+                { href: '/workspace', label: 'Open workspace' },
+              ],
+            }}
+          />
+          <p className={styles.notice}>
+            No account needed to start. AI interpretations are provisional.
+          </p>
+          <div className={styles.subjects}>
+            <span>Science</span>
+            <span>Finance</span>
+            <span>Health</span>
+            <span>Public life</span>
+            <span>And your questions</span>
           </div>
-        </section>
-
-        <section className={`${styles.directory} bb-frame`} aria-labelledby="workspace-heading">
-          <div className={styles.sectionHeading}>
-            <div>
-              <p className={styles.sectionNumber}>ONE OPEN INVESTIGATION WORKSPACE</p>
-              <h2 id="workspace-heading">Choose a way in.</h2>
-            </div>
-            <p>Start with a question or a text. Read the method. Inspect the work behind it.</p>
-          </div>
-          <div className={styles.directoryRows}>
-            {[
-              [
-                '/explore',
-                '01',
-                'Explore a question',
-                'Keep exact source references, reasoning, and open challenges in a browser-local notebook.',
-              ],
-              [
-                '/analyze',
-                '02',
-                'Examine an argument',
-                'Inspect a supplied article with provisional AI analysis. Requires a configured model provider.',
-              ],
-              [
-                '/debates',
-                '03',
-                'Analyse a conversation',
-                'Calculate airtime and overlap from timestamped interviews, debates or earnings calls. No automatic transcription.',
-              ],
-              [
-                '/whitepaper',
-                '04',
-                'Read the technical paper',
-                'Inspect the evidence model, evaluation requirements, implementation boundaries, and failure cases.',
-              ],
-              [
-                '/development',
-                '05',
-                'Follow the work',
-                'Open the canonical project records, reviewed code changes, journal, and challenge channel.',
-              ],
-            ].map(([href, number, title, description]) => (
-              <Link href={href} key={href} className={styles.directoryRow}>
-                <span>{number}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
-                </div>
-                <span aria-hidden="true">→</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className={`${styles.process} bb-frame`} aria-labelledby="process-heading">
-          <div className={styles.sectionHeading}>
-            <div>
-              <p className={styles.sectionNumber}>THE APPROACH / 01—03</p>
-              <h2 id="process-heading">A more careful way to know.</h2>
-            </div>
-            <p>
-              No truth meter. No algorithm asking you to trust it. A transparent account of claims,
-              evidence, and uncertainty.
-            </p>
-          </div>
-          <ol className={styles.stepList}>
-            {STEPS.map((step) => (
-              <li key={step.number}>
-                <span className={styles.stepNumber}>{step.number}</span>
-                <div>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section className={styles.openSection} aria-labelledby="open-heading">
+        </div>
+        <QuestionLab />
+      </section>
+      <section className={`bb-frame ${styles.paths}`} aria-labelledby="tools-title">
+        <div className={styles.sectionHeading}>
           <div>
-            <p className={styles.sectionNumber}>THE RULES CAN BE WRONG TOO</p>
-            <h2 id="open-heading">
-              Question <em>the method.</em>
-            </h2>
-            <p>
-              The process is public, versioned and open to criticism. Present counterevidence,
-              challenge assumptions or propose a better test. No single model—or institution—gets
-              the final word by decree.
-            </p>
-            <Link href="/methodology" className={styles.textLink}>
-              Read and challenge the methodology <span aria-hidden="true">→</span>
+            <p className={styles.kicker}>THE WORKSPACE</p>
+            <h2 id="tools-title">Three ways to look closer.</h2>
+          </div>
+          <p>
+            Start with what you have.
+            <br />
+            Keep the reasoning open to challenge.
+          </p>
+        </div>
+        <div className={styles.toolGrid}>
+          {tools.map((tool) => (
+            <Link href={tool.href} className={styles.toolCard} key={tool.href}>
+              <span className={styles.toolNumber}>
+                {tool.number}
+                <span aria-hidden="true">→</span>
+              </span>
+              <h3>{tool.title}</h3>
+              <p>{tool.description}</p>
+              <small>{tool.input}</small>
             </Link>
+          ))}
+        </div>
+      </section>
+      <section className={`bb-frame ${styles.method}`} aria-labelledby="method-title">
+        <div>
+          <p className={styles.kicker}>A METHOD YOU CAN INSPECT</p>
+          <h2 id="method-title">The evidence stays in view.</h2>
+          <p>
+            See the passage behind a claim. Separate an observation from an interpretation. Ask what
+            a conclusion depends on.
+          </p>
+          <Link href="/methodology">Read our method →</Link>
+        </div>
+        <ol>
+          {[
+            { title: 'Trace the source', text: 'Inspect the exact text behind an assessment.' },
+            { title: 'Test the explanation', text: 'Look for assumptions and alternative causes.' },
+            {
+              title: 'Keep uncertainty visible',
+              text: 'Distinguish what is supported from what still needs checking.',
+            },
+          ].map((item, index) => (
+            <li key={item.title}>
+              <span>0{index + 1}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section className={`bb-frame ${styles.lab}`} aria-labelledby="lab-title">
+        <div>
+          <p className={styles.kicker}>A SMALL EXPERIMENT</p>
+          <h2 id="lab-title">Ten headlines. One source?</h2>
+          <p>Explore why repeated claims are not independent evidence.</p>
+        </div>
+        <details className={styles.labDetails}>
+          <summary>
+            Try the evidence-counting demonstration <span aria-hidden="true">+</span>
+          </summary>
+          <div className={styles.labContent}>
+            <EvidenceVerifier />
           </div>
-          <div className={styles.principles}>
-            <div>
-              <span>01</span>
-              <strong>Traceable origins</strong>
-              <p>Know where a proposition or interpretation came from.</p>
-            </div>
-            <div>
-              <span>02</span>
-              <strong>Visible uncertainty</strong>
-              <p>Missing evidence must remain missing, not be filled with guesses.</p>
-            </div>
-            <div>
-              <span>03</span>
-              <strong>Revisable conclusions</strong>
-              <p>A strong challenge can change the recorded assessment.</p>
-            </div>
-          </div>
-        </section>
-
-        <section className={`${styles.lab} bb-frame`} aria-labelledby="lab-heading">
-          <div className={styles.labHeader}>
-            <div>
-              <p className={styles.sectionNumber}>IN THE LAB / EDUCATIONAL DEMO</p>
-              <h2 id="lab-heading">Why counting evidence is not enough.</h2>
-            </div>
-            <p>
-              Ten copied headlines are not ten independent sources. Explore the failure of a
-              count-only system before treating a score as fact.
-            </p>
-          </div>
-          <details className={styles.labDetails}>
-            <summary>
-              Open the evidence-counting demonstration <span aria-hidden="true">↓</span>
-            </summary>
-            <div className={styles.labContent}>
-              <EvidenceVerifier />
-            </div>
-          </details>
-        </section>
-      </main>
-    </>
+        </details>
+      </section>
+    </main>
   );
 }

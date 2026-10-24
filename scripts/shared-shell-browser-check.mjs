@@ -13,20 +13,34 @@ try {
   for (const width of [390, 834, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(base + '/analyze', { waitUntil: 'networkidle' });
-    await page.getByRole('heading', { name: 'Read between the lines.' }).waitFor();
+    await page.getByRole('heading', { name: 'Examine text.' }).waitFor();
     await page.getByRole('link', { name: 'Sign in', exact: true }).waitFor();
     assert.equal(
       await page.evaluate(() => document.documentElement.scrollWidth > innerWidth),
       false,
       'viewport overflow at ' + width,
     );
+    const titleStyle = await page.locator('h1').evaluate((el) => ({
+      font: getComputedStyle(el).fontFamily,
+      size: parseFloat(getComputedStyle(el).fontSize),
+      weight: parseInt(getComputedStyle(el).fontWeight),
+    }));
+    assert.match(titleStyle.font, /Inter/);
+    assert.ok(
+      titleStyle.size >= 30 && titleStyle.size <= 44,
+      'application title scale at ' + width,
+    );
+    assert.ok(titleStyle.weight >= 600, 'application title weight');
+    const headerHeight = (await page.locator('.sk-masthead').boundingBox()).height;
+    assert.ok(headerHeight >= 64 && headerHeight <= 70, 'compact shared header at ' + width);
+    assert.equal(await page.locator('.sk-footer-group').count(), 2);
     if (width <= 1100) {
       const menu = page.locator('[data-sitekit-menu]');
       const summary = menu.locator('summary');
       await summary.click();
       assert.equal(await menu.evaluate((el) => el.open), true);
       const links = menu.getByRole('link');
-      assert.equal(await links.count(), 5);
+      assert.equal(await links.count(), 4);
       for (const link of await links.all()) assert.ok((await link.boundingBox()).height >= 44);
       await links.first().focus();
       await page.keyboard.press('Escape');
@@ -36,13 +50,13 @@ try {
       await page.mouse.click(4, 500);
       assert.equal(await menu.evaluate((el) => el.open), false);
       await summary.click();
-      await menu.getByRole('link', { name: 'Investigate', exact: true }).click();
+      await menu.getByRole('link', { name: 'Notebook', exact: true }).click();
       await page.waitForURL('**/explore');
       assert.equal(await menu.evaluate((el) => el.open), false);
       await summary.click();
       assert.equal(
         await menu
-          .getByRole('link', { name: 'Investigate', exact: true })
+          .getByRole('link', { name: 'Notebook', exact: true })
           .getAttribute('aria-current'),
         'page',
       );
@@ -96,11 +110,24 @@ try {
   );
   await page.goto(base + '/sign-in', { waitUntil: 'networkidle' });
   assert.equal(
-    await page
-      .locator('.sk-masthead')
-      .getByRole('link', { name: 'Sign in', exact: true })
-      .getAttribute('href'),
-    '/sign-in?next=%2Fworkspace',
+    await page.locator('.sk-masthead').getByRole('link', { name: 'Sign in', exact: true }).count(),
+    0,
+    'auth screens do not repeat the sign-in navigation action',
+  );
+  await page.getByLabel('Email', { exact: true }).waitFor();
+  await page.getByLabel('Password', { exact: true }).waitFor();
+  assert.equal((await page.locator('.account-card .acct-auth-button').count()) > 0, true);
+  const authColors = await page
+    .locator('.account-card .acct-auth-button')
+    .first()
+    .evaluate((el) => ({
+      action: getComputedStyle(el).backgroundColor,
+      ink: getComputedStyle(document.body).color,
+    }));
+  assert.equal(
+    authColors.action,
+    authColors.ink,
+    'auth action uses the product ink role, not a package default accent',
   );
   await page
     .getByText('Your current notebook is saved in this browser', { exact: false })
@@ -108,7 +135,7 @@ try {
   await page.goto(base + '/');
   await page.evaluate(() => document.fonts.ready);
   assert.equal(await page.evaluate(() => document.fonts.check('16px Inter')), true);
-  assert.equal(await page.evaluate(() => document.fonts.check('48px "Instrument Serif"')), true);
+  assert.match(await page.locator('h1').evaluate((el) => getComputedStyle(el).fontFamily), /Inter/);
   assert.deepEqual(errors, []);
   const signedIn = await browser.newContext({ viewport: { width: 390, height: 844 } });
   await signedIn.route('**/api/auth/get-session**', (route) =>

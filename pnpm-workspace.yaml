@@ -4,7 +4,7 @@
 allowBuilds:
   esbuild: true
   unrs-resolver: true
-# Reviewed first-party reader fix, exercised by BiasLens user tests.
+# Reviewed exact first-party releases, exercised by BiasLens browser and user-flow tests.
 minimumReleaseAgeExclude:
   - '@bitbaum/ai-kit@1.21.3'
-  - '@bitbaum/sitekit@0.4.0'
+  - '@bitbaum/sitekit@0.4.2'

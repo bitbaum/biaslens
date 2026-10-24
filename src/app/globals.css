@@ -1,77 +1,3 @@
-:root {
-  /* BiasLens identity: editorial paper, dark ink, investigative teal. */
-  --primitive-ink-900: #1c1917;
-  --primitive-stone-500: #78716c;
-  --primitive-stone-200: #e7e5e4;
-  --primitive-stone-50: #f5f5f4;
-  --primitive-teal-600: #0d6e78;
-  --primitive-green-700: #15803d;
-  --primitive-red-700: #b91c1c;
-  --primitive-paper: #faf8f5;
-  --primitive-white: #ffffff;
-
-  --color-bg: hsl(var(--surface-page));
-  --color-surface: hsl(var(--surface-base));
-  --color-surface-muted: hsl(var(--surface-raised));
-  --color-border: hsl(var(--border-subtle));
-  --color-text: hsl(var(--text-primary));
-  --color-text-muted: hsl(var(--text-secondary));
-  --color-brand: var(--primitive-teal-600);
-  --color-action: var(--primitive-teal-600);
-  --color-on-action: var(--primitive-white);
-  --color-focus: var(--primitive-teal-600);
-  --color-tone-positive: var(--primitive-green-700);
-  --color-tone-negative: var(--primitive-red-700);
-  --color-tone-neutral: var(--primitive-stone-500);
-
-  /* Shared brand-neutral composition maps to our editorial palette. */
-  --bb-frame-max: var(--layout-shell);
-  --bb-gutter: var(--layout-gutter);
-  --bb-measure: var(--measure-copy);
-  --bb-action-bg: var(--color-text);
-  --bb-action-fg: var(--color-surface);
-  --bb-control-bg: var(--color-bg);
-  --bb-control-fg: var(--color-text);
-  --bb-line: var(--color-border);
-  --bb-muted: var(--color-text-muted);
-  --bb-focus: var(--color-focus);
-  --bb-radius-control: var(--radius-btn);
-
-  /* Theme adapters only: the packages own geometry, interaction and fonts. */
-  --sk-bg: var(--color-bg);
-  --sk-fg: var(--color-text);
-  --sk-muted: var(--color-text-muted);
-  --sk-raised: var(--color-surface-muted);
-  --sk-line: var(--color-border);
-  --sk-focus: var(--color-focus);
-  --sk-font: var(--font-sans);
-  --sk-display: var(--font-display);
-  --sk-mono: var(--font-mono);
-  --sk-width: var(--layout-shell);
-  --sk-gutter: var(--layout-gutter);
-  --sk-radius: var(--radius-btn);
-  --sk-hero-space: clamp(2.5rem, 6vw, 5rem);
-  --acct-action: var(--color-text);
-  --acct-on-action: var(--color-surface);
-  --acct-focus: var(--color-focus);
-  --acct-panel: var(--color-surface);
-  --acct-fg: var(--color-text);
-  --acct-fg-2: var(--color-text-muted);
-  --acct-fg-3: var(--color-text-muted);
-  --acct-line: var(--color-border);
-  --acct-line-2: var(--color-border);
-
-  /* Spatial and typographic roles shared by this product's screens. */
-  --layout-shell: var(--shell-max);
-  --layout-gutter: clamp(16px, 3.5vw, 40px);
-  --layout-section: var(--section-py);
-
-  --font-editorial: var(--font-display);
-
-  --radius-card: var(--radius-surface);
-  --radius-btn: var(--radius-control);
-}
-
 *,
 *::before,
 *::after {
@@ -123,7 +49,7 @@ summary:focus-visible {
 }
 
 ::selection {
-  background: #cee8e7;
+  background: var(--color-surface-muted);
   color: var(--color-text);
 }
 
@@ -143,4 +69,32 @@ summary:focus-visible {
 
 body > main {
   flex: 1;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-sans);
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+main {
+  min-width: 0;
+}
+main p a {
+  color: var(--color-brand);
+}
+main h1,
+main h2,
+main h3 {
+  overflow-wrap: anywhere;
 }

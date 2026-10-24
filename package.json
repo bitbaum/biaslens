@@ -27,7 +27,7 @@
     "@bitbaum/ai-kit": "^1.21.3",
     "@bitbaum/design-tokens": "github:bitbaum/design-tokens#v1.2.0",
     "@bitbaum/mail-kit": "^0.2.0",
-    "@bitbaum/sitekit": "0.4.0",
+    "@bitbaum/sitekit": "0.4.2",
     "@paralleldrive/cuid2": "^3.3.0",
     "better-auth": "^1.7.12",
     "bip-kit": "^0.6.0",

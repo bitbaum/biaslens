@@ -16,10 +16,9 @@ const chrome = {
 };
 const navigation = [
   { path: 'workspace', label: 'Workspace' },
-  { path: 'analyze', label: 'Examine' },
-  { path: 'explore', label: 'Investigate' },
+  { path: 'analyze', label: 'Examine text' },
+  { path: 'explore', label: 'Notebook' },
   { path: 'debates', label: 'Conversations' },
-  { path: 'methodology', label: 'Our method' },
 ] as const;
 
 /** Product configuration only; sitekit owns all shared shell markup and behavior. */
