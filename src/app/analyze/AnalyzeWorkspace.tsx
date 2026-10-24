@@ -328,7 +328,7 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
         </p>
         {report.origin.url && (
           <a className={styles.source} href={report.origin.url} target="_blank" rel="noreferrer">
-            Open supplied source ↗
+            Open supplied source →
           </a>
         )}
         {report.origin.truncated && (
@@ -439,7 +439,7 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
           Analysed {report.origin.modelChars.toLocaleString()} characters ·{' '}
           {(report.durationMs / 1_000).toFixed(1)}s{report.modelId ? ' · ' + report.modelId : ''}
         </span>
-        <Link href="/methodology">Question or challenge the methodology ↗</Link>
+        <Link href="/methodology">Question or challenge the methodology →</Link>
         <button
           className={`${styles.exportBtn} bb-button bb-button--secondary`}
           type="button"

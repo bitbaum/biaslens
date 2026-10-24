@@ -69,7 +69,7 @@ export default function DevelopmentPage() {
             <li key={record.title}>
               <Link href={record.href}>
                 <span className={styles.meta}>0{index + 1} / OPEN RECORD</span>
-                <h2>{record.title} ↗</h2>
+                <h2>{record.title} →</h2>
                 <p>{record.detail}</p>
               </Link>
             </li>

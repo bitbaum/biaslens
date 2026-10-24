@@ -41,7 +41,7 @@ if [[ "$ready" -ne 1 ]]; then
   exit 1
 fi
 
-for page in 'home|/|Understand the world.' 'analyze|/analyze|Read between the lines.' 'method|/methodology|Truth is not a vote.' 'journal|/blog|Arguments deserve better questions.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage' 'arena|/debates|Who actually got the floor?' 'explore|/explore|What do you want to understand?' 'whitepaper|/whitepaper|Open investigation, inspectable evidence' 'development|/development|See how it is built.' 'roadmap|/roadmap|Roadmap' 'changelog|/changelog|Changelog' 'signin|/sign-in|Welcome back.' 'signup|/sign-up|Keep asking better questions.'; do
+for page in 'home|/|Understand the world.' 'workspace|/workspace|Follow a question.' 'analyze|/analyze|Read between the lines.' 'method|/methodology|Truth is not a vote.' 'journal|/blog|Arguments deserve better questions.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage' 'arena|/debates|Who actually got the floor?' 'explore|/explore|What do you want to understand?' 'whitepaper|/whitepaper|Open investigation, inspectable evidence' 'development|/development|See how it is built.' 'roadmap|/roadmap|Roadmap' 'changelog|/changelog|Changelog' 'signin|/sign-in|Welcome back.' 'signup|/sign-up|Keep asking better questions.'; do
   IFS='|' read -r slug route expected <<< "$page"
   url="http://127.0.0.1:3000$route"
 

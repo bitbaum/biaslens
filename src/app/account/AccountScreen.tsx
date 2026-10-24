@@ -16,7 +16,8 @@ export async function AccountScreen({
   mode: 'sign-in' | 'sign-up' | 'account';
   next?: string;
 }) {
-  const next = returnPath(requested, '/analyze');
+  const safeNext = returnPath(requested, '/workspace');
+  const next = /^\/(?:sign-in|sign-up)(?:[/?#]|$)/.test(safeNext) ? '/workspace' : safeNext;
   const status = authStatus();
   const session = await getSession();
   if (session && mode !== 'account') redirect(next);
@@ -36,13 +37,17 @@ export async function AccountScreen({
           <p>YOUR BIASLENS ACCOUNT</p>
           <h1>
             {mode === 'account'
-              ? 'Your account'
+              ? 'Profile & security'
               : mode === 'sign-up'
                 ? 'Keep asking better questions.'
                 : 'Welcome back.'}
           </h1>
-          <p>Use a display name. Your research stays yours.</p>
+          <p>Choose a display name. Manage your identity and sign-in methods.</p>
         </header>
+        <p className="account-storage-note">
+          Article examination and investigations work without an account. Your current notebook is
+          saved in this browser, not synced to your account. Export a copy before changing devices.
+        </p>
         <div className="account-card">
           {status.ready ? (
             <AccountForms

@@ -1,6 +1,7 @@
 /** Product paths and canonical development surfaces. Hosting identifiers stay stable. */
 export const ROUTES = {
   home: '/',
+  workspace: '/workspace',
   explore: '/explore',
   analyze: '/analyze',
   account: '/account',

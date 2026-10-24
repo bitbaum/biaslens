@@ -6,14 +6,13 @@ import { useEffect, useState } from 'react';
 import { ROUTES } from '@/lib/config/routes';
 import {
   EMPTY_INQUIRY,
+  INQUIRY_STORAGE_KEY,
   isSourceURL,
   parseInquiryRecord,
   type InquiryRecord,
 } from '@/lib/domain/inquiry-record';
 
 import styles from './explore.module.css';
-
-const STORAGE_KEY = 'biaslens:inquiry:v1';
 
 export function InquiryDesk() {
   const [record, setRecord] = useState<InquiryRecord>(EMPTY_INQUIRY);
@@ -26,7 +25,7 @@ export function InquiryDesk() {
     queueMicrotask(() => {
       if (cancelled) return;
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(INQUIRY_STORAGE_KEY);
         if (raw) {
           const restored = parseInquiryRecord(JSON.parse(raw));
           if (restored) setRecord(restored);
@@ -53,7 +52,7 @@ export function InquiryDesk() {
     queueMicrotask(() => {
       if (cancelled) return;
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
+        localStorage.setItem(INQUIRY_STORAGE_KEY, JSON.stringify(record));
         setStatus('Saved in this browser only. Export a copy to keep it.');
       } catch {
         setStatus('Could not save. Export your notes before leaving.');
@@ -173,7 +172,7 @@ export function InquiryDesk() {
                     <strong>{source.title}</strong> · Unverified lead
                   </p>
                   <a href={source.url} target="_blank" rel="noopener noreferrer">
-                    Open original source ↗
+                    Open original source →
                   </a>
                   <p>
                     {source.locator} · Your annotation: {source.stance}
@@ -297,7 +296,7 @@ export function InquiryDesk() {
                 )
                   return;
                 try {
-                  localStorage.removeItem(STORAGE_KEY);
+                  localStorage.removeItem(INQUIRY_STORAGE_KEY);
                 } catch {
                   /* UI remains usable without storage. */
                 }
