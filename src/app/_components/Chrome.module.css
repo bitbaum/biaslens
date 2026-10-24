@@ -231,7 +231,18 @@
   flex-shrink: 0;
 }
 @media (min-width: 761px) and (max-width: 1100px) {
+  .frame {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-block: 9px;
+  }
+  .nav {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: space-between;
+  }
   .repository {
-    display: none;
+    display: inline-flex;
+    margin-left: auto;
   }
 }

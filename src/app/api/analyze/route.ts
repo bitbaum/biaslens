@@ -2,6 +2,7 @@ import { complete, freeChain, usableChain } from '@bitbaum/ai-kit';
 import { readPage } from '@bitbaum/ai-kit/web';
 import { clientIp, slidingWindow, toHeaders } from 'limitkit';
 
+import { buildBrand } from '@/lib/config/brand';
 import { analyzeArticle, AnalysisFailure } from '@/lib/analysis/run';
 import { parseAnalyzeInput } from '@/lib/analysis/input';
 
@@ -53,7 +54,10 @@ export async function POST(request: Request) {
   const origin = request.headers.get('origin');
   if (origin) {
     try {
-      if (new URL(origin).origin !== new URL(request.url).origin) {
+      // The reverse proxy terminates HTTPS; request.url may name the internal
+      // listener. Trust the configured public origin, never forwarded headers.
+      const expected = buildBrand(process.env).siteOrigin ?? new URL(request.url).origin;
+      if (new URL(origin).origin !== expected) {
         return Response.json(errorBody('ORIGIN_DENIED', 'Request origin is not allowed.'), {
           status: 403,
         });

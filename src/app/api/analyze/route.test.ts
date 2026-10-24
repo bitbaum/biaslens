@@ -126,3 +126,25 @@ describe('POST /api/analyze', () => {
     expect(mocks.complete.mock.calls.length).toBe(spent);
   });
 });
+
+it('accepts the configured public origin behind the proxy and refuses a spoofed forwarded origin', async () => {
+  vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://biaslens.example');
+  try {
+    const make = (origin: string) =>
+      new Request('http://localhost:4038/api/analyze', {
+        method: 'POST',
+        headers: {
+          origin,
+          'content-type': 'application/json',
+          'x-forwarded-for': '203.0.113.89',
+          'x-forwarded-host': 'attacker.example',
+          'x-forwarded-proto': 'https',
+        },
+        body: JSON.stringify({ text: TEXT }),
+      });
+    expect((await POST(make('https://biaslens.example'))).status).toBe(200);
+    expect((await POST(make('https://attacker.example'))).status).toBe(403);
+  } finally {
+    vi.unstubAllEnvs();
+  }
+});
