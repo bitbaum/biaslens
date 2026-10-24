@@ -108,6 +108,7 @@ export async function POST(request: Request) {
     );
   }
 
+  const modelSignal = AbortSignal.any([request.signal, AbortSignal.timeout(75_000)]);
   try {
     const result = await analyzeArticle(input.data, {
       readPage: (url) => readPage(url, { maxChars: 20_000, maxBytes: 1_000_000 }),
@@ -115,11 +116,12 @@ export async function POST(request: Request) {
         const response = await complete({
           chain,
           messages,
-          signal: AbortSignal.any([request.signal, AbortSignal.timeout(75_000)]),
+          signal: modelSignal,
           timeoutMs: 22_000,
           maxTokens: 3_600,
           temperature: 0.2,
           reasoning: 'light',
+          extraBody: { response_format: { type: 'json_object' } },
         });
         return { text: response.text, modelId: response.id };
       },

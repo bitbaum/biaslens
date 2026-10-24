@@ -5,6 +5,8 @@ Public product name: **BiasLens**. Canonical product repository: `bitbaum/biasle
 Open-source investigation of questions, evidence, media, historical narratives and public arguments.
 See the [consolidation ledger](docs/consolidation.md) for donor history,
 source inventory and coordinated runtime identity application.
+Article reports require the insight and passage-grounding fields; a malformed model response gets one bounded schema repair instead of silently falling back to an older report. Citation links in fetched pages remain article-supplied references, not independently authenticated evidence.
+
 The first working slice takes **an article URL or pasted text** and produces a
 provisional, first-principles analysis. It separates an article's factual,
 normative and causal claims, notes apparent support *inside* the text, surfaces

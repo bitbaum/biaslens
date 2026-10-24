@@ -138,7 +138,8 @@ export function DebateArena() {
                 <div className={styles.speakerHeader}>
                   <strong>{person.speaker}</strong>
                   <span>
-                    {formatAirtime(person.airtimeSeconds)} · {person.turns} turns ·{' '}
+                    {formatAirtime(person.airtimeSeconds)} · {person.turns}{' '}
+                    {person.turns === 1 ? 'turn' : 'turns'} ·{' '}
                     {person.shareOfSpeakerSeconds.toFixed(1)}% of speaker-seconds
                   </span>
                 </div>

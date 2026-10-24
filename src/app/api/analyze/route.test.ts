@@ -8,12 +8,19 @@ const mocks = vi.hoisted(() => {
     publication_date: null,
     language: 'en',
     summary: 'This report describes policy proposals.',
+    insight: {
+      headline: 'A proposal is not an outcome.',
+      explanation: 'Predictions need a comparison.',
+      assumption: 'Other conditions stay the same.',
+      test: 'Compare matched cases.',
+    },
     core_claims: [
       {
         claim: 'The policy would increase investment.',
         type: 'causal',
         supported_in_article: false,
         evidence_quality: 'asserted',
+        source_quote: null,
       },
     ],
     first_principles_critique: 'What is the identified mechanism?',
@@ -95,7 +102,7 @@ describe('POST /api/analyze', () => {
     expect(output.result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(output.result.run).toMatchObject({
       methodVersion: '0.1.0',
-      promptVersion: 'first-principles@2',
+      promptVersion: 'first-principles@3',
     });
     expect(output.result.origin).toMatchObject({
       attribution: 'user-asserted',

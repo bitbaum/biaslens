@@ -26,6 +26,7 @@ export function AnalyzeWorkspace() {
   const [text, setText] = useState('');
   const [report, setReport] = useState<ArticleAnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sourceFailed, setSourceFailed] = useState(false);
   const [busy, setBusy] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -37,6 +38,7 @@ export function AnalyzeWorkspace() {
     if (busy || !canSubmit) return;
     setBusy(true);
     setError(null);
+    setSourceFailed(false);
     setReport(null);
 
     const controller = new AbortController();
@@ -58,9 +60,12 @@ export function AnalyzeWorkspace() {
       const result = payload as {
         ok?: boolean;
         result?: ArticleAnalysisResult;
-        error?: { message?: string };
+        error?: { code?: string; message?: string };
       };
       if (!response.ok || !result.ok || !result.result) {
+        setSourceFailed(
+          ['SOURCE_UNAVAILABLE', 'SOURCE_TOO_SHORT'].includes(result.error?.code || ''),
+        );
         throw new Error(result.error?.message || 'The article could not be analysed.');
       }
       setReport(result.result);
@@ -103,6 +108,7 @@ export function AnalyzeWorkspace() {
             <button
               type="button"
               className={mode === 'url' ? styles.activeMode : styles.modeButton}
+              disabled={busy}
               aria-pressed={mode === 'url'}
               onClick={() => {
                 setMode('url');
@@ -114,6 +120,7 @@ export function AnalyzeWorkspace() {
             <button
               type="button"
               className={mode === 'text' ? styles.activeMode : styles.modeButton}
+              disabled={busy}
               aria-pressed={mode === 'text'}
               onClick={() => {
                 setMode('text');
@@ -146,6 +153,7 @@ export function AnalyzeWorkspace() {
             </label>
             <input
               id="article-url"
+              disabled={busy}
               className={`${styles.input} bb-control`}
               type="url"
               placeholder="https://example.com/news/article"
@@ -166,6 +174,7 @@ export function AnalyzeWorkspace() {
                 </label>
                 <textarea
                   id="article-text"
+                  disabled={busy}
                   className={`${styles.textarea} bb-control`}
                   placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
                   rows={9}
@@ -221,7 +230,7 @@ export function AnalyzeWorkspace() {
               <div role="alert" className={styles.error}>
                 <strong>Analysis unavailable</strong>
                 <p>{error}</p>
-                {mode === 'url' && (
+                {mode === 'url' && sourceFailed && (
                   <button
                     type="button"
                     className={styles.pasteFallback}
