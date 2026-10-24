@@ -26,7 +26,7 @@ export function AccountForms({
         user={{ ...user, role: user.role || 'member', twoFactorEnabled: !!user.twoFactorEnabled }}
         linked={linked}
         accountPath="/account"
-        homePath="/analyze"
+        homePath="/workspace"
       />
     );
   if (mode === 'sign-up')

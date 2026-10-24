@@ -15,11 +15,11 @@ const chrome = {
     'Explore questions, inspect evidence and challenge explanations. An open, revisable method.',
 };
 const navigation = [
+  { path: 'workspace', label: 'Workspace' },
   { path: 'analyze', label: 'Examine' },
-  { path: 'explore', label: 'Explore' },
-  { path: 'debates', label: 'Debate Arena' },
-  { path: 'whitepaper', label: 'White paper' },
-  { path: 'development', label: 'Build in public' },
+  { path: 'explore', label: 'Investigate' },
+  { path: 'debates', label: 'Conversations' },
+  { path: 'methodology', label: 'Our method' },
 ] as const;
 
 /** Product configuration only; sitekit owns all shared shell markup and behavior. */

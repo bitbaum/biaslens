@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 import { BRAND } from '@/lib/config/brand';
 
+import { QuestionLab } from './QuestionLab';
+
 import { EvidenceVerifier } from './EvidenceVerifier';
 
 import styles from './home.module.css';
@@ -46,7 +48,7 @@ export default function Home() {
                   ],
                   actions: [
                     { href: '/analyze', label: 'Examine an article →' },
-                    { href: '/explore', label: 'Explore a question ↗' },
+                    { href: '/workspace', label: 'Open your workspace →' },
                   ],
                 }}
               />
@@ -55,46 +57,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className={styles.diagram} aria-label="Illustration of the investigation process">
-              <div className={styles.diagramTop}>
-                <span>ANATOMY OF A CLAIM</span>
-                <span>ILLUSTRATIVE / NOT A FINDING</span>
-              </div>
-              <div className={styles.diagramBody}>
-                <div className={styles.diagramQuestion}>
-                  <span className={styles.diagramLabel}>QUESTION</span>
-                  <strong>Does policy A really cause outcome B?</strong>
-                </div>
-                <div className={styles.diagramConnector}>
-                  <span className={styles.diagramDot} aria-hidden="true" />
-                  <span>requires evidence</span>
-                </div>
-                <div className={styles.diagramRow}>
-                  <div>
-                    <span className={styles.diagramLabel}>HYPOTHESIS</span>
-                    <p>A may affect B</p>
-                  </div>
-                  <span className={styles.diagramPill}>Provisional</span>
-                </div>
-                <div className={styles.diagramRow}>
-                  <div>
-                    <span className={styles.diagramLabel}>CAUSAL LINK</span>
-                    <p>Other explanations?</p>
-                  </div>
-                  <span className={styles.diagramPill}>Unresolved</span>
-                </div>
-                <div className={styles.diagramRow}>
-                  <div>
-                    <span className={styles.diagramLabel}>INDEPENDENT SOURCE</span>
-                    <p>What would test it?</p>
-                  </div>
-                  <span className={styles.diagramMissing}>Not yet supplied</span>
-                </div>
-              </div>
-              <div className={styles.diagramFooter}>
-                <span>↑</span>A question is the beginning of an investigation, not a verdict.
-              </div>
-            </div>
+            <QuestionLab />
           </div>
         </section>
 
@@ -123,8 +86,8 @@ export default function Home() {
               [
                 '/debates',
                 '03',
-                'Measure a debate',
-                'Calculate airtime and overlap from user-supplied timed transcripts. No automatic transcription.',
+                'Analyse a conversation',
+                'Calculate airtime and overlap from timestamped interviews, debates or earnings calls. No automatic transcription.',
               ],
               [
                 '/whitepaper',
@@ -145,7 +108,7 @@ export default function Home() {
                   <h3>{title}</h3>
                   <p>{description}</p>
                 </div>
-                <span aria-hidden="true">↗</span>
+                <span aria-hidden="true">→</span>
               </Link>
             ))}
           </div>
@@ -187,7 +150,7 @@ export default function Home() {
               the final word by decree.
             </p>
             <Link href="/methodology" className={styles.textLink}>
-              Read and challenge the methodology <span aria-hidden="true">↗</span>
+              Read and challenge the methodology <span aria-hidden="true">→</span>
             </Link>
           </div>
           <div className={styles.principles}>

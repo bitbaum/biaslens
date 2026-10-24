@@ -1,5 +1,7 @@
 import type { EvidenceStance } from './epistemic-graph';
 
+export const INQUIRY_STORAGE_KEY = 'biaslens:inquiry:v1';
+
 export interface InquirySource {
   id: string;
   title: string;

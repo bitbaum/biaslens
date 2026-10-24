@@ -13,7 +13,7 @@ export default function NotFound() {
           ],
           actions: [
             { href: '/analyze', label: 'Examine an article →' },
-            { href: '/explore', label: 'Open the notebook ↗' },
+            { href: '/explore', label: 'Open the notebook →' },
           ],
         }}
       />

@@ -463,3 +463,33 @@
     grid-template-columns: 24px minmax(0, 1fr) 18px;
   }
 }
+
+.labTopics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid var(--color-border);
+}
+.labTopics button {
+  min-height: 48px;
+  font: 600 12px var(--font-sans);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.labTopics button[aria-pressed='true'] {
+  color: var(--color-brand);
+  border-bottom-color: var(--color-brand);
+  background: var(--color-bg);
+}
+.labTopics button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: -4px;
+}
+.diagramFooter a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-brand);
+}

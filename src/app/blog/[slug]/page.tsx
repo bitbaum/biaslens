@@ -62,7 +62,7 @@ export default async function JournalPost({ params }: { params: Promise<{ slug: 
           </div>
         </article>
         <footer className={styles.articleFooter}>
-          <Link href="/methodology">Read and challenge our method ↗</Link>
+          <Link href="/methodology">Read and challenge our method →</Link>
           <Link href="/blog">Back to the journal →</Link>
         </footer>
       </main>

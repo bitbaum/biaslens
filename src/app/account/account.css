@@ -35,3 +35,11 @@
 .account-card p {
   line-height: 1.6;
 }
+
+.account-storage-note {
+  max-width: 60ch;
+  margin: 0 auto 28px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}

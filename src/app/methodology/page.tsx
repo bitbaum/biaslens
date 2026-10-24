@@ -84,13 +84,13 @@ export default function MethodologyPage() {
               className={`${styles.actionPrimary} bb-button bb-button--primary`}
               href="https://github.com/bitbaum/biaslens/issues/new?template=methodology-challenge.yml"
             >
-              Challenge the method ↗
+              Challenge the method →
             </a>
             <a
               className={`${styles.actionSecondary} bb-button bb-button--secondary`}
               href="https://github.com/bitbaum/biaslens/blob/main/docs/methodology/open-epistemic-method-v0.1.md"
             >
-              Read the complete protocol ↗
+              Read the complete protocol →
             </a>
           </div>
           <p className={styles.caveat}>
@@ -177,7 +177,7 @@ export default function MethodologyPage() {
             </div>
           </div>
           <a className={styles.bottomLink} href="https://github.com/bitbaum/biaslens/issues">
-            Browse public discussions and challenges ↗
+            Browse public discussions and challenges →
           </a>
         </section>
       </main>

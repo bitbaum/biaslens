@@ -4,9 +4,9 @@ import { DebateArena } from './DebateArena';
 import styles from './arena.module.css';
 
 export const metadata = {
-  title: 'Debate Arena',
+  title: 'Analyse a conversation',
   description:
-    'Explore airtime from timestamped political debates and public discussions with open, reviewable rules.',
+    'Explore airtime from timestamped interviews, earnings calls, debates and public discussions with open, reviewable rules.',
 };
 
 export default function DebatePage() {
@@ -14,11 +14,12 @@ export default function DebatePage() {
     <>
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>Debate Arena / First measurable layer</p>
+          <p className={styles.eyebrow}>Conversation analysis / Timed transcripts</p>
           <h1>Who actually got the floor?</h1>
           <p className={styles.lead}>
-            Begin with timestamped speaker turns. Compare speaking time and overlap without
-            pretending a stopwatch proves fairness, intentions or factual truth.
+            Bring a debate, interview, earnings call or panel as timestamped speaker turns. Compare
+            speaking time and overlap without pretending a stopwatch proves fairness, intentions or
+            factual truth.
           </p>
           <p className={styles.note}>
             This beta works with a manually timed transcript. Automatic video transcription,
@@ -35,7 +36,7 @@ export default function DebatePage() {
             independent, timestamped review.
           </p>
           <Link href="/blog/how-to-measure-a-political-debate">
-            Read the public methodology for analysing debates ↗
+            Read the public methodology for analysing debates →
           </Link>
         </aside>
       </main>

@@ -14,6 +14,10 @@
         {
           "file": "src/app/page.tsx",
           "symbols": ["HeroSection"]
+        },
+        {
+          "file": "src/app/workspace/page.tsx",
+          "symbols": ["HeroSection"]
         }
       ]
     },
@@ -85,6 +89,7 @@
   },
   "productOwned": {
     "investigation": "Article reasoning, evidence/provenance contracts, research notebook and transcript metrics are BiasLens domain behavior; no fleet package implements these domain decisions.",
-    "theme": "Product identity, editorial content and semantic adapters configure the shared blocks; they do not copy shared markup or state machines."
+    "theme": "Product identity, editorial content and semantic adapters configure the shared blocks; they do not copy shared markup or state machines.",
+    "entry": "The workspace tools and illustrative question examples configure BiasLens investigation journeys; sitekit continues to own shared chrome and hero rendering."
   }
 }

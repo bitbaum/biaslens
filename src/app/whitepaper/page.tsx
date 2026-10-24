@@ -32,7 +32,7 @@ export default function WhitepaperPage() {
               className={styles.back}
               href={`${PROJECT_LINKS.repository}/blob/main/content/research/2026-10-22-open-investigation.md`}
             >
-              Inspect the versioned source ↗
+              Inspect the versioned source →
             </a>
           </header>
           <div className={`${styles.articleBody} journalTheme`}>
@@ -40,7 +40,7 @@ export default function WhitepaperPage() {
           </div>
         </article>
         <footer className={styles.articleFooter}>
-          <a href={PROJECT_LINKS.challenge}>Challenge this specification ↗</a>
+          <a href={PROJECT_LINKS.challenge}>Challenge this specification →</a>
           <Link href={ROUTES.development}>Follow the development →</Link>
         </footer>
       </main>

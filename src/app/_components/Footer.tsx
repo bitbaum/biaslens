@@ -15,16 +15,19 @@ export function SiteFooter() {
       chrome={chrome}
       Link={Link}
       links={[
-        { href: ROUTES.analyze, label: 'Examine an article' },
-        { href: ROUTES.explore, label: 'Explore a question' },
+        { href: ROUTES.workspace, label: 'Workspace' },
+        { href: ROUTES.analyze, label: 'Examine a source' },
+        { href: ROUTES.explore, label: 'Investigate a question' },
+        { href: ROUTES.arena, label: 'Analyse a conversation' },
         { href: ROUTES.methodology, label: 'Methodology' },
         { href: ROUTES.whitepaper, label: 'White paper' },
         { href: ROUTES.roadmap, label: 'Roadmap' },
         { href: ROUTES.changelog, label: 'Changelog' },
         { href: ROUTES.blog, label: 'Journal' },
-        { href: ROUTES.account, label: 'Your account' },
+        { href: ROUTES.account, label: 'Profile & security' },
+        { href: ROUTES.development, label: 'Build in public' },
       ]}
-      extra={<a href={PROJECT_LINKS.repository}>Source code ↗</a>}
+      extra={<a href={PROJECT_LINKS.repository}>Source code →</a>}
     />
   );
 }

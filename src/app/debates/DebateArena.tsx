@@ -59,7 +59,7 @@ export function DebateArena() {
               setFictional(true);
             }}
           >
-            Load fictional example ↗
+            Load fictional example →
           </button>
         </div>
         <textarea
