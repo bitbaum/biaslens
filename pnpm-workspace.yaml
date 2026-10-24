@@ -6,4 +6,4 @@ allowBuilds:
   unrs-resolver: true
 # Reviewed first-party reader fix, exercised by BiasLens user tests.
 minimumReleaseAgeExclude:
-  - '@bitbaum/ai-kit@1.21.2'
+  - '@bitbaum/ai-kit@1.21.3'
