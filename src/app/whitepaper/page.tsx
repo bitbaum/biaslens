@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import { ArticleBody } from 'bip-kit/react';
+import { ArticleBody, ReadingProgress } from 'bip-kit/react';
 
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 import { PROJECT_LINKS, ROUTES } from '@/lib/config/routes';
 import { getWhitepaper } from '@/lib/content/whitepaper';
 
@@ -18,16 +17,15 @@ export default function WhitepaperPage() {
   if (!paper) throw new Error('The reviewed technical white paper is missing.');
   return (
     <>
-      <SiteHeader current="whitepaper" />
+      <ReadingProgress />
+
       <main id="main-content" className={`${styles.article} bb-frame`}>
         <Link className={styles.back} href={ROUTES.methodology}>
           ← Explore the method
         </Link>
         <article>
           <header className={styles.articleHead}>
-            <p className={styles.eyebrow}>
-              Technical white paper / Working draft 0.1 / {paper.date}
-            </p>
+            <p className={styles.eyebrow}>Technical white paper / Working draft / {paper.date}</p>
             <h1>{paper.title}</h1>
             <p>{paper.summary}</p>
             <a
@@ -46,7 +44,6 @@ export default function WhitepaperPage() {
           <Link href={ROUTES.development}>Follow the development →</Link>
         </footer>
       </main>
-      <SiteFooter />
     </>
   );
 }

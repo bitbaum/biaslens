@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
-const chrome = read('src/app/_components/Chrome.tsx');
+const chrome = read('src/app/_components/Chrome.tsx') + read('src/app/_components/Footer.tsx');
 const layout = read('src/app/layout.tsx');
 const packageJson = JSON.parse(read('package.json'));
 const shell = read('src/app/_components/Chrome.module.css');
@@ -55,24 +55,22 @@ test('every public route uses the same navigational frame and one skip target', 
     ['method', method],
     ['analysis', analyze],
   ]) {
-    assert.match(content, /<SiteHeader current=/, name + ' must use SiteHeader');
-    assert.match(content, /<SiteFooter\s*\/>/, name + ' must use SiteFooter');
+    assert.doesNotMatch(content, /<SiteHeader|<SiteFooter/, name + ' inherits the root shell');
     assert.match(content, /id="main-content"/, name + ' must expose skip destination');
     assert.doesNotMatch(content, /<nav className=\{styles\.nav\}/, name + ' duplicates the header');
   }
-  assert.match(chrome, /href="#main-content"/);
-  assert.match(chrome, /aria-current=/);
-  assert.match(chrome, /aria-label="Main navigation"/);
-  assert.match(shell, /\.skip:focus/);
+  assert.match(layout, /<SiteHeader/);
+  assert.match(layout, /<SiteFooter/);
+  assert.match(chrome, /SiteMasthead/);
+  assert.match(chrome, /mainId="main-content"/);
+  assert.doesNotMatch(chrome, /<header|<nav|<footer/);
 });
 
 test('composition comes from one pinned source and frames are not duplicated', () => {
   const ref = packageJson.dependencies['@bitbaum/design-tokens'];
-  assert.equal(
-    ref,
-    'github:bitbaum/design-tokens#8e786a43220d267ccf6b5cd6119a012f1a52dfff',
-    'shared CSS must come from the reviewed, immutable source ref',
-  );
+  assert.match(ref, /github:bitbaum\/design-tokens#v[0-9.]+|\^[0-9.]+/);
+  assert.match(layout, /@bitbaum\/design-tokens\/tokens\.css/);
+  assert.match(layout, /@bitbaum\/sitekit\/styles\.css/);
   assert.match(layout, /@bitbaum\/design-tokens\/composition\.css/);
   assert.ok(
     layout.indexOf("'./globals.css'") < layout.indexOf('composition.css'),
@@ -81,20 +79,20 @@ test('composition comes from one pinned source and frames are not duplicated', (
   for (const role of ['--bb-action-bg', '--bb-action-fg', '--bb-line', '--bb-focus']) {
     assert.ok(globals.includes(role + ':'), 'missing semantic mapping ' + role);
   }
-  assert.match(chrome, /bb-frame/);
+  assert.match(chrome, /@bitbaum\/sitekit\/react/);
   assert.match(method, /bb-frame/);
   assert.match(analyze, /bb-frame/);
   assert.doesNotMatch(shell, /\.frame,\s*\.footerFrame\s*\{/);
 });
 
 test('choices and buttons share anatomy, while editorial character stays local', () => {
-  assert.match(shell, /min-height:\s*44px/);
-  assert.match(shell, /@media \(max-width: 380px\)/);
+  assert.ok(packageJson.dependencies['@bitbaum/sitekit']);
+  assert.doesNotMatch(shell, /\.nav|\.header|\.footer/);
   assert.match(analyze, /bb-choice-row/);
   assert.match(analyze, /bb-control/);
   assert.match(analyzeCss, /min-height:\s*52px/);
-  assert.match(home, /bb-actions/);
-  assert.match(home, /bb-button bb-button--primary/);
+  assert.match(home, /<HeroSection/);
+  assert.match(home, /Examine an article/);
   assert.match(homeCss, /@media \(max-width: 420px\)/);
   assert.match(homeCss, /grid-template-columns:\s*1fr/);
   assert.match(globals, /--font-editorial/);
@@ -103,7 +101,7 @@ test('choices and buttons share anatomy, while editorial character stays local',
 test('demo controls are touch-safe and article primary CTA stays above the demonstration', () => {
   assert.match(demoCss, /width:\s*44px;\s*height:\s*44px/);
   assert.match(demoCss, /\.verifyBtn\s*\{\s*min-height:\s*44px/);
-  assert.ok(home.indexOf('href="/analyze"') < home.indexOf('<EvidenceVerifier />'));
+  assert.ok(home.indexOf('<HeroSection') < home.indexOf('<EvidenceVerifier />'));
   assert.match(home, /<details className=\{styles\.labDetails\}>/);
   assert.match(analyzeCss, /\.submit\s*\{\s*min-height:\s*48px/);
   assert.match(analyzeCss, /\.exportBtn\s*\{\s*min-height:\s*44px/);

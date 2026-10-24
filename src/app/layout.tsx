@@ -1,9 +1,13 @@
+import { SiteHeader } from './_components/Chrome';
+import { SiteFooter } from './_components/Footer';
 import type { Metadata } from 'next';
 
 import { BRAND } from '@/lib/config/brand';
+import '@bitbaum/design-tokens/tokens.css';
 import './globals.css';
 // Opt-in shared geometry comes after the app reset; local CSS modules own the brand.
 import '@bitbaum/design-tokens/composition.css';
+import '@bitbaum/sitekit/styles.css';
 import 'bip-kit/styles.css';
 import '@bitbaum/accountkit/styles.css';
 import './blog/journal.css';
@@ -25,7 +29,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SiteHeader />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

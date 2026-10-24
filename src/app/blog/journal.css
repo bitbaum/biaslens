@@ -1,4 +1,5 @@
 /* Scoped theme adapter: no fork of bip-kit's article renderer. */
+:root,
 .journalTheme {
   --bp-bg: var(--color-bg);
   --bp-surface: var(--color-surface-muted);

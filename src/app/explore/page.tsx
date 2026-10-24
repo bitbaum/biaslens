@@ -1,5 +1,3 @@
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
-
 import { InquiryDesk } from './InquiryDesk';
 import styles from './explore.module.css';
 
@@ -12,7 +10,6 @@ export const metadata = {
 export default function ExplorePage() {
   return (
     <>
-      <SiteHeader current="explore" />
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>An investigation starts with curiosity</p>
@@ -24,7 +21,6 @@ export default function ExplorePage() {
         </header>
         <InquiryDesk />
       </main>
-      <SiteFooter />
     </>
   );
 }

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 import { BRAND } from '@/lib/config/brand';
 import { listPublishedPosts } from '@/lib/content/blog';
 
@@ -17,7 +16,6 @@ export default function JournalPage() {
 
   return (
     <>
-      <SiteHeader current="blog" />
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>{BRAND.name} / Journal</p>
@@ -45,7 +43,6 @@ export default function JournalPage() {
           </ol>
         )}
       </main>
-      <SiteFooter />
     </>
   );
 }

@@ -61,3 +61,22 @@ functions of stored evidence — never hard-coded — so they recompute and stay
 auditable. Every score documents its input, algorithm, evidence, confidence, and
 failure modes.
 
+
+## Shared building blocks before implementation
+
+Read the current Fleet [SHARED.md](https://github.com/bitbaum/fleet/blob/main/SHARED.md)
+and inspect `package-plan.json` before designing or implementing a feature.
+Identify and wire the applicable packages without waiting for the owner to name
+them. Extend a shared package when the missing behavior belongs across products;
+record a specific incompatibility before implementing a local replacement.
+
+The root layout owns the one shared site shell, so every page inherits header,
+footer, navigation and account access. Use sitekit's public entry blocks,
+accountkit's runtime/screens/menu, bip-kit's publishing/development renderers,
+and the complete design-tokens theme. Product-specific investigation logic and
+editorial content stay here. `package-plan.json` maps actual bindings; it is not
+a copy of the package registry or a second roadmap.
+
+Shared package composition CI checks adoption and the update path. Dependency
+updates pass tests and browser checks, merge under the fleet policy, then deploy
+through the existing host. A dependency listed but unused is not adoption.

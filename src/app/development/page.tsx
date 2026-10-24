@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-import { SiteFooter, SiteHeader } from '@/app/_components/Chrome';
 import { PROJECT_LINKS, ROUTES } from '@/lib/config/routes';
 
 import styles from '../blog/blog.module.css';
@@ -11,6 +10,16 @@ export const metadata = {
 };
 
 const records = [
+  {
+    title: 'Roadmap',
+    detail: 'Read planned work from the canonical project profile.',
+    href: ROUTES.roadmap,
+  },
+  {
+    title: 'Changelog',
+    detail: 'Inspect the recorded development history.',
+    href: ROUTES.changelog,
+  },
   {
     title: 'Project context & development record',
     detail:
@@ -46,7 +55,6 @@ const records = [
 export default function DevelopmentPage() {
   return (
     <>
-      <SiteHeader current="development" />
       <main id="main-content" className={`${styles.page} bb-frame`}>
         <header className={styles.hero}>
           <p className={styles.eyebrow}>Open work / Inspectable decisions</p>
@@ -73,7 +81,6 @@ export default function DevelopmentPage() {
           second product, roadmap, or deployment stack.
         </p>
       </main>
-      <SiteFooter />
     </>
   );
 }

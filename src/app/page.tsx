@@ -1,8 +1,8 @@
+import { HeroSection } from '@bitbaum/sitekit/react';
 import Link from 'next/link';
 
 import { BRAND } from '@/lib/config/brand';
 
-import { SiteFooter, SiteHeader } from './_components/Chrome';
 import { EvidenceVerifier } from './EvidenceVerifier';
 
 import styles from './home.module.css';
@@ -31,36 +31,25 @@ const STEPS = [
 export default function Home() {
   return (
     <>
-      <SiteHeader current="home" />
       <main id="main-content">
         <section className={styles.hero}>
           <div className={`${styles.heroInner} bb-frame`}>
             <div className={styles.heroContent}>
-              <p className={styles.eyebrow}>
-                <span className={styles.dot} aria-hidden="true" />A WORKSPACE FOR UNDERSTANDING THE
-                WORLD
-              </p>
-              <h1>
-                Understand the world.
-                <span className={styles.line}>One question</span>
-                <em>at a time.</em>
-              </h1>
-              <p className={styles.lead}>
-                {BRAND.name} brings questions, evidence, and competing explanations into focus.
-                Explore science, history, economics, and public arguments. Follow the sources. Find
-                the assumptions. Keep asking what would change your mind.
-              </p>
-              <div className={`${styles.actions} bb-actions`}>
-                <Link href="/explore" className={`${styles.primary} bb-button bb-button--primary`}>
-                  Explore a question <span aria-hidden="true">↗</span>
-                </Link>
-                <Link
-                  href="/analyze"
-                  className={`${styles.secondary} bb-button bb-button--secondary`}
-                >
-                  Examine an article <span aria-hidden="true">→</span>
-                </Link>
-              </div>
+              <HeroSection
+                appearance="application"
+                section={{
+                  kind: 'hero',
+                  eyebrow: 'A workspace for understanding the world',
+                  statement: 'Understand the world. One question at a time.',
+                  lead: [
+                    `${BRAND.name} brings questions, evidence, and competing explanations into focus. Explore science, history, economics, and public arguments. Follow the sources. Find the assumptions.`,
+                  ],
+                  actions: [
+                    { href: '/analyze', label: 'Examine an article →' },
+                    { href: '/explore', label: 'Explore a question ↗' },
+                  ],
+                }}
+              />
               <p className={styles.notice}>
                 Beta research tool · AI-generated interpretations are not independent fact-checks
               </p>
@@ -241,7 +230,6 @@ export default function Home() {
           </details>
         </section>
       </main>
-      <SiteFooter />
     </>
   );
 }

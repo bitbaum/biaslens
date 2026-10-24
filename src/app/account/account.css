@@ -35,15 +35,3 @@
 .account-card p {
   line-height: 1.6;
 }
-:root {
-  --acct-panel: var(--color-surface);
-  --acct-fg: var(--color-text);
-  --acct-muted: var(--color-text-muted);
-  --acct-line: var(--color-border);
-  --acct-line-2: var(--color-border);
-  --acct-action: var(--color-text);
-  --acct-on-action: var(--color-surface);
-  --acct-focus: var(--color-brand);
-  --acct-fg-2: var(--color-text-muted);
-  --acct-fg-3: var(--color-text-muted);
-}
