@@ -194,6 +194,69 @@
   border-radius: var(--radius-card);
   background: var(--color-surface);
 }
+
+.conversation {
+  display: grid;
+  gap: 18px;
+  margin-top: 40px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-muted);
+}
+
+.conversationHeader h3 {
+  margin-top: 5px;
+  font: var(--type-card-title);
+}
+
+.conversationHeader > div > p:last-child {
+  max-width: 68ch;
+  margin-top: 8px;
+  color: var(--color-text-muted);
+  font: var(--type-body);
+  font-size: 13px;
+}
+
+.conversationThread {
+  min-width: 0;
+}
+
+.conversationThread :global(.ck-thread-wrap) {
+  max-height: 420px;
+}
+
+.chatQuote {
+  margin: 12px 0 0;
+  padding: 12px 16px;
+  border-left: 2px solid var(--color-brand);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.chatQuote p {
+  font: var(--type-body);
+}
+
+.chatQuote cite {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-text-muted);
+  font: var(--type-meta);
+}
+
+.conversationError {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  font: var(--type-body);
+}
+
+.conversationNote {
+  color: var(--color-text-muted);
+  font: var(--type-meta);
+}
 .reportFlag {
   border-left: 4px solid var(--color-brand);
   background: var(--color-surface-muted);

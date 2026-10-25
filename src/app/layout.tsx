@@ -10,6 +10,7 @@ import '@bitbaum/design-tokens/composition.css';
 import '@bitbaum/sitekit/styles.css';
 import 'bip-kit/styles.css';
 import '@bitbaum/accountkit/styles.css';
+import '@bitbaum/chatkit/styles.css';
 // Package defaults load first; the product theme is the final role producer.
 import './theme.css';
 import './blog/journal.css';

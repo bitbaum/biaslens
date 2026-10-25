@@ -61,11 +61,12 @@ const report = {
   independentlyVerified: false,
 };
 try {
-  for (const width of [390, 1440]) {
+  for (const width of [390, 834, 1440]) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     let requests = 0;
+    let chatRequests = 0;
     let releaseResponse;
     const responseReady = new Promise((resolve) => {
       releaseResponse = resolve;
@@ -86,6 +87,21 @@ try {
       await responseReady;
       return route.fulfill({ json: { ok: true, result: report } });
     });
+    await page.route('**/api/article-chat', async (route) => {
+      chatRequests++;
+      const request = route.request().postDataJSON();
+      assert.equal(request.text, source);
+      assert.equal(request.sourceDigest, report.origin.textSha256);
+      assert.equal(request.outputLanguage, 'en');
+      return route.fulfill({
+        json: {
+          ok: true,
+          answer: 'The source reports lower traffic but notes concurrent roadworks.',
+          sourceQuote: quote,
+          sourceDigest: report.origin.textSha256,
+        },
+      });
+    });
     await page.goto(base + '/analyze', { waitUntil: 'networkidle' });
     await page.getByLabel('Source URL', { exact: true }).fill('https://example.test/article');
     await page.getByRole('button', { name: 'Examine text', exact: true }).click();
@@ -103,6 +119,21 @@ try {
     await page.getByRole('blockquote').filter({ hasText: quote }).waitFor();
     await page.getByRole('link', { name: 'Claims', exact: true }).click();
     assert.match(page.url(), /#report-claims$/);
+    await page.getByRole('button', { name: 'What is the article’s main argument?' }).click();
+    await page
+      .getByText('The source reports lower traffic but notes concurrent roadworks.', {
+        exact: true,
+      })
+      .waitFor();
+    await page
+      .getByText(`Exact passage from “${report.analysis.title}”`, { exact: true })
+      .waitFor();
+    await page
+      .getByRole('textbox', { name: 'Ask a question about this article' })
+      .fill('What evidence is missing?');
+    await page.getByRole('button', { name: 'Ask', exact: true }).click();
+    await page.locator('.ck-turn-user').filter({ hasText: 'What evidence is missing?' }).waitFor();
+    assert.equal(chatRequests, 2);
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download JSON report', exact: true }).click();
     const download = await downloadPromise;
@@ -140,12 +171,13 @@ try {
         document.activeElement?.blur();
         window.scrollTo(0, 0);
       });
-    await page.screenshot({ path: `${output}/conversation-result-${width}.png`, fullPage: true });
+    if (output)
+      await page.screenshot({ path: `${output}/conversation-result-${width}.png`, fullPage: true });
     assert.deepEqual(errors, []);
     await page.close();
   }
   console.log(
-    'User flows passed: source failure recovery, loading locks, grounded passage inspection, report navigation/export, and transcript results at phone/desktop widths. Analysis response is a labelled test fixture; no model calls were made.',
+    'User flows passed: source recovery, analysis loading, exact article passages, report export, article chat starters/follow-ups, and transcript results at phone/desktop widths. Model responses are labelled test fixtures; no model calls were made.',
   );
 } finally {
   await browser.close();
