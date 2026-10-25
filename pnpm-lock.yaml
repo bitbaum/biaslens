@@ -18,8 +18,8 @@ importers:
         specifier: ^1.21.4
         version: 1.21.4(react@19.3.1)
       '@bitbaum/chatkit':
-        specifier: ^0.15.2
-        version: 0.15.2(react@19.3.1)
+        specifier: ^0.15.3
+        version: 0.15.3(react@19.3.1)
       '@bitbaum/design-tokens':
         specifier: github:bitbaum/design-tokens#v1.2.0
         version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0
@@ -250,7 +250,7 @@ packages:
     resolution: {integrity: sha512-Gs7n99b5tqUC6cQAPbV0uED3IraHB6xQbHLQ/C3l7ZFafHScOx9pQ+DYmP5blbLFShVWLqxNUlI9wi4xU/X+ow==}
 
   '@bitbaum/accountkit@https://codeload.github.com/bitbaum/accountkit/tar.gz/9c8d93ade6945615b5204d8eaad5c717078b7e17':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/bitbaum/accountkit/tar.gz/9c8d93ade6945615b5204d8eaad5c717078b7e17}
+    resolution: {gitHosted: true, integrity: sha512-b76dnYb9nc4fuS5KX0UT4Lu5C3OZbQIFKouOPA74s7ZlY748EmTAz6JGHxnJ5Xh6Fw7UZxeFzYDvgKYi7pd8oQ==, tarball: https://codeload.github.com/bitbaum/accountkit/tar.gz/9c8d93ade6945615b5204d8eaad5c717078b7e17}
     version: 0.6.2
     engines: {node: '>=20'}
     peerDependencies:
@@ -281,8 +281,8 @@ packages:
       react:
         optional: true
 
-  '@bitbaum/chatkit@0.15.2':
-    resolution: {integrity: sha512-40H3i+Ny6Ze6P2ksU7DG3DQCjR1MGSK0x6iNwyFTM/D2JZWTeRm7GmnKIJm5yOt0r9J2XMZRg0sf8Ks1LbrXyw==}
+  '@bitbaum/chatkit@0.15.3':
+    resolution: {integrity: sha512-kOj3xYT0VTNVfGppGuUYiFoAYaFsLdsNKdXWrkEvYnBa/UJqSH+3LSmpiI+C9aAyFh1kBlhyrJAxYETltP2/BA==}
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -3444,7 +3444,7 @@ snapshots:
     transitivePeerDependencies:
       - canvas
 
-  '@bitbaum/chatkit@0.15.2(react@19.3.1)':
+  '@bitbaum/chatkit@0.15.3(react@19.3.1)':
     dependencies:
       react: 19.3.1
 
