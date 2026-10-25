@@ -59,12 +59,28 @@
         }
       ]
     },
+    "chat": {
+      "package": "@bitbaum/chatkit",
+      "bindings": [
+        {
+          "file": "src/app/layout.tsx"
+        },
+        {
+          "file": "src/app/analyze/ArticleConversation.tsx",
+          "symbols": ["ChatThread", "ChatStarters", "Composer"]
+        }
+      ]
+    },
     "ai": {
       "package": "@bitbaum/ai-kit",
       "bindings": [
         {
           "file": "src/app/api/analyze/route.ts",
           "symbols": ["complete", "readPage"]
+        },
+        {
+          "file": "src/app/api/article-chat/route.ts",
+          "symbols": ["complete"]
         }
       ]
     },
@@ -82,6 +98,10 @@
       "bindings": [
         {
           "file": "src/app/api/analyze/route.ts",
+          "symbols": ["slidingWindow", "clientIp"]
+        },
+        {
+          "file": "src/app/api/article-chat/route.ts",
           "symbols": ["slidingWindow", "clientIp"]
         }
       ]

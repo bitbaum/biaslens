@@ -17,6 +17,9 @@ importers:
       '@bitbaum/ai-kit':
         specifier: ^1.21.3
         version: 1.21.3(react@19.3.1)
+      '@bitbaum/chatkit':
+        specifier: github:bitbaum/chatkit#v0.15.2
+        version: https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722(react@19.3.1)
       '@bitbaum/design-tokens':
         specifier: github:bitbaum/design-tokens#v1.2.0
         version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0
@@ -274,6 +277,14 @@ packages:
     peerDependenciesMeta:
       react:
         optional: true
+
+  '@bitbaum/chatkit@https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722':
+    resolution: {gitHosted: true, integrity: sha512-c/I6FNbwIld40E6Ax7nyxAqeZfF0kur1uDYWxeGxEP2H6R5jAoAICZs3djc0/nUcs12AcmTWjj2OTvjN6grkgQ==, tarball: https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722}
+    version: 0.15.2
+    engines: {node: '>=20'}
+    hasBin: true
+    peerDependencies:
+      react: '>=18'
 
   '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0':
     resolution: {gitHosted: true, integrity: sha512-+mbpCQtD9yphGFDOIDP0HSRabf/w4loKc0OYd1bfFAr7GBSiVGk7IRzukbKOuxGuH3WVkYgsHM7m2RXiEfKhIA==, tarball: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0}
@@ -3429,6 +3440,10 @@ snapshots:
       react: 19.3.1
     transitivePeerDependencies:
       - canvas
+
+  '@bitbaum/chatkit@https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722(react@19.3.1)':
+    dependencies:
+      react: 19.3.1
 
   '@bitbaum/design-tokens@https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0': {}
 

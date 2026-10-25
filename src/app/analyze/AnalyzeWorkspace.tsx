@@ -7,6 +7,7 @@ import { useState, useRef, type FormEvent } from 'react';
 
 import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
 import type { ArticleAnalysisResult } from '@/lib/analysis/run';
+import { ArticleConversation } from './ArticleConversation';
 
 import styles from './analyze.module.css';
 
@@ -265,7 +266,7 @@ export function AnalyzeWorkspace() {
           <AboutAnalysis />
         </div>
         <div ref={reportRef} tabIndex={-1} className={styles.reportTarget}>
-          {report && <AnalysisReport report={report} />}
+          {report && <AnalysisReport report={report} outputLanguage={outputLanguage} />}
         </div>
       </main>
     </>
@@ -307,7 +308,13 @@ function AboutAnalysis() {
   );
 }
 
-function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
+function AnalysisReport({
+  report,
+  outputLanguage,
+}: {
+  report: ArticleAnalysisResult;
+  outputLanguage: OutputLanguage;
+}) {
   const analysis = report.analysis;
 
   const saveJson = () => {
@@ -477,6 +484,14 @@ function AnalysisReport({ report }: { report: ArticleAnalysisResult }) {
           </summary>
           <pre>{report.sourceText}</pre>
         </details>
+      )}
+      {report.sourceText && (
+        <ArticleConversation
+          sourceText={report.sourceText}
+          sourceDigest={report.origin.textSha256}
+          title={analysis.title}
+          outputLanguage={outputLanguage}
+        />
       )}
       <div className={styles.reportFooter}>
         <span>

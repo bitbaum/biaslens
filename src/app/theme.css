@@ -89,6 +89,24 @@
   --acct-line-2: var(--color-border);
   --acct-danger: var(--color-text);
 
+  /* Chatkit reads the same product roles as the surrounding report. */
+  --ck-page: var(--color-bg);
+  --ck-bg: var(--color-surface);
+  --ck-raised: var(--color-surface-muted);
+  --ck-overlay: var(--color-surface);
+  --ck-fg: var(--color-text);
+  --ck-fg-2: var(--color-text-muted);
+  --ck-fg-3: var(--color-text-muted);
+  --ck-muted: var(--color-text-muted);
+  --ck-line: var(--color-border);
+  --ck-line-2: var(--color-border);
+  --ck-accent: var(--color-brand);
+  --ck-on-accent: var(--color-on-action);
+  --ck-danger: var(--color-text);
+  --ck-font: var(--font-sans);
+  --ck-radius: var(--radius-surface);
+  --ck-radius-sm: var(--radius-control);
+
   /* Spatial and typographic roles shared by this product's screens. */
   --layout-shell: 1200px;
   --layout-gutter: clamp(20px, 4vw, 40px);
