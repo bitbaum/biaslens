@@ -12,14 +12,14 @@ importers:
         specifier: ^1.7.12
         version: 1.7.12(@better-auth/core@1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.5.4))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-auth@1.7.12(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@electric-sql/pglite@0.5.11)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(next@16.4.2(@babel/core@7.29.7)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.5)(vite@8.2.2(@types/node@26.6.5)(esbuild@0.28.2)(tsx@4.23.13))))(better-call@1.4.4(zod@4.5.4))(nanostores@1.5.5)
       '@bitbaum/accountkit':
-        specifier: github:bitbaum/accountkit#4b99dfda73dbcd94869a56b6ac873ec7729971c6
-        version: https://codeload.github.com/bitbaum/accountkit/tar.gz/4b99dfda73dbcd94869a56b6ac873ec7729971c6(05ebd1d469d70c46c59407c1d2bbdd34)
+        specifier: github:bitbaum/accountkit#b9c2f314a4db20fbf008df0a916ffa9d71cc6c9e
+        version: https://codeload.github.com/bitbaum/accountkit/tar.gz/b9c2f314a4db20fbf008df0a916ffa9d71cc6c9e(05ebd1d469d70c46c59407c1d2bbdd34)
       '@bitbaum/ai-kit':
-        specifier: ^1.21.3
-        version: 1.21.3(react@19.3.1)
+        specifier: ^1.21.4
+        version: 1.21.4(react@19.3.1)
       '@bitbaum/chatkit':
-        specifier: github:bitbaum/chatkit#v0.15.2
-        version: https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722(react@19.3.1)
+        specifier: ^0.15.2
+        version: 0.15.2(react@19.3.1)
       '@bitbaum/design-tokens':
         specifier: github:bitbaum/design-tokens#v1.2.0
         version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0
@@ -249,15 +249,15 @@ packages:
   '@better-fetch/fetch@1.3.2':
     resolution: {integrity: sha512-Gs7n99b5tqUC6cQAPbV0uED3IraHB6xQbHLQ/C3l7ZFafHScOx9pQ+DYmP5blbLFShVWLqxNUlI9wi4xU/X+ow==}
 
-  '@bitbaum/accountkit@https://codeload.github.com/bitbaum/accountkit/tar.gz/4b99dfda73dbcd94869a56b6ac873ec7729971c6':
-    resolution: {gitHosted: true, integrity: sha512-jIIrrARSTOuQRzHb2YG5rZsnXrFTNsY+35RCZyVbHcXbMSfDwxM+ol3kuqPs6JG+4oJb1xIXQCfPOYNCJC4PsA==, tarball: https://codeload.github.com/bitbaum/accountkit/tar.gz/4b99dfda73dbcd94869a56b6ac873ec7729971c6}
-    version: 0.5.2
+  '@bitbaum/accountkit@https://codeload.github.com/bitbaum/accountkit/tar.gz/b9c2f314a4db20fbf008df0a916ffa9d71cc6c9e':
+    resolution: {gitHosted: true, integrity: sha512-OEt6XYOoHYyF0iCS2CSmV8GZZELa2TiHl/32SZPT/1Px/tFyOtL5ARZC3qDGmYE5Z4phoTrT9xFXVcfqgpvLDw==, tarball: https://codeload.github.com/bitbaum/accountkit/tar.gz/b9c2f314a4db20fbf008df0a916ffa9d71cc6c9e}
+    version: 0.6.0
     engines: {node: '>=20'}
     peerDependencies:
       '@better-auth/passkey': ^1.7.7
       better-auth: ^1.7.7
       drizzle-orm: ^0.45.4
-      next: 16.4.0
+      next: ^16.4.0
       react: '>=18'
     peerDependenciesMeta:
       '@better-auth/passkey':
@@ -269,8 +269,8 @@ packages:
       next:
         optional: true
 
-  '@bitbaum/ai-kit@1.21.3':
-    resolution: {integrity: sha512-waTCrUV3WbD/+vyGAWTsd3/tqr9g39S/dq3juHCiK4bjMuoouZyWly1ozeT5Xxx8rVAzNI9xrKrxVJl4Q+H0BA==}
+  '@bitbaum/ai-kit@1.21.4':
+    resolution: {integrity: sha512-aBK/yh5X74ZPTCURwEznXT5kKbe1GuCc0RUHy+e9v0uVivDERAq67E1LmUpasDZ3G81DB0OdOuIWMjJ+IF6ihA==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -278,9 +278,8 @@ packages:
       react:
         optional: true
 
-  '@bitbaum/chatkit@https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722':
-    resolution: {gitHosted: true, integrity: sha512-c/I6FNbwIld40E6Ax7nyxAqeZfF0kur1uDYWxeGxEP2H6R5jAoAICZs3djc0/nUcs12AcmTWjj2OTvjN6grkgQ==, tarball: https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722}
-    version: 0.15.2
+  '@bitbaum/chatkit@0.15.2':
+    resolution: {integrity: sha512-40H3i+Ny6Ze6P2ksU7DG3DQCjR1MGSK0x6iNwyFTM/D2JZWTeRm7GmnKIJm5yOt0r9J2XMZRg0sf8Ks1LbrXyw==}
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -3421,7 +3420,7 @@ snapshots:
 
   '@better-fetch/fetch@1.3.2': {}
 
-  '@bitbaum/accountkit@https://codeload.github.com/bitbaum/accountkit/tar.gz/4b99dfda73dbcd94869a56b6ac873ec7729971c6(05ebd1d469d70c46c59407c1d2bbdd34)':
+  '@bitbaum/accountkit@https://codeload.github.com/bitbaum/accountkit/tar.gz/b9c2f314a4db20fbf008df0a916ffa9d71cc6c9e(05ebd1d469d70c46c59407c1d2bbdd34)':
     dependencies:
       limitkit: 0.2.0
       react: 19.3.1
@@ -3431,7 +3430,7 @@ snapshots:
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.5.11)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
       next: 16.4.2(@babel/core@7.29.7)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
 
-  '@bitbaum/ai-kit@1.21.3(react@19.3.1)':
+  '@bitbaum/ai-kit@1.21.4(react@19.3.1)':
     dependencies:
       '@mozilla/readability': 0.6.0
       ai-forms: 0.1.3(react@19.3.1)
@@ -3441,7 +3440,7 @@ snapshots:
     transitivePeerDependencies:
       - canvas
 
-  '@bitbaum/chatkit@https://codeload.github.com/bitbaum/chatkit/tar.gz/3508d7ad95bbbd0275b1558754acd32ff17ce722(react@19.3.1)':
+  '@bitbaum/chatkit@0.15.2(react@19.3.1)':
     dependencies:
       react: 19.3.1
 
