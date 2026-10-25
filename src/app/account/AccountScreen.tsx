@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { eq } from 'drizzle-orm';
-import { signInMethods } from '@bitbaum/accountkit/auth';
+import { DEFAULT_AUTH_LABELS, signInMethods } from '@bitbaum/accountkit/auth';
 import { returnPath } from '@bitbaum/accountkit/orangecat';
 import { account } from '@bitbaum/accountkit/auth/schema';
 import { authStatus, getSession, mailConfigured } from '@/lib/auth';
@@ -12,15 +12,17 @@ import './account.css';
 export async function AccountScreen({
   mode,
   next: requested,
+  recovering = false,
 }: {
   mode: 'sign-in' | 'sign-up' | 'account';
   next?: string;
+  recovering?: boolean;
 }) {
   const safeNext = returnPath(requested, '/workspace');
   const next = /^\/(?:sign-in|sign-up)(?:[/?#]|$)/.test(safeNext) ? '/workspace' : safeNext;
   const status = authStatus();
   const session = await getSession();
-  if (session && mode !== 'account') redirect(next);
+  if (session && mode !== 'account' && !recovering) redirect(next);
   if (!session && mode === 'account' && status.ready) redirect('/sign-in?next=/account');
   const linked = session
     ? (
@@ -41,16 +43,20 @@ export async function AccountScreen({
           <h1>
             {mode === 'account'
               ? 'Profile & security'
-              : mode === 'sign-up'
-                ? 'Create your account.'
-                : 'Welcome back.'}
+              : recovering
+                ? DEFAULT_AUTH_LABELS.recovery?.reset
+                : mode === 'sign-up'
+                  ? 'Create your account.'
+                  : 'Welcome back.'}
           </h1>
           <p>
             {mode === 'account'
               ? 'Update your profile and manage how you sign in.'
-              : mode === 'sign-up'
-                ? 'Choose a display name and a secure sign-in method.'
-                : 'Sign in to manage your profile and security.'}
+              : recovering
+                ? 'Choose a new password, then sign in again.'
+                : mode === 'sign-up'
+                  ? 'Choose a display name and a secure sign-in method.'
+                  : 'Sign in to manage your profile and security.'}
           </p>
         </header>
         <div className="account-card">

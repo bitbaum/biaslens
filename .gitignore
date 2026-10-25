@@ -8,3 +8,6 @@ build/
 .DS_Store
 next-env.d.ts
 *.tsbuildinfo
+
+# Synthetic account browser evidence is uploaded by CI.
+auth-journey-artifacts/

@@ -14,6 +14,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  account:
+    uses: bitbaum/fleet/.github/workflows/shared-auth-journey.yml@main
+    with:
+      migrate-command: for file in drizzle/[0-9]*.sql; do psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f "$file"; done
   screenshots:
     runs-on: ubuntu-latest
     timeout-minutes: 15
