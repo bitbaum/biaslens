@@ -11,6 +11,7 @@ import type { ArticleAnalysisResult } from '@/lib/analysis/run';
 import styles from './analyze.module.css';
 
 type Mode = 'url' | 'text';
+type OutputLanguage = 'en' | 'de' | 'fr';
 
 const CLAIM_LABELS = {
   factual: 'Factual assertion',
@@ -24,6 +25,7 @@ export function AnalyzeWorkspace() {
   const [mode, setMode] = useState<Mode>('url');
   const [url, setUrl] = useState('');
   const [text, setText] = useState('');
+  const [outputLanguage, setOutputLanguage] = useState<OutputLanguage>('en');
   const [report, setReport] = useState<ArticleAnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceFailed, setSourceFailed] = useState(false);
@@ -51,6 +53,7 @@ export function AnalyzeWorkspace() {
         body: JSON.stringify({
           url: url.trim() || undefined,
           text: mode === 'text' ? text : undefined,
+          outputLanguage,
         }),
       });
       const payload: unknown = await response.json();
@@ -151,6 +154,20 @@ export function AnalyzeWorkspace() {
               </button>
             </div>
             <form onSubmit={submit} className={styles.form}>
+              <label className={styles.fieldLabel} htmlFor="analysis-language">
+                Analysis language
+              </label>
+              <select
+                id="analysis-language"
+                disabled={busy}
+                className={`${styles.input} bb-control`}
+                value={outputLanguage}
+                onChange={(event) => setOutputLanguage(event.target.value as OutputLanguage)}
+              >
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="fr">Français</option>
+              </select>
               <label className={styles.fieldLabel} htmlFor="article-url">
                 {mode === 'url' ? 'Source URL' : 'Source URL (optional)'}
               </label>

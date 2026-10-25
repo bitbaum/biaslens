@@ -118,6 +118,7 @@ export async function analyzeArticle(
       'No source URL provided. Text was pasted by a user and its origin is unverified.',
     title,
     text: text + (fetchTruncated || clipped ? '\n[Source text truncated before analysis]' : ''),
+    outputLanguage: input.outputLanguage,
   });
 
   const messages: Array<{ role: 'system' | 'user'; content: string }> = [
@@ -143,7 +144,9 @@ export async function analyzeArticle(
               content:
                 'The previous attempt failed output validation: ' +
                 issue +
-                '. Return a complete JSON object with EVERY required key. Keep all JSON keys and enum values in English; use the article language only for explanatory text. Include insight with headline, explanation, assumption, test and a source_quote (exact short excerpt or null) for each core claim.',
+                '. Return a complete JSON object with EVERY required key. Keep JSON keys and enum values in English. Write every reader-facing value in ' +
+                { en: 'English', de: 'German', fr: 'French' }[input.outputLanguage ?? 'en'] +
+                ', except source_quote, which must remain an exact excerpt in the original article language. Include insight with headline, explanation, assumption, test and a source_quote (exact short excerpt or null) for each core claim.',
             },
           ],
     );

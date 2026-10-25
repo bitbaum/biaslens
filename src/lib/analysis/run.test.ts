@@ -122,6 +122,21 @@ describe('analyzeArticle', () => {
     expect(result.origin.attribution).toBe('not-provided');
   });
 
+  it.each([
+    ['en', 'English'],
+    ['de', 'German'],
+    ['fr', 'French'],
+  ] as const)('requests reader-facing analysis in %s', async (outputLanguage, expected) => {
+    const providers = deps();
+    const input = { mode: 'text' as const, url: null, text: articleText, outputLanguage };
+    await analyzeArticle(input, providers);
+    const complete = vi.mocked(providers.complete);
+    expect(complete).toHaveBeenCalledOnce();
+    expect(complete.mock.calls[0][0][1].content).toContain(
+      `Write every reader-facing value in ${expected}`,
+    );
+  });
+
   it('surfaces fetch failure with a paste fallback instead of calling a model', async () => {
     const providers = deps();
     providers.readPage = vi.fn(async () => ({

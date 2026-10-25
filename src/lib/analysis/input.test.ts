@@ -8,18 +8,18 @@ describe('parseAnalyzeInput', () => {
   it('accepts a URL-only request', () => {
     expect(parseAnalyzeInput({ url: ' https://example.org/article ' })).toEqual({
       ok: true,
-      data: { url: 'https://example.org/article', mode: 'url', text: null },
+      data: { url: 'https://example.org/article', mode: 'url', text: null, outputLanguage: 'en' },
     });
   });
 
   it('accepts text alone and labels a supplied URL as unverified attribution', () => {
     expect(parseAnalyzeInput({ text })).toEqual({
       ok: true,
-      data: { mode: 'text', url: null, text: text.trim() },
+      data: { mode: 'text', url: null, text: text.trim(), outputLanguage: 'en' },
     });
     expect(parseAnalyzeInput({ url: 'https://example.org/a', text })).toEqual({
       ok: true,
-      data: { url: 'https://example.org/a', mode: 'text', text: text.trim() },
+      data: { url: 'https://example.org/a', mode: 'text', text: text.trim(), outputLanguage: 'en' },
     });
   });
 
@@ -42,5 +42,19 @@ describe('parseAnalyzeInput', () => {
   it('never treats pasted text as checked against the linked page', () => {
     const result = parseAnalyzeInput({ url: 'https://example.org/a', text });
     expect(result.ok && result.data.mode).toBe('text');
+  });
+
+  it.each(['en', 'de', 'fr'] as const)('accepts %s as the analysis output language', (language) => {
+    const result = parseAnalyzeInput({
+      url: 'https://example.org/article',
+      outputLanguage: language,
+    });
+    expect(result.ok && result.data.outputLanguage).toBe(language);
+  });
+
+  it('rejects unsupported analysis languages', () => {
+    expect(parseAnalyzeInput({ url: 'https://example.org/article', outputLanguage: 'it' }).ok).toBe(
+      false,
+    );
   });
 });

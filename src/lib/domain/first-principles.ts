@@ -179,8 +179,13 @@ export function buildFirstPrinciplesUserPrompt(input: {
   url: string;
   title: string | null;
   text: string;
+  outputLanguage?: 'en' | 'de' | 'fr';
 }): string {
+  const language = { en: 'English', de: 'German', fr: 'French' }[input.outputLanguage ?? 'en'];
   return [
+    'Write every reader-facing value in ' +
+      language +
+      ', regardless of the article language. Keep JSON keys and enum values exactly as specified in English.',
     'URL: ' + input.url,
     input.title ? 'HTML title: ' + input.title : '',
     'Article body (may include boilerplate; disregard unrelated navigation):',
