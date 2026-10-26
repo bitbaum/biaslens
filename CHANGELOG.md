@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-26 — shared signup safeguards
+
+- Registration confirms the chosen password before submitting and offers show/hide controls. The shared account forms also include Spanish labels.
+
 What changed for people using BiasLens, newest first.
 
 ## 2026-10-26 — Signing up takes an email and a password
