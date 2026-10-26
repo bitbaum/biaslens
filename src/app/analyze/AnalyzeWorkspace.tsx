@@ -15,6 +15,7 @@ import {
 import { reportCopy } from '@/lib/config/report-copy';
 
 import { ReplyLauncher } from '@/app/_components/replies/ReplyLauncher';
+import { RewriteStudio } from '@/app/_components/rewrite/RewriteStudio';
 
 import { ArticleConversation } from './ArticleConversation';
 import { ReportView, type ReportResult } from './report/ReportView';
@@ -383,6 +384,7 @@ function AnalysisResult({ result }: { result: ReportResult }) {
       }
       after={
         <>
+          {result.saved && <RewriteStudio reportId={result.saved.id} result={result} />}
           {result.sourceText && (
             <ArticleConversation
               sourceText={result.sourceText}

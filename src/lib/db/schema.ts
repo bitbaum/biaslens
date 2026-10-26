@@ -277,6 +277,8 @@ export const replies = pgTable(
     blocks: jsonb('blocks').notNull(),
     senderName: text('senderName'),
     note: text('note'),
+    /** A rewrite sent with the reply (the studio's "send this"), or null. */
+    rewriteId: text('rewriteId'),
     createdAt: createdAt(),
   },
   (table) => [
@@ -285,6 +287,38 @@ export const replies = pgTable(
       columns: [table.reportId],
       foreignColumns: [savedReports.id],
       name: 'Reply_reportId_fkey',
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+);
+
+/// A text from the rewrite studio: the article retold in another voice, or a
+/// response to it. `label` is written by code and says who wrote it (AI) and,
+/// for a simulated outlet or person, that they did not.
+export const rewrites = pgTable(
+  'Rewrite',
+  {
+    id: text('id').primaryKey(),
+    reportId: text('reportId').notNull(),
+    form: text('form').notNull(),
+    voice: jsonb('voice').notNull(),
+    length: text('length').notNull(),
+    title: text('title').notNull(),
+    text: text('text').notNull(),
+    label: text('label').notNull(),
+    simulated: boolean('simulated').notNull(),
+    factDiff: jsonb('factDiff'),
+    modelId: text('modelId'),
+    promptVersion: text('promptVersion').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    index('Rewrite_reportId_idx').on(table.reportId),
+    foreignKey({
+      columns: [table.reportId],
+      foreignColumns: [savedReports.id],
+      name: 'Rewrite_reportId_fkey',
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -302,6 +336,7 @@ export type EditorialDna = typeof editorialDna.$inferSelect;
 export type HomepageSnapshot = typeof homepageSnapshots.$inferSelect;
 export type SavedReportRow = typeof savedReports.$inferSelect;
 export type ReplyRow = typeof replies.$inferSelect;
+export type RewriteRow = typeof rewrites.$inferSelect;
 
 // Shared account schema owns credentials, sessions, passkeys and second factors.
 export * from '@bitbaum/accountkit/auth/schema';

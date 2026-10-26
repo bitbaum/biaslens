@@ -14,7 +14,9 @@ import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 
 import type { ArticleAnalysisResult, ReportResult } from '@/lib/analysis/run';
 import * as schema from '@/lib/db/schema';
-import { replies, savedReports } from '@/lib/db/schema';
+import { replies, rewrites, savedReports } from '@/lib/db/schema';
+import type { RewriteForm, RewriteLength, Voice } from '@/lib/config/rewrite-modes';
+import type { RewriteResult } from '@/lib/rewrite/run';
 import { isOutputLanguage } from '@/lib/config/languages';
 
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
@@ -113,6 +115,7 @@ export interface ReplyInput {
   blocks: string[];
   senderName: string | null;
   note: string | null;
+  rewriteId?: string | null;
 }
 
 export interface SavedReply extends ReplyInput {
@@ -129,7 +132,7 @@ export async function createReply(db: Db, input: ReplyInput): Promise<string> {
 export async function getReply(
   db: Db,
   id: string,
-): Promise<{ reply: SavedReply; report: SavedReport } | null> {
+): Promise<{ reply: SavedReply; report: SavedReport; rewrite: SavedRewrite | null } | null> {
   if (!PUBLIC_ID.test(id)) return null;
   const [row] = await db
     .select({ reply: replies, report: savedReports })
@@ -138,8 +141,57 @@ export async function getReply(
     .where(eq(replies.id, id))
     .limit(1);
   if (!row) return null;
+  const rewrite = row.reply.rewriteId ? await getRewrite(db, row.reply.rewriteId) : null;
   return {
     reply: { ...row.reply, blocks: row.reply.blocks as string[] },
     report: toSaved(row.report),
+    rewrite: rewrite && rewrite.reportId === row.report.id ? rewrite : null,
+  };
+}
+
+// ————— Rewrites —————
+
+export interface SavedRewrite extends RewriteResult {
+  id: string;
+  reportId: string;
+  form: RewriteForm;
+  voice: Voice;
+  length: RewriteLength;
+  createdAt: Date;
+}
+
+export async function saveRewrite(
+  db: Db,
+  input: { reportId: string; form: RewriteForm; voice: Voice; length: RewriteLength },
+  result: RewriteResult,
+): Promise<string> {
+  const id = newPublicId();
+  await db.insert(rewrites).values({
+    id,
+    reportId: input.reportId,
+    form: input.form,
+    voice: input.voice,
+    length: input.length,
+    title: result.title,
+    text: result.text,
+    label: result.label,
+    simulated: result.simulated,
+    factDiff: result.factDiff,
+    modelId: result.modelId,
+    promptVersion: result.promptVersion,
+  });
+  return id;
+}
+
+export async function getRewrite(db: Db, id: string): Promise<SavedRewrite | null> {
+  if (!PUBLIC_ID.test(id)) return null;
+  const [row] = await db.select().from(rewrites).where(eq(rewrites.id, id)).limit(1);
+  if (!row) return null;
+  return {
+    ...row,
+    form: row.form as RewriteForm,
+    voice: row.voice as Voice,
+    length: row.length as RewriteLength,
+    factDiff: row.factDiff as RewriteResult['factDiff'],
   };
 }

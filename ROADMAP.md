@@ -44,11 +44,13 @@ person who opens it sees something they had not noticed within ten seconds.
 
 ### Rewrite studio
 
-- [ ] A neutral version of the article, each change linked to the passage it fixes
-- [ ] A reply or op-ed answering the article
-- [ ] The same facts written from stated values instead of a political label
-- [ ] "How would this outlet write it", always marked as a simulation
-- [ ] A check that a rewrite kept the original facts and added none
+- [x] A neutral version of the article that fixes the flagged passages
+- [ ] Each change in the neutral version linked to the passage it fixes
+- [x] A response to the article: from BiasLens, as a letter to the editor, or as a draft of your own
+- [x] The same facts written from stated values (the eight smartvote dimensions) instead of a political label
+- [x] "How would this outlet write it", always marked as a simulation
+- [x] "How would this public figure answer it", only for people with a public body of work, always marked as a simulation
+- [x] A check that a rewrite kept the original facts and added none
 
 ### Investigations you can return to
 

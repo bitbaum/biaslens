@@ -2,6 +2,16 @@
 
 What changed for people using BiasLens, newest first.
 
+## 2026-10-26 — Rewrite studio
+
+### Added
+
+- **The same facts, told another way.** Under every reading: rewrite the article as a neutral report, from one or two stated values (the smartvote dimensions), as a chosen outlet would have written it, or as a public figure might — or write a response to it from BiasLens, as a letter to the editor, or as your own reply.
+- **Labels that cannot be lost.** Every text says who wrote it. An outlet or person is always marked “Simulation · not written by …”, and that label is written by BiasLens, not by the model.
+- **Only public figures.** A person can be simulated only if Wikidata shows a public figure with a public body of work; private people never are, two people with the same name are not guessed between, and anyone can ask to be left out.
+- **What the framing did to the facts.** A rewrite of the article is checked against the original: how many of its facts were kept, which were changed or left out, and any fact that was added.
+- **Send it.** A rewrite can go out with a reply, and the person who receives it sees it with its label and the facts check.
+
 ## 2026-10-26 — Replies you can send
 
 ### Added

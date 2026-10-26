@@ -25,14 +25,16 @@ export function replyText(input: {
   blocks: readonly ReplyBlock[];
   note: string | null;
   url: string;
+  rewrite?: { label: string; title: string } | null;
 }): string {
   const copy = replyCopy(language(input));
   const note = input.note?.trim();
   const top = input.findings.slice(0, 3);
   if (input.length === 'line') {
-    return [note, clip(top[0]?.text ?? input.report.insight.headline, LINE_LIMIT), input.url]
-      .filter(Boolean)
-      .join('\n');
+    const first = input.rewrite
+      ? input.rewrite.label + (input.rewrite.title ? ': ' + input.rewrite.title : '')
+      : (top[0]?.text ?? input.report.insight.headline);
+    return [note, clip(first, LINE_LIMIT), input.url].filter(Boolean).join('\n');
   }
   const lines = [
     note,
@@ -42,6 +44,9 @@ export function replyText(input: {
   ];
   if (input.blocks.includes('questions') && input.report.questions[0]) {
     lines.push('', copy.questionForAuthor + ' ' + input.report.questions[0]);
+  }
+  if (input.rewrite) {
+    lines.push('', input.rewrite.label + (input.rewrite.title ? ': ' + input.rewrite.title : ''));
   }
   lines.push('', input.url);
   return lines.filter((line) => line !== null && line !== undefined).join('\n');

@@ -2,7 +2,7 @@ import { clientIp, slidingWindow, toHeaders } from 'limitkit';
 
 import { BodyTooLarge, originAllowed, readBoundedJson } from '@/lib/api/guard';
 import { db } from '@/lib/db/client';
-import { createReply, getReply, getReport } from '@/lib/reports/store';
+import { createReply, getReply, getReport, getRewrite } from '@/lib/reports/store';
 import { parseReplyInput } from '@/lib/replies/input';
 
 export const runtime = 'nodejs';
@@ -39,6 +39,11 @@ export async function POST(request: Request) {
     if (!(await getReport(db, input.data.reportId))) return fail('Unknown report.', 404, headers);
     if (input.data.parentReplyId && !(await getReply(db, input.data.parentReplyId))) {
       return fail('Unknown reply.', 404, headers);
+    }
+    if (input.data.rewriteId) {
+      const rewrite = await getRewrite(db, input.data.rewriteId);
+      if (!rewrite || rewrite.reportId !== input.data.reportId)
+        return fail('Unknown rewrite.', 404, headers);
     }
     const id = await createReply(db, input.data);
     return Response.json({ ok: true, id, path: '/a/' + id }, { status: 201, headers });

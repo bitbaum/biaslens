@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { ReplyLauncher } from '@/app/_components/replies/ReplyLauncher';
 import { ReportView } from '@/app/analyze/report/ReportView';
+import { RewriteStudio } from '@/app/_components/rewrite/RewriteStudio';
 import { PUBLIC_ID } from '@/lib/reports/store';
 import { loadReport } from '@/lib/reports/load';
 
@@ -49,12 +50,15 @@ export default async function SavedReportPage({ params, searchParams }: Props) {
           />
         }
         after={
-          <aside className={styles.funnel}>
-            <p>See who speaks and which passages carry the argument in any article you read.</p>
-            <Link className="bb-button bb-button--secondary" href="/analyze">
-              Examine any article
-            </Link>
-          </aside>
+          <>
+            <RewriteStudio reportId={saved.id} result={saved.result} />
+            <aside className={styles.funnel}>
+              <p>See who speaks and which passages carry the argument in any article you read.</p>
+              <Link className="bb-button bb-button--secondary" href="/analyze">
+                Examine any article
+              </Link>
+            </aside>
+          </>
         }
       />
     </main>

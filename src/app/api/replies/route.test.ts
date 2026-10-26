@@ -25,6 +25,7 @@ describe('parseReplyInput', () => {
         blocks: ['findings', 'voices'],
         senderName: 'Anna',
         note: null,
+        rewriteId: null,
       },
     });
   });

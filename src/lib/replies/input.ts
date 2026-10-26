@@ -33,6 +33,11 @@ export function parseReplyInput(
       return { ok: false, error: 'Unknown reply.' };
     }
   }
+  if (raw.rewriteId !== undefined && raw.rewriteId !== null) {
+    if (typeof raw.rewriteId !== 'string' || !PUBLIC_ID.test(raw.rewriteId)) {
+      return { ok: false, error: 'Unknown rewrite.' };
+    }
+  }
   if (!isOccasion(raw.occasion)) return { ok: false, error: 'Choose who the reply is for.' };
   if (!isReplyLength(raw.length)) return { ok: false, error: 'Choose a length.' };
   if (!Array.isArray(raw.blocks) || !raw.blocks.every(isReplyBlock)) {
@@ -55,6 +60,7 @@ export function parseReplyInput(
       blocks,
       senderName,
       note,
+      rewriteId: (raw.rewriteId as string | undefined) ?? null,
     },
   };
 }

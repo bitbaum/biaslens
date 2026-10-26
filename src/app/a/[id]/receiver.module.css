@@ -183,6 +183,8 @@
 .primary {
   min-height: 48px;
   justify-content: center;
+  /* The shared button colour is :where()-scoped; the global link rule would win. */
+  color: var(--bb-action-fg);
 }
 
 .twoCells {

@@ -28,10 +28,13 @@ export function ReplyComposer({
   reportId,
   result,
   parentReplyId = null,
+  rewrite = null,
 }: {
   reportId: string;
   result: ReportResult;
   parentReplyId?: string | null;
+  /** A studio text sent along with the reply. */
+  rewrite?: { id: string; label: string; title: string } | null;
 }) {
   const copy = replyCopy(result.language);
   const [occasion, setOccasion] = useState<Occasion>('friend');
@@ -53,6 +56,7 @@ export function ReplyComposer({
     blocks: [...blocks],
     note: note || null,
     url,
+    rewrite,
   });
 
   const choose = (next: Occasion) => {
@@ -77,6 +81,7 @@ export function ReplyComposer({
           blocks: [...blocks],
           senderName: name || null,
           note: note || null,
+          rewriteId: rewrite?.id ?? null,
         }),
       });
       const payload = (await response.json()) as {
@@ -111,6 +116,7 @@ export function ReplyComposer({
           blocks: [...blocks],
           note: note || null,
           url: created.url,
+          rewrite,
         })}
         title={result.report.title}
         onEdit={() => setCreated(null)}
@@ -122,6 +128,12 @@ export function ReplyComposer({
     <section className={styles.composer} aria-labelledby="reply-composer-heading">
       <h3 id="reply-composer-heading">{copy.composerTitle}</h3>
       <p className={styles.muted}>{copy.composerIntro}</p>
+      {rewrite && (
+        <p className={styles.attached}>
+          {rewrite.label}
+          {rewrite.title && <strong> {rewrite.title}</strong>}
+        </p>
+      )}
 
       <fieldset className={styles.fieldset}>
         <legend>{copy.occasionLabel}</legend>

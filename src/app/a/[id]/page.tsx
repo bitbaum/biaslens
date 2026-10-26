@@ -10,6 +10,8 @@ import { PROJECT_LINKS } from '@/lib/config/routes';
 import { guessFor, rankFindings } from '@/lib/replies/findings';
 import { loadReply } from '@/lib/reports/load';
 
+import { RewriteResultView } from '@/app/_components/rewrite/RewriteResultView';
+
 import { GuessFirst } from './GuessFirst';
 import styles from './receiver.module.css';
 
@@ -42,7 +44,7 @@ export default async function ReplyPage({ params }: Props) {
   const { id } = await params;
   const loaded = await loadReply(id);
   if (!loaded) notFound();
-  const { reply, report: saved } = loaded;
+  const { reply, report: saved, rewrite } = loaded;
   const { report, language, origin } = saved.result;
   const copy = replyCopy(language);
   const rcopy = reportCopy(language);
@@ -114,6 +116,12 @@ export default async function ReplyPage({ params }: Props) {
           </GuessFirst>
         ) : (
           findingsList
+        )}
+
+        {rewrite && (
+          <section className={styles.block}>
+            <RewriteResultView rewrite={rewrite} original={null} language={language} />
+          </section>
         )}
 
         {blocks.has('assumption') && (
