@@ -10,7 +10,10 @@ name: Auto-merge
 # can merge anything except a PR that edits .github/workflows/*.
 on:
   workflow_run:
-    workflows: ['CI']
+    # Every workflow whose checks gate a PR: a sweep woken by CI alone saw the
+    # browser screenshots still running, skipped the PR, and the throttled
+    # schedule left green PRs waiting for an hour (2026-10-26).
+    workflows: ['CI', 'Browser design smoke', 'Shared package composition']
     types: [completed]
   schedule:
     - cron: '*/10 * * * *'
