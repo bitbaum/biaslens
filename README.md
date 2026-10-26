@@ -78,8 +78,10 @@ intentionally retained as migration history and rollback.
   [design-tokens composition layer](https://github.com/bitbaum/design-tokens/blob/main/composition.css)
   once a version containing that export has been released.
 - **Loki project profile**: canonical producer for the product's problem,
-  solution, mission, vision, roadmap and changelog. Do not maintain duplicate
-  versions of those fields in this README or in `CLAUDE.md`.
+  solution, mission and vision. Do not maintain duplicate versions of those
+  fields in this README or in `CLAUDE.md`.
+- **`ROADMAP.md` / `CHANGELOG.md`**: the roadmap and changelog, read into
+  Loki's fleet map and rendered at `/roadmap` and `/changelog` through bip-kit.
 
 The database model is `src/lib/db/schema.ts`; analysis contracts are in
 `src/lib/domain`, and the no-persistence entrypoint is `src/lib/analysis`.
@@ -104,14 +106,14 @@ The logo URL points to a first-party static asset under `public/`, which can
 be replaced independently of the app. Set `NEXT_PUBLIC_SITE_URL` only after
 the real hostname is registered; pages are **noindex** in the absence of a
 canonical URL. The application must be rebuilt after these build-time public
-values change. Identity/roadmap content remains canonical in Loki/Fleet.
+values change. Identity content remains canonical in Loki/Fleet.
 
 The journal is `/blog`, with `/blog/[slug]` and `/blog/feed.xml` (RSS is
 available after a real origin is configured). Markdown lives in `content/blog`
 and renders via the shared `bip-kit` reader and React renderer. Publishing
 is a source-controlled PR with a reviewed date, title, evidence and explicit
 uncertainty; there is no unattended AI publishing or invented public findings.
-The roadmap and changelog stay in Loki and are not maintained as blog copies.
+The roadmap and changelog are `ROADMAP.md` / `CHANGELOG.md`, not blog copies.
 
 ## Run locally
 
@@ -174,7 +176,7 @@ update path. `browser:smoke` checks the real responsive menu, keyboard dismissal
 active state, root-shell coverage and font loading. Shared improvements propagate
 through released versions, dependency PRs, checks, merge and the existing deploy.
 
-Roadmap and changelog use the canonical Loki profile. Empty or unavailable records remain explicit; this application does not generate a second set of project records.
+Roadmap and changelog are `ROADMAP.md` and `CHANGELOG.md`, read through Loki's fleet map. Empty or unavailable records remain explicit.
 
 Interface work follows [the design contract](docs/design-contract.md). Package
 styles load before `src/app/theme.css`, so shared defaults cannot replace the

@@ -68,8 +68,7 @@ prove the model endpoint is responding.
    arrives with explicit provenance/uncertainty rather than a fabricated
    independent verdict.
 5. Confirm mobile/desktop screenshot artifacts and public page navigation.
-6. Record this beta in the canonical Loki project profile; do not create a
-   second roadmap or changelog here.
+6. Record this beta in `CHANGELOG.md`; the roadmap is `ROADMAP.md`.
 
 Until these are observed, mark the product as **not yet deployed** or
 **beta — running, not released** only after the host actually responds.

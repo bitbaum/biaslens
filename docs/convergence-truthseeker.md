@@ -6,7 +6,7 @@
 No new product repository, no second database, no parallel frontend.
 
 This is a **technical integration handoff**, not the canonical project identity,
-mission, public roadmap or changelog. Those remain in Loki's project profile and
+mission, public roadmap or changelog. Identity remains in Loki's project profile and
 Fleet's registers per [fleet/AGENTS.md](https://github.com/bitbaum/fleet/blob/main/AGENTS.md).
 If the project key, product name, status, or URL needs changing, update its
 canonical producer through the owner-approved Loki/Fleet workflow rather than

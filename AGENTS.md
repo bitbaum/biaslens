@@ -7,7 +7,8 @@ restart the TruthSeeker migration or deploy the superseded standalone
 prototype. Read `docs/consolidation.md` for source inventory and
 owner-approved public branding; preserve technical repository/hosting keys.
 Before editing, inspect current main and open pull requests and use your own
-branch. Canonical mission, roadmap and changelog remain in Loki/Fleet.
+branch. Canonical mission and identity remain in Loki/Fleet; the roadmap and
+changelog are `ROADMAP.md` and `CHANGELOG.md` at the repository root, updated in the same PR as the change.
 
 Media bias analysis engine. See `CLAUDE.md` for the product contract and
 `README.md` for the vision; this file is the short operational guide for agents.

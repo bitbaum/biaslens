@@ -3,9 +3,12 @@
 **First read:** [this repository's AGENTS.md](AGENTS.md) and the
 [Bitbaum Fleet agent rules](https://github.com/bitbaum/fleet/blob/main/AGENTS.md).
 
-Do not create a second roadmap, product brief, brand, identity register or
+Do not create a second product brief, brand, identity register or
 shared-package implementation here. Loki's project profile is the source for
-mission, vision, problem, solution, roadmap and changelog.
+mission, vision, problem and solution. The roadmap and changelog are `ROADMAP.md` and `CHANGELOG.md` at the repository root
+(the fleet contract: Loki's map reads them and `/roadmap` renders them). Update
+both in the same PR as the change they describe. Build plans for agents live in
+`docs/plans/`.
 
 ## Product and engineering references
 
