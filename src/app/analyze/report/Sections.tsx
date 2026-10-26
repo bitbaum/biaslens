@@ -5,6 +5,8 @@ import type { OutputLanguage } from '@/lib/config/languages';
 import { reportCopy, type ReportCopy } from '@/lib/config/report-copy';
 import { techniqueName } from '@/lib/domain/techniques';
 
+import { ProfileName } from '@/app/_components/profile/ProfileName';
+
 import { FigureFlags } from './PassagePanel';
 import { speakerName } from './speaker';
 import styles from './report.module.css';
@@ -67,7 +69,16 @@ export function VoicesSection({
                 <li key={voice.id} className={styles.row}>
                   <div>
                     <p className={styles.rowTitle}>
-                      {voice.name}
+                      {voice.kind === 'anonymous' || voice.kind === 'document' ? (
+                        voice.name
+                      ) : (
+                        <ProfileName
+                          name={voice.name}
+                          role={voice.kind === 'organisation' ? 'outlet' : 'voice'}
+                          context={voice.affiliation}
+                          language={language}
+                        />
+                      )}
                       {voice.kind === 'anonymous' && (
                         <span className={styles.muted}> · {copy.anonymous}</span>
                       )}

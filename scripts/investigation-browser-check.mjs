@@ -145,6 +145,32 @@ try {
       await responseReady;
       return route.fulfill({ json: { ok: true, result: report } });
     });
+    await page.route('**/api/profile?*', async (route) =>
+      route.fulfill({
+        json: {
+          ok: true,
+          result: {
+            status: 'found',
+            profile: {
+              qid: 'Q1',
+              label: 'Fictional browser test',
+              description: 'fictional newspaper used in tests',
+              kind: 'outlet',
+              facts: [
+                {
+                  property: 'P127',
+                  values: [{ label: 'Example Media Group', qid: 'Q2' }],
+                  source: 'https://www.wikidata.org/wiki/Q1#P127',
+                },
+              ],
+              ownershipChain: [],
+              wikidataUrl: 'https://www.wikidata.org/wiki/Q1',
+              wikipedia: null,
+            },
+          },
+        },
+      }),
+    );
     let rewriteRequest = null;
     await page.route('**/api/rewrite', async (route) => {
       rewriteRequest = route.request().postDataJSON();
@@ -209,6 +235,11 @@ try {
     await page.getByRole('button', { name: 'Close', exact: true }).click();
     await page.getByRole('button', { name: 'Numbers 1' }).click();
     await page.getByText('No source named').first().waitFor();
+    await page.getByRole('button', { name: 'Fictional browser test', exact: true }).click();
+    const profile = page.getByRole('dialog', { name: 'About Fictional browser test' });
+    await profile.getByText('Example Media Group').waitFor();
+    await profile.getByText('Owned by').waitFor();
+    await profile.getByRole('button', { name: 'Close', exact: true }).click();
     await page.getByRole('button', { name: 'As an outlet', exact: true }).click();
     await page.getByLabel('Outlet').selectOption('guardian');
     await page.getByRole('button', { name: 'Write it', exact: true }).click();

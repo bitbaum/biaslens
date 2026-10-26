@@ -34,6 +34,7 @@ not currently an independent fact-check.
 | `/r/[id]` | A saved reading: the report without the article text (passages only), its link preview image, and the reply composer |
 | `POST /api/replies`, `/a/[id]` | A reply: occasion, length and sections chosen by the sender; the receiver's page (three findings, optional guess, reply back); `/a/[id]/image?format=square\|story` |
 | `POST /api/rewrite` | The rewrite studio: the article retold (neutral, from stated values, as an outlet, as a public figure) or answered (BiasLens, letter, own reply); labels written in code; fact diff of a rewrite against the original |
+| `GET /api/profile` | Profiles of authors, quoted people and outlets from Wikidata/Wikipedia, every fact with its source; ambiguous names are offered to the reader, never guessed |
 | `/https://…`, `/analyze?u=` | Put the address in front of any article link, or pass one; the web manifest's share target uses the same path |
 | `/methodology` | Public Open Epistemic Method with a worked causal-hypothesis example and a GitHub challenge path |
 | `src/lib/domain/epistemic-graph.ts` | Pure claim/evidence/relation/challenge protocol; detects gaps rather than inventing truth probabilities |

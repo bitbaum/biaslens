@@ -34,6 +34,8 @@ export interface WikidataCandidate {
   qid: string;
   label: string;
   description: string | null;
+  /** The text the search matched (a label or an alias). */
+  matched?: string;
 }
 
 export interface WikidataEntity {
@@ -78,12 +80,13 @@ export async function searchEntities(
     '&search=' +
     encodeURIComponent(name);
   const data = (await getJson(url, fetchImpl)) as {
-    search?: { id: string; label?: string; description?: string }[];
+    search?: { id: string; label?: string; description?: string; match?: { text?: string } }[];
   };
   return (data.search ?? []).map((item) => ({
     qid: item.id,
     label: item.label ?? item.id,
     description: item.description ?? null,
+    matched: item.match?.text,
   }));
 }
 
@@ -199,7 +202,9 @@ export async function checkPublicFigure(
   try {
     const wanted = normalizeName(name);
     const candidates = (await searchEntities(name, language, fetchImpl)).filter(
-      (candidate) => normalizeName(candidate.label) === wanted,
+      (candidate) =>
+        normalizeName(candidate.label) === wanted ||
+        (candidate.matched !== undefined && normalizeName(candidate.matched) === wanted),
     );
     if (!candidates.length) return { ok: false, reason: 'not_found' };
     const entities = await getEntities(

@@ -2,6 +2,13 @@
 
 What changed for people using BiasLens, newest first.
 
+## 2026-10-26 — Who is speaking: profiles
+
+### Added
+
+- **Tap a name.** Authors, quoted people and the outlet in a report open a profile: occupation, employer, offices, recorded party membership, owner and the owner’s owner, founding year, and the opening of the Wikipedia article — every line linked to its source on Wikidata.
+- **No guessing.** A name is linked only when the article’s own description of the person matches the record; when two people fit, the reader chooses. BiasLens adds no rating or label of its own, and every profile has a way to report a mistake.
+
 ## 2026-10-26 — Rewrite studio
 
 ### Added

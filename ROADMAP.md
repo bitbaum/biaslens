@@ -39,7 +39,7 @@ person who opens it sees something they had not noticed within ten seconds.
 
 ### Who is speaking
 
-- [ ] Profiles of authors, quoted people and outlets from sourced public records, with a source on every line
+- [x] Profiles of authors, quoted people and outlets from sourced public records, with a source on every line
 - [ ] What BiasLens reports on an author's or outlet's articles show, with the number of articles and its limits stated
 
 ### Rewrite studio
