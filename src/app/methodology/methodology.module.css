@@ -235,3 +235,81 @@
     padding: 20px;
   }
 }
+
+.ruleList,
+.techniques {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+}
+
+.ruleList {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ruleList li,
+.technique {
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.ruleList h3,
+.technique h3 {
+  margin-bottom: 8px;
+  font: var(--type-card-title);
+}
+
+.ruleList p,
+.technique p {
+  font: var(--type-body);
+}
+
+.techniques {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.technique {
+  scroll-margin-top: 96px;
+}
+
+.technique:target {
+  border-color: var(--color-text);
+}
+
+.technique dl,
+.definitions {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.technique dt,
+.definitions dt {
+  margin-top: 8px;
+  font: var(--type-label);
+}
+
+.technique dd,
+.definitions dd {
+  color: var(--color-text-muted);
+  font: var(--type-body);
+}
+
+.definitions {
+  max-width: 72ch;
+}
+
+.vocabulary {
+  max-width: 72ch;
+  color: var(--color-text-muted);
+  font: var(--type-meta);
+}
+
+@media (max-width: 800px) {
+  .ruleList,
+  .techniques {
+    grid-template-columns: 1fr;
+  }
+}

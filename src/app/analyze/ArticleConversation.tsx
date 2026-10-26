@@ -3,23 +3,17 @@
 import { ChatStarters, ChatThread, Composer, type ChatMessageData } from '@bitbaum/chatkit/react';
 import { useRef, useState } from 'react';
 
-import type { AnalyzeInput } from '@/lib/analysis/input';
+import { OUTPUT_LANGUAGES, type OutputLanguage } from '@/lib/config/languages';
 import styles from './analyze.module.css';
-
-type OutputLanguage = NonNullable<AnalyzeInput['outputLanguage']>;
-
-const languageNames: Record<OutputLanguage, string> = {
-  en: 'English',
-  de: 'German',
-  fr: 'French',
-};
 
 export function ArticleConversation({
   sourceText,
   sourceDigest,
   title,
   outputLanguage,
+  heading = 'Ask about this article',
 }: {
+  heading?: string;
   sourceText: string;
   sourceDigest: string;
   title: string;
@@ -97,7 +91,7 @@ export function ArticleConversation({
     <section className={styles.conversation} aria-labelledby="article-conversation-heading">
       <header className={styles.conversationHeader}>
         <div>
-          <p className={styles.eyebrow}>Ask about this article</p>
+          <p className={styles.eyebrow}>{heading}</p>
           <h3 id="article-conversation-heading">Continue the investigation</h3>
           <p>
             Answers use the examined text and show a matching passage when available. No outside
@@ -149,8 +143,8 @@ export function ArticleConversation({
         labels={{ send: 'Ask', stop: 'Stop' }}
       />
       <p className={styles.conversationNote}>
-        Response language: {languageNames[outputLanguage]}. Conversation stays in this page and is
-        not saved on our server.
+        Response language: {OUTPUT_LANGUAGES[outputLanguage].label}. Conversation stays in this page
+        and is not saved on our server.
       </p>
     </section>
   );

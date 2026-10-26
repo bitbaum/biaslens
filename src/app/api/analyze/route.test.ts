@@ -1,44 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mocks = vi.hoisted(() => {
-  const analysis = JSON.stringify({
-    title: 'Example report',
-    author: null,
-    publication: 'Example news',
-    publication_date: null,
-    language: 'en',
-    summary: 'This report describes policy proposals.',
-    insight: {
-      headline: 'A proposal is not an outcome.',
-      explanation: 'Predictions need a comparison.',
-      assumption: 'Other conditions stay the same.',
-      test: 'Compare matched cases.',
-    },
-    core_claims: [
-      {
-        claim: 'The policy would increase investment.',
-        type: 'causal',
-        supported_in_article: false,
-        evidence_quality: 'asserted',
-        source_quote: null,
-      },
-    ],
-    first_principles_critique: 'What is the identified mechanism?',
-    named_sources: [],
-    biases_to_consider: 'Check which outcomes were omitted.',
-    what_would_change_assessment: 'An independent controlled evaluation.',
-  });
-  return {
-    complete: vi.fn(async () => ({ text: analysis, id: 'mock/model' })),
-    readPage: vi.fn(async (url: string) => ({
-      ok: true,
-      url,
-      title: 'Example report',
-      text: 'An independent researcher investigates a new economic proposal. '.repeat(7),
-      truncated: false,
-    })),
-  };
-});
+import { FIXTURE_ARTICLE, FIXTURE_ASSESSMENT, FIXTURE_READING } from '@/lib/analysis/test-fixture';
+
+const mocks = vi.hoisted(() => ({
+  complete: vi.fn(),
+  readSource: vi.fn(),
+}));
 
 vi.mock('@bitbaum/ai-kit', () => ({
   complete: mocks.complete,
@@ -46,12 +13,32 @@ vi.mock('@bitbaum/ai-kit', () => ({
   usableChain: () => [{ name: 'configured-in-test' }],
 }));
 
-vi.mock('@bitbaum/ai-kit/web', () => ({ readPage: mocks.readPage }));
+vi.mock('@/lib/analysis/source', () => ({ readSource: mocks.readSource }));
+
+beforeEach(() => {
+  mocks.complete.mockImplementation(
+    async ({ messages }: { messages: { role: string; content: string }[] }) => ({
+      text: JSON.stringify(
+        messages[0]!.content.includes('make an inventory') ? FIXTURE_READING : FIXTURE_ASSESSMENT,
+      ),
+      id: 'mock/model',
+    }),
+  );
+  mocks.readSource.mockImplementation(async (url: string) => ({
+    ok: true,
+    url,
+    kind: 'html',
+    title: 'Example report',
+    text: FIXTURE_ARTICLE,
+    truncated: false,
+    metadata: null,
+  }));
+});
 
 import { POST } from './route';
 
 const SOURCE = 'https://example.org/article';
-const TEXT = 'The article contains a lengthy series of claims about economic policy. '.repeat(7);
+const TEXT = FIXTURE_ARTICLE;
 
 function request(body: unknown, ip: string, extras: Record<string, string> = {}): Request {
   return new Request('https://biaslens.example/api/analyze', {
@@ -78,11 +65,13 @@ describe('POST /api/analyze', () => {
     const res = await POST(request({ url: 'file:///etc/passwd' }, '203.0.113.62'));
     expect(res.status).toBe(400);
     expect((await res.json()).error.code).toBe('INVALID_INPUT');
-    expect(mocks.readPage).not.toHaveBeenCalled();
+    expect(mocks.readSource).not.toHaveBeenCalled();
   });
 
   it('prevents oversized requests from reaching the analysis pipeline', async () => {
-    const res = await POST(request({ url: SOURCE }, '203.0.113.63', { 'content-length': '99000' }));
+    const res = await POST(
+      request({ url: SOURCE }, '203.0.113.63', { 'content-length': '199000' }),
+    );
     expect(res.status).toBe(413);
   });
 
@@ -102,7 +91,7 @@ describe('POST /api/analyze', () => {
     expect(output.result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(output.result.run).toMatchObject({
       methodVersion: '0.1.0',
-      promptVersion: 'first-principles@3',
+      promptVersion: 'report@4.0',
     });
     expect(output.result.origin).toMatchObject({
       attribution: 'user-asserted',
@@ -111,13 +100,38 @@ describe('POST /api/analyze', () => {
     expect(mocks.complete).toHaveBeenCalled();
   });
 
-  it('routes fetched articles through the shared reader rather than a second scraper', async () => {
+  it('routes fetched articles through the one source reader', async () => {
     const res = await POST(request({ url: SOURCE }, '203.0.113.66'));
     expect(res.status).toBe(200);
-    expect(mocks.readPage).toHaveBeenCalledWith(
-      SOURCE,
-      expect.objectContaining({ maxChars: 20_000 }),
+    expect(mocks.readSource).toHaveBeenCalledWith(SOURCE, expect.any(Number));
+  });
+
+  it('streams progress stages and the result as NDJSON when asked', async () => {
+    const res = await POST(
+      request({ text: TEXT, outputLanguage: 'de-CH' }, '203.0.113.68', {
+        accept: 'application/x-ndjson',
+      }),
     );
+    expect(res.headers.get('content-type')).toContain('application/x-ndjson');
+    const events = (await res.text())
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line));
+    expect(events.filter((event) => event.type === 'stage').map((event) => event.stage)).toEqual([
+      'reading',
+      'assessing',
+      'checking',
+    ]);
+    expect(events.at(-1)).toMatchObject({ type: 'result', result: { language: 'de-CH' } });
+  });
+
+  it('streams a failure as an error event', async () => {
+    mocks.complete.mockResolvedValue({ text: 'nonsense', id: 'x' });
+    const res = await POST(
+      request({ text: TEXT }, '203.0.113.69', { accept: 'application/x-ndjson' }),
+    );
+    const last = JSON.parse((await res.text()).trim().split('\n').at(-1)!);
+    expect(last).toMatchObject({ type: 'error', status: 502, error: { code: 'MODEL_INVALID' } });
   });
 
   it('enforces its rate limit before any expensive model call', async () => {

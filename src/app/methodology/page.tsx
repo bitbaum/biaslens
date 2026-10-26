@@ -4,6 +4,7 @@ import {
   type EpistemicGraph,
 } from '@/lib/domain/epistemic-graph';
 
+import { ArticleMethod } from './ArticleMethod';
 import styles from './methodology.module.css';
 
 export const metadata = {
@@ -118,6 +119,8 @@ export default function MethodologyPage() {
             ))}
           </ol>
         </section>
+
+        <ArticleMethod />
 
         <section aria-labelledby="graph-heading" className={styles.graphSection}>
           <div className={styles.sectionIntro}>
