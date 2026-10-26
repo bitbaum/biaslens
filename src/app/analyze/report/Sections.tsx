@@ -2,16 +2,18 @@
 
 import type { Report, Stance } from '@/lib/analysis/report';
 import type { OutputLanguage } from '@/lib/config/languages';
-import type { ReportCopy } from '@/lib/config/report-copy';
+import { reportCopy, type ReportCopy } from '@/lib/config/report-copy';
 import { techniqueName } from '@/lib/domain/techniques';
 
 import { FigureFlags } from './PassagePanel';
 import { speakerName } from './speaker';
 import styles from './report.module.css';
 
-type Show = (annotationId: string) => void;
+type Show = ((annotationId: string) => void) | undefined;
 
 function ShowButton({ id, onShow, copy }: { id: string; onShow: Show; copy: ReportCopy }) {
+  // Without the examined text (a saved or shared report) there is nothing to show.
+  if (!onShow) return null;
   return (
     <button type="button" className={styles.showButton} onClick={() => onShow(id)}>
       {copy.showInText}
@@ -23,13 +25,14 @@ const BAR_ORDER: Stance[] = ['supports', 'mixed', 'neutral', 'unclear', 'opposes
 
 export function VoicesSection({
   report,
-  copy,
+  language,
   onShow,
 }: {
   report: Report;
-  copy: ReportCopy;
+  language: OutputLanguage;
   onShow: Show;
 }) {
+  const copy = reportCopy(language);
   const total = report.voices.length;
   return (
     <section id="report-voices" className={styles.section}>
@@ -91,14 +94,13 @@ export function VoicesSection({
 export function DetectionsSection({
   report,
   language,
-  copy,
   onShow,
 }: {
   report: Report;
   language: OutputLanguage;
-  copy: ReportCopy;
   onShow: Show;
 }) {
+  const copy = reportCopy(language);
   return (
     <section id="report-techniques" className={styles.section}>
       <h3>{copy.sections.techniques}</h3>
@@ -127,13 +129,14 @@ export function DetectionsSection({
 
 export function FiguresSection({
   report,
-  copy,
+  language,
   onShow,
 }: {
   report: Report;
-  copy: ReportCopy;
+  language: OutputLanguage;
   onShow: Show;
 }) {
+  const copy = reportCopy(language);
   return (
     <section id="report-figures" className={styles.section}>
       <h3>{copy.sections.figures}</h3>
@@ -159,13 +162,14 @@ export function FiguresSection({
 
 export function ClaimsSection({
   report,
-  copy,
+  language,
   onShow,
 }: {
   report: Report;
-  copy: ReportCopy;
+  language: OutputLanguage;
   onShow: Show;
 }) {
+  const copy = reportCopy(language);
   return (
     <section id="report-claims" className={styles.section}>
       <h3>{copy.sections.claims}</h3>
@@ -189,7 +193,14 @@ export function ClaimsSection({
   );
 }
 
-export function ArgumentsSection({ report, copy }: { report: Report; copy: ReportCopy }) {
+export function ArgumentsSection({
+  report,
+  language,
+}: {
+  report: Report;
+  language: OutputLanguage;
+}) {
+  const copy = reportCopy(language);
   return (
     <section id="report-arguments" className={styles.section}>
       <div className={styles.twoUp}>

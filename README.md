@@ -31,6 +31,9 @@ not currently an independent fact-check.
 | `/analyze` | Link, PDF upload or pasted text; the report in English, German, Swiss German or French with the text marked up, voices, numbers, claims by speaker, flagged passages, strongest case and objection; downloadable versioned JSON with a SHA-256 digest of the text examined |
 | `POST /api/analyze` | Validated, bounded request, source reader (HTML with the publisher's byline metadata, PDF), two-pass model run with one repair each, NDJSON progress, rate limiting |
 | `POST /api/extract-pdf` | Text from an uploaded PDF (≤ 10 MB), returned to the paste box; nothing stored |
+| `/r/[id]` | A saved reading: the report without the article text (passages only), its link preview image, and the reply composer |
+| `POST /api/replies`, `/a/[id]` | A reply: occasion, length and sections chosen by the sender; the receiver's page (three findings, optional guess, reply back); `/a/[id]/image?format=square\|story` |
+| `/https://…`, `/analyze?u=` | Put the address in front of any article link, or pass one; the web manifest's share target uses the same path |
 | `/methodology` | Public Open Epistemic Method with a worked causal-hypothesis example and a GitHub challenge path |
 | `src/lib/domain/epistemic-graph.ts` | Pure claim/evidence/relation/challenge protocol; detects gaps rather than inventing truth probabilities |
 | `/api/claims/verify` | Legacy evidence **counting demonstration**, not calibrated verification |

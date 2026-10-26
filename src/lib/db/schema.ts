@@ -235,6 +235,62 @@ export const homepageSnapshotsRelations = relations(homepageSnapshots, ({ one })
   outlet: one(outlets, { fields: [homepageSnapshots.outletId], references: [outlets.id] }),
 }));
 
+/// A finished article report, saved so it has a link and is not paid for twice.
+/// Stores the report and its located passages, never the full article text:
+/// a public page may quote, not republish. The cache key is the exact text the
+/// model saw plus the prompt version and report language.
+export const savedReports = pgTable(
+  'SavedReport',
+  {
+    id: text('id').primaryKey(),
+    textSha256: text('textSha256').notNull(),
+    promptVersion: text('promptVersion').notNull(),
+    language: text('language').notNull(),
+    url: text('url'),
+    title: text('title').notNull(),
+    /** public | unlisted — SSOT in `lib/reports/store.ts`. */
+    visibility: text('visibility').notNull(),
+    /** The report without `sourceText` (ReportResult with sourceText null). */
+    result: jsonb('result').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    uniqueIndex('SavedReport_text_prompt_language_key').on(
+      table.textSha256,
+      table.promptVersion,
+      table.language,
+    ),
+  ],
+);
+
+/// A reply: one reader's choice of findings and sections from a report, sent
+/// to one person for one occasion. Every format (line, brief, card, page) is
+/// rendered from this row, so the short and long versions cannot disagree.
+export const replies = pgTable(
+  'Reply',
+  {
+    id: text('id').primaryKey(),
+    reportId: text('reportId').notNull(),
+    parentReplyId: text('parentReplyId'),
+    occasion: text('occasion').notNull(),
+    length: text('length').notNull(),
+    blocks: jsonb('blocks').notNull(),
+    senderName: text('senderName'),
+    note: text('note'),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    index('Reply_reportId_idx').on(table.reportId),
+    foreignKey({
+      columns: [table.reportId],
+      foreignColumns: [savedReports.id],
+      name: 'Reply_reportId_fkey',
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+);
+
 // ————— Row types, derived from the schema (never defined separately — SSOT) —————
 
 export type Outlet = typeof outlets.$inferSelect;
@@ -244,6 +300,8 @@ export type Evidence = typeof evidence.$inferSelect;
 export type Narrative = typeof narratives.$inferSelect;
 export type EditorialDna = typeof editorialDna.$inferSelect;
 export type HomepageSnapshot = typeof homepageSnapshots.$inferSelect;
+export type SavedReportRow = typeof savedReports.$inferSelect;
+export type ReplyRow = typeof replies.$inferSelect;
 
 // Shared account schema owns credentials, sessions, passkeys and second factors.
 export * from '@bitbaum/accountkit/auth/schema';

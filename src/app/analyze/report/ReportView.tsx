@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState, type ReactNode } from 'react';
 
 import { reportAnnotations, type AnnotationKind } from '@/lib/analysis/annotations';
 import { glanceSentences } from '@/lib/analysis/glance';
-import type { ArticleAnalysisResult } from '@/lib/analysis/run';
+import type { ReportResult } from '@/lib/analysis/run';
 import { OUTPUT_LANGUAGES } from '@/lib/config/languages';
 import { reportCopy } from '@/lib/config/report-copy';
 
@@ -20,9 +20,7 @@ import {
 } from './Sections';
 import styles from './report.module.css';
 
-export type ReportResult = Omit<ArticleAnalysisResult, 'sourceText'> & {
-  sourceText: string | null;
-};
+export type { ReportResult };
 
 /**
  * One report, rendered the same everywhere it appears: right after an
@@ -165,11 +163,27 @@ export function ReportView({
         </section>
       )}
 
-      <DetectionsSection report={report} language={language} copy={copy} onShow={show} />
-      <VoicesSection report={report} copy={copy} onShow={show} />
-      <FiguresSection report={report} copy={copy} onShow={show} />
-      <ClaimsSection report={report} copy={copy} onShow={show} />
-      <ArgumentsSection report={report} copy={copy} />
+      <DetectionsSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <VoicesSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <FiguresSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <ClaimsSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <ArgumentsSection report={report} language={language} />
 
       {after}
 

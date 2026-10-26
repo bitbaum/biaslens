@@ -2,6 +2,16 @@
 
 What changed for people using BiasLens, newest first.
 
+## 2026-10-26 — Replies you can send
+
+### Added
+
+- **Every reading has a link.** A finished report is saved, without the article text, so it can be opened again and shared. The same text examined again opens the saved reading at once.
+- **Send a reply.** Choose who it is for (a friend, a group chat, the author, a public post, a disagreement, a class), a length and what to include, and see exactly what will be sent before creating the link.
+- **A page for the person who receives it.** It opens on their article and the three findings they can check against its own words, with an optional “guess first” question, the sender’s note and a way to reply back.
+- **Share images.** Every reading and reply has a link preview image and downloadable square and story images that carry “AI reading · not a fact check” in the picture itself.
+- **More ways in.** Put the BiasLens address in front of any article link, open `/analyze?u=` with a link, or install BiasLens and use “Share → BiasLens” from a news app on Android.
+
 ## 2026-10-26
 
 ### Added

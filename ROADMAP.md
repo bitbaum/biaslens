@@ -30,11 +30,12 @@ Someone sends you an article. You send back BiasLens's reading of it, as a
 one-line message, an image, a short brief, a full page or a document, and the
 person who opens it sees something they had not noticed within ten seconds.
 
-- [ ] Saved reports with their own link
-- [ ] A reply page made for the person receiving it
-- [ ] Reply lengths from one line to a full dossier, chosen by occasion
-- [ ] Share images for messages, posts and stories
-- [ ] Open any article by putting the BiasLens address in front of its link, or from the phone's share menu
+- [x] Saved reports with their own link
+- [x] A reply page made for the person receiving it
+- [x] Reply lengths for every occasion: one line, a short brief, a full page
+- [ ] A printable dossier of a reading, for classes and letters to the editor
+- [x] Share images for messages, posts and stories
+- [x] Open any article by putting the BiasLens address in front of its link, or from the phone's share menu
 
 ### Who is speaking
 

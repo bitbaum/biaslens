@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { HeroSection } from '@bitbaum/sitekit/react';
-import { useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 
 import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
 import {
@@ -12,6 +13,8 @@ import {
   type OutputLanguage,
 } from '@/lib/config/languages';
 import { reportCopy } from '@/lib/config/report-copy';
+
+import { ReplyLauncher } from '@/app/_components/replies/ReplyLauncher';
 
 import { ArticleConversation } from './ArticleConversation';
 import { ReportView, type ReportResult } from './report/ReportView';
@@ -32,8 +35,9 @@ const STAGE_TEXT = {
 } as const;
 
 export function AnalyzeWorkspace() {
+  const incoming = useIncomingSource();
   const [mode, setMode] = useState<Mode>('url');
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(incoming ?? '');
   const [text, setText] = useState('');
   const [chosenLanguage, setChosenLanguage] = useState<OutputLanguage | null>(null);
   // A Swiss reader gets a Swiss German report unless they choose otherwise.
@@ -47,6 +51,17 @@ export function AnalyzeWorkspace() {
   const [pdfBusy, setPdfBusy] = useState(false);
   const analysis = useAnalysis();
   const reportRef = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
+
+  // /analyze?u=<link>, the address prefix and the phone's share menu all land
+  // here: fill the form and start, exactly as if the reader had pressed Examine.
+  useEffect(() => {
+    if (!incoming || startedRef.current) return;
+    startedRef.current = true;
+    void analysis.run({ url: incoming, outputLanguage: language }).then((result) => {
+      if (result) reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [incoming, analysis, language]);
 
   const busy = analysis.busy || pdfBusy;
   const canSubmit =
@@ -322,6 +337,24 @@ export function AnalyzeWorkspace() {
   );
 }
 
+/** A link handed to the page by ?u=, or by a share sheet as ?url= / ?text=. */
+function useIncomingSource(): string | null {
+  const params = useSearchParams();
+  const candidates = [params.get('u'), params.get('url'), params.get('text'), params.get('title')];
+  for (const candidate of candidates) {
+    const match = candidate?.match(/https?:\/\/[^\s<>"']+/);
+    if (match) {
+      try {
+        const parsed = new URL(match[0]);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.toString();
+      } catch {
+        continue;
+      }
+    }
+  }
+  return null;
+}
+
 function AnalysisResult({ result }: { result: ReportResult }) {
   const copy = reportCopy(result.language);
   const saveJson = () => {
@@ -345,6 +378,9 @@ function AnalysisResult({ result }: { result: ReportResult }) {
   return (
     <ReportView
       result={result}
+      actions={
+        result.saved ? <ReplyLauncher reportId={result.saved.id} result={result} /> : undefined
+      }
       after={
         <>
           {result.sourceText && (

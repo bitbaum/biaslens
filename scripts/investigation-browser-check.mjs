@@ -116,6 +116,7 @@ const report = {
   },
   durationMs: 500,
   independentlyVerified: false,
+  saved: { id: 'fixtureRpt1', cached: false },
 };
 try {
   for (const width of [390, 834, 1440]) {
@@ -143,6 +144,14 @@ try {
         });
       await responseReady;
       return route.fulfill({ json: { ok: true, result: report } });
+    });
+    let replyRequest = null;
+    await page.route('**/api/replies', async (route) => {
+      replyRequest = route.request().postDataJSON();
+      return route.fulfill({
+        status: 201,
+        json: { ok: true, id: 'fixtureRep1', path: '/a/fixtureRep1' },
+      });
     });
     await page.route('**/api/article-chat', async (route) => {
       chatRequests++;
@@ -180,6 +189,21 @@ try {
     await page.getByRole('button', { name: 'Close', exact: true }).click();
     await page.getByRole('button', { name: 'Numbers 1' }).click();
     await page.getByText('No source named').first().waitFor();
+    await page.getByRole('button', { name: 'Send a reply', exact: true }).click();
+    await page.getByRole('button', { name: /The author or paper/ }).click();
+    await page.getByLabel('Your name (optional)').fill('Ana');
+    await page.getByRole('button', { name: 'Create the reply link', exact: true }).click();
+    await page.getByRole('button', { name: 'Share', exact: true }).waitFor();
+    assert.deepEqual(replyRequest, {
+      reportId: 'fixtureRpt1',
+      parentReplyId: null,
+      occasion: 'author',
+      length: 'brief',
+      blocks: ['findings', 'questions'],
+      senderName: 'Ana',
+      note: null,
+    });
+    assert.match(await page.locator('pre').first().innerText(), /\/a\/fixtureRep1$/);
     await page.getByRole('link', { name: 'Claims', exact: true }).click();
     assert.match(page.url(), /#report-claims$/);
     await page.getByRole('button', { name: 'What is the article’s main argument?' }).click();

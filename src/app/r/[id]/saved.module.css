@@ -1,0 +1,25 @@
+.page {
+  padding-block: var(--space-page);
+}
+
+.page > article {
+  margin-top: 0;
+}
+
+.funnel {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin-top: 32px;
+  padding: 22px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-muted);
+}
+
+.funnel p {
+  font: var(--type-body);
+}
+
+.funnel a {
+  min-height: 48px;
+}

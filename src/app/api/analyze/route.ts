@@ -5,6 +5,8 @@ import { BodyTooLarge, originAllowed, readBoundedJson } from '@/lib/api/guard';
 import { analyzeArticle, AnalysisFailure, type AnalysisDeps, type Stage } from '@/lib/analysis/run';
 import { parseAnalyzeInput, type AnalyzeInput } from '@/lib/analysis/input';
 import { readSource } from '@/lib/analysis/source';
+import { db } from '@/lib/db/client';
+import { findCachedReport, saveReport } from '@/lib/reports/store';
 
 export const runtime = 'nodejs';
 export const maxDuration = 150;
@@ -74,6 +76,16 @@ export async function POST(request: Request) {
   const deps = (onStage?: (stage: Stage) => void): AnalysisDeps => ({
     readSource: (url, maxChars) => readSource(url, maxChars),
     onStage,
+    // Without a database the analysis still runs; it just gets no link.
+    cache: process.env.DATABASE_URL
+      ? {
+          find: async (key) => {
+            const saved = await findCachedReport(db, key);
+            return saved && { id: saved.id, result: saved.result };
+          },
+          save: (result) => saveReport(db, result),
+        }
+      : undefined,
     complete: async (messages, pass) => {
       const response = await complete({
         chain,

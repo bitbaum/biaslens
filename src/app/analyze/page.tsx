@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import { AnalyzeWorkspace } from './AnalyzeWorkspace';
 
@@ -9,5 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function AnalyzePage() {
-  return <AnalyzeWorkspace />;
+  // The form reads ?u= (a shared link); Suspense lets the page prerender without it.
+  return (
+    <Suspense>
+      <AnalyzeWorkspace />
+    </Suspense>
+  );
 }

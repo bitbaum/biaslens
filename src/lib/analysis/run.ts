@@ -48,6 +48,21 @@ export interface AnalysisDeps {
     pass: 'reading' | 'assessment',
   ): Promise<ModelResult>;
   onStage?(stage: Stage): void;
+  /**
+   * Optional store. A text already read with the same prompt version and
+   * language returns the saved report without a model call; a new report is
+   * saved so it gets a link. A store failure never fails the analysis.
+   */
+  cache?: {
+    find(key: CacheKey): Promise<{ id: string; result: ReportResult } | null>;
+    save(result: ArticleAnalysisResult): Promise<string>;
+  };
+}
+
+export interface CacheKey {
+  textSha256: string;
+  promptVersion: string;
+  language: OutputLanguage;
 }
 
 export interface ArticleAnalysisResult {
@@ -73,7 +88,14 @@ export interface ArticleAnalysisResult {
   durationMs: number;
   /** Model-generated analysis; NOT independently checked against the world. */
   independentlyVerified: false;
+  /** The saved report's public id, when a store is configured. */
+  saved?: { id: string; cached: boolean } | null;
 }
+
+/** A report as stored and shared: the examined text is not republished. */
+export type ReportResult = Omit<ArticleAnalysisResult, 'sourceText'> & {
+  sourceText: string | null;
+};
 
 export class AnalysisFailure extends Error {
   constructor(
@@ -221,6 +243,30 @@ export async function analyzeArticle(
   const text = clipped ? body.slice(0, MAX_MODEL_CHARS) : body;
   const truncated = fetchTruncated || clipped;
   const article = articleBlock({ url: sourceUrl, title, metadata, text, truncated });
+  const textSha256 = createHash('sha256').update(text, 'utf8').digest('hex');
+
+  if (deps.cache) {
+    try {
+      const cached = await deps.cache.find({
+        textSha256,
+        promptVersion: REPORT_PROMPT_VERSION,
+        language,
+      });
+      if (cached) {
+        return {
+          ...cached.result,
+          sourceText: text,
+          durationMs: Date.now() - started,
+          saved: { id: cached.id, cached: true },
+        };
+      }
+    } catch (error) {
+      console.error(
+        'BiasLens report cache lookup failed',
+        error instanceof Error ? error.name : '',
+      );
+    }
+  }
 
   // ——— Pass 1: inventory ———
   deps.onStage?.('reading');
@@ -389,7 +435,7 @@ export async function analyzeArticle(
     },
   };
 
-  return {
+  const result: ArticleAnalysisResult = {
     report,
     sourceText: text,
     language,
@@ -401,7 +447,7 @@ export async function analyzeArticle(
         input.mode === 'url' ? 'retrieved' : sourceUrl ? 'user-asserted' : 'not-provided',
       modelChars: text.length,
       truncated,
-      textSha256: createHash('sha256').update(text, 'utf8').digest('hex'),
+      textSha256,
     },
     run: {
       generatedAt: new Date().toISOString(),
@@ -418,5 +464,14 @@ export async function analyzeArticle(
     },
     durationMs: Date.now() - started,
     independentlyVerified: false,
+    saved: null,
   };
+  if (deps.cache) {
+    try {
+      result.saved = { id: await deps.cache.save(result), cached: false };
+    } catch (error) {
+      console.error('BiasLens report could not be saved', error instanceof Error ? error.name : '');
+    }
+  }
+  return result;
 }
