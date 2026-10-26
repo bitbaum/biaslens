@@ -5,7 +5,7 @@ import { AnalyzeWorkspace } from './AnalyzeWorkspace';
 export const metadata: Metadata = {
   title: 'Examine an article',
   description:
-    'Extract claims, examine framing and apply first-principles criticism to an article URL or pasted text.',
+    'See who speaks, which claims rest on what, and which passages shape the conclusion of an article, a PDF or pasted text.',
 };
 
 export default function AnalyzePage() {

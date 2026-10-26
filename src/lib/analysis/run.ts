@@ -1,60 +1,77 @@
 import { createHash } from 'node:crypto';
 
-import {
-  buildFirstPrinciplesUserPrompt,
-  FIRST_PRINCIPLES_SYSTEM_PROMPT,
-  FIRST_PRINCIPLES_PROMPT_VERSION,
-  parseFirstPrinciplesAnalysis,
-  type FirstPrinciplesAnalysis,
-} from '@/lib/domain/first-principles';
-
+import { localizeSpelling, type OutputLanguage } from '@/lib/config/languages';
+import { forbiddenLabelsIn, stripForbiddenSentences } from '@/lib/config/vocabulary';
 import { METHOD_VERSION } from '@/lib/domain/epistemic-graph';
 
 import type { AnalyzeInput } from './input';
+import { computeMetrics } from './metrics';
+import {
+  articleBlock,
+  assessmentSystemPrompt,
+  readingSystemPrompt,
+  REPORT_PROMPT_VERSION,
+  type PageMetadata,
+} from './prompts';
+import { cleanSourceText, locateQuote, type LocatedQuote } from './quote-locate';
+import {
+  AUTHOR,
+  parseAssessment,
+  parseModelJson,
+  parseReading,
+  REPORT_SCHEMA,
+  type Claim,
+  type Detection,
+  type Figure,
+  type Parsed,
+  type RawAssessment,
+  type RawReading,
+  type Report,
+  type Voice,
+} from './report';
+import type { SourceResult } from './source';
 
 export const MAX_MODEL_CHARS = 18_000;
-
-export interface ReaderResult {
-  ok: boolean;
-  url: string;
-  title?: string;
-  text?: string;
-  truncated?: boolean;
-  failure?: { reason: string };
-}
+export const MIN_SOURCE_CHARS = 200;
 
 export interface ModelResult {
   text: string;
   modelId: string | null;
 }
 
+export type Stage = 'reading-source' | 'reading' | 'assessing' | 'checking';
+
 export interface AnalysisDeps {
-  readPage(url: string): Promise<ReaderResult>;
-  complete(messages: Array<{ role: 'system' | 'user'; content: string }>): Promise<ModelResult>;
+  readSource(url: string, maxChars: number): Promise<SourceResult>;
+  complete(
+    messages: Array<{ role: 'system' | 'user'; content: string }>,
+    pass: 'reading' | 'assessment',
+  ): Promise<ModelResult>;
+  onStage?(stage: Stage): void;
 }
 
 export interface ArticleAnalysisResult {
-  analysis: FirstPrinciplesAnalysis;
-  sourceText?: string;
+  report: Report;
+  sourceText: string;
+  language: OutputLanguage;
   origin: {
-    kind: 'retrieved-page' | 'user-pasted-text';
+    kind: 'retrieved-page' | 'retrieved-pdf' | 'user-pasted-text';
     url: string | null;
     title: string | null;
     attribution: 'retrieved' | 'user-asserted' | 'not-provided';
     modelChars: number;
     truncated: boolean;
-    /** SHA-256 of the exact article text visible to the model, excluding prompt wrapper. */
+    /** SHA-256 of the exact text visible to the model, excluding the prompt wrapper. */
     textSha256: string;
   };
-  modelId: string | null;
   run: {
     generatedAt: string;
     methodVersion: string;
     promptVersion: string;
-    repairAttempts?: number;
+    passes: { pass: 'reading' | 'assessment'; modelId: string | null; repairAttempts: number }[];
   };
   durationMs: number;
-  /** The text is model-generated analysis and has NOT been independently checked. */
+  /** Model-generated analysis; NOT independently checked against the world. */
   independentlyVerified: false;
 }
 
@@ -69,40 +86,130 @@ export class AnalysisFailure extends Error {
   }
 }
 
+type Messages = Array<{ role: 'system' | 'user'; content: string }>;
+
 /**
- * No database writes here. A report is a provisional model interpretation
- * until a separate, sourced verification pipeline independently assesses it.
- * The seams are injectable so tests never spend tokens or fetch the internet.
+ * Ask, validate, and repair once. A repair restates the error and the original
+ * request; it never feeds the malformed answer back, so context does not grow.
  */
+async function askValidated<T>(
+  deps: AnalysisDeps,
+  pass: 'reading' | 'assessment',
+  messages: Messages,
+  parse: (value: unknown) => Parsed<T>,
+  extraCheck: (data: T) => string | null,
+): Promise<{ data: T; dropped: number; modelId: string | null; repairAttempts: number }> {
+  let issue = '';
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const request: Messages =
+      attempt === 0
+        ? messages
+        : [
+            ...messages,
+            {
+              role: 'user',
+              content:
+                'Your previous answer failed validation: ' +
+                issue +
+                '. Answer again with one complete JSON object in the requested shape.',
+            },
+          ];
+    const generated = await deps.complete(request, pass);
+    try {
+      const parsed = parse(parseModelJson(generated.text));
+      if (!parsed.ok) {
+        issue = parsed.error;
+        continue;
+      }
+      const problem = extraCheck(parsed.data);
+      if (problem && attempt === 0) {
+        issue = problem;
+        continue;
+      }
+      return {
+        data: parsed.data,
+        dropped: parsed.dropped,
+        modelId: generated.modelId,
+        repairAttempts: attempt,
+      };
+    } catch {
+      issue = 'the answer was not valid JSON';
+    }
+  }
+  throw new AnalysisFailure(
+    'MODEL_INVALID',
+    502,
+    'The model could not produce a complete report after one repair. Your article is unchanged; please retry.',
+  );
+}
+
+function generatedStrings(value: unknown): string[] {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.flatMap(generatedStrings);
+  if (value && typeof value === 'object') {
+    return Object.entries(value).flatMap(([key, item]) =>
+      key === 'quote' || key === 'quotes' ? [] : generatedStrings(item),
+    );
+  }
+  return [];
+}
+
+function vocabularyIssue(value: unknown): string | null {
+  const found = [...new Set(generatedStrings(value).flatMap(forbiddenLabelsIn))];
+  return found.length
+    ? 'it applies labels BiasLens never uses in its own voice (' +
+        found.join(', ') +
+        '); describe observable features instead'
+    : null;
+}
+
+/** Final pass over generated text: forbidden labels removed, Swiss spelling. */
+function polish(text: string, language: OutputLanguage): string {
+  return localizeSpelling(stripForbiddenSentences(text), language);
+}
+
+function nameKey(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');
+}
+
 export async function analyzeArticle(
   input: AnalyzeInput,
   deps: AnalysisDeps,
 ): Promise<ArticleAnalysisResult> {
   const started = Date.now();
+  const language: OutputLanguage = input.outputLanguage ?? 'en';
   let sourceUrl = input.url;
   let title: string | null = null;
+  let metadata: PageMetadata | null = null;
+  let kind: ArticleAnalysisResult['origin']['kind'] = 'user-pasted-text';
   let body: string;
   let fetchTruncated = false;
 
   if (input.mode === 'url') {
-    const fetched = await deps.readPage(input.url!);
+    deps.onStage?.('reading-source');
+    const fetched = await deps.readSource(input.url!, MAX_MODEL_CHARS + 2_000);
     if (!fetched.ok) {
       throw new AnalysisFailure(
         'SOURCE_UNAVAILABLE',
         422,
-        fetched.failure?.reason ??
-          'Could not read that article. Paste its text instead if the website blocks automated reading.',
+        fetched.reason + ' Paste the article text instead.',
       );
     }
-    body = fetched.text ?? '';
+    body = fetched.text;
     sourceUrl = fetched.url;
-    title = fetched.title || null;
-    fetchTruncated = !!fetched.truncated;
+    title = fetched.title;
+    metadata = fetched.metadata;
+    kind = fetched.kind === 'pdf' ? 'retrieved-pdf' : 'retrieved-page';
+    fetchTruncated = fetched.truncated;
   } else {
-    body = input.text ?? '';
+    body = cleanSourceText(input.text ?? '');
   }
 
-  if (body.trim().length < 200) {
+  if (body.trim().length < MIN_SOURCE_CHARS) {
     throw new AnalysisFailure(
       'SOURCE_TOO_SHORT',
       422,
@@ -112,91 +219,202 @@ export async function analyzeArticle(
 
   const clipped = body.length > MAX_MODEL_CHARS;
   const text = clipped ? body.slice(0, MAX_MODEL_CHARS) : body;
-  const prompt = buildFirstPrinciplesUserPrompt({
-    url:
-      sourceUrl ??
-      'No source URL provided. Text was pasted by a user and its origin is unverified.',
-    title,
-    text: text + (fetchTruncated || clipped ? '\n[Source text truncated before analysis]' : ''),
-    outputLanguage: input.outputLanguage,
-  });
+  const truncated = fetchTruncated || clipped;
+  const article = articleBlock({ url: sourceUrl, title, metadata, text, truncated });
 
-  const messages: Array<{ role: 'system' | 'user'; content: string }> = [
-    { role: 'system', content: FIRST_PRINCIPLES_SYSTEM_PROMPT },
-    { role: 'user', content: prompt },
-  ];
-  let generated: ModelResult = { text: '', modelId: null };
-  let analysis: FirstPrinciplesAnalysis | null = null;
-  let issue = '';
-  let repairAttempts = 0;
-  // One bounded schema repair; never silently downgrade to the older report
-  // shape when a model omits the insight/grounding fields. Reuse the original
-  // article, not the malformed report, so a repair does not inflate context.
-  for (let attempt = 0; attempt < 2; attempt++) {
-    repairAttempts = attempt;
-    generated = await deps.complete(
-      attempt === 0
-        ? messages
-        : [
-            ...messages,
-            {
-              role: 'user',
-              content:
-                'The previous attempt failed output validation: ' +
-                issue +
-                '. Return a complete JSON object with EVERY required key. Keep JSON keys and enum values in English. Write every reader-facing value in ' +
-                { en: 'English', de: 'German', fr: 'French' }[input.outputLanguage ?? 'en'] +
-                ', except source_quote, which must remain an exact excerpt in the original article language. Include insight with headline, explanation, assumption, test and a source_quote (exact short excerpt or null) for each core claim.',
-            },
-          ],
-    );
-    try {
-      const json = generated.text.trim().replace(/^```(?:json)?\s*\n([\s\S]*?)\n```$/i, '$1');
-      const valid = parseFirstPrinciplesAnalysis(JSON.parse(json));
-      if (!valid.success) issue = valid.error;
-      else if (!valid.data.insight) issue = 'insight is missing';
-      else if (valid.data.core_claims.some((claim) => claim.source_quote === undefined))
-        issue = 'source_quote is missing from a claim';
-      else {
-        analysis = valid.data;
-        break;
-      }
-    } catch {
-      issue = 'not valid JSON';
+  // ——— Pass 1: inventory ———
+  deps.onStage?.('reading');
+  const reading = await askValidated<RawReading>(
+    deps,
+    'reading',
+    [
+      { role: 'system', content: readingSystemPrompt(language) },
+      { role: 'user', content: article },
+    ],
+    parseReading,
+    vocabularyIssue,
+  );
+
+  let proposedQuotes = 0;
+  let groundedQuotes = 0;
+  const ground = (quote: string | null): LocatedQuote | null => {
+    if (!quote) return null;
+    proposedQuotes++;
+    const located = locateQuote(text, quote);
+    if (located) groundedQuotes++;
+    return located;
+  };
+
+  // Byline: the publisher's metadata wins; the model fills gaps.
+  const byline = {
+    authors: metadata?.authors.length ? metadata.authors : reading.data.byline.authors,
+    publication: metadata?.publication ?? reading.data.byline.publication,
+    date: metadata?.date ?? reading.data.byline.date,
+    source: metadata?.authors.length ? ('page-metadata' as const) : ('model' as const),
+  };
+  const authorKeys = new Set(byline.authors.map(nameKey));
+
+  // The author is never a voice (the report once listed "Christoph Bernet · Autor").
+  const voices: Voice[] = reading.data.voices
+    .filter((voice) => !authorKeys.has(nameKey(voice.name)))
+    .map((voice) => ({
+      id: voice.id,
+      name: voice.name,
+      kind: voice.kind,
+      affiliation: voice.affiliation ? polish(voice.affiliation, language) : null,
+      stance: voice.stance,
+      quotes: voice.quotes
+        .map((quote) => ground(quote))
+        .filter((quote): quote is LocatedQuote => quote !== null),
+    }));
+  const voiceIds = new Set(voices.map((voice) => voice.id));
+  const speaker = (id: string) => (voiceIds.has(id) ? id : AUTHOR);
+
+  const claims: Claim[] = reading.data.claims.map((claim, index) => ({
+    id: 'c' + (index + 1),
+    text: polish(claim.text, language),
+    type: claim.type,
+    speaker: speaker(claim.speaker),
+    support: claim.support,
+    quote: ground(claim.quote),
+  }));
+  const figures: Figure[] = reading.data.numbers.map((figure, index) => ({
+    id: 'n' + (index + 1),
+    value: figure.value,
+    kind: figure.kind,
+    about: polish(figure.about, language),
+    source: figure.source,
+    sampleSizeStated: figure.sample_size_stated,
+    marginStated: figure.margin_stated,
+    comparisonGiven: figure.comparison_given,
+    quote: ground(figure.quote),
+  }));
+  const centralClaim = {
+    text: polish(reading.data.central_claim.text, language),
+    speaker: speaker(reading.data.central_claim.speaker),
+    quote: ground(reading.data.central_claim.quote),
+  };
+
+  // ——— Pass 2: assessment, given the grounded inventory ———
+  deps.onStage?.('assessing');
+  const inventory = {
+    genre: reading.data.genre,
+    central_claim: centralClaim.text,
+    byline: byline.authors,
+    voices: voices.map((voice) => ({
+      id: voice.id,
+      name: voice.name,
+      affiliation: voice.affiliation,
+      stance: voice.stance,
+      kind: voice.kind,
+    })),
+    claims: claims.map((claim) => ({ text: claim.text, type: claim.type, speaker: claim.speaker })),
+    numbers: figures.map((figure) => ({
+      value: figure.value,
+      about: figure.about,
+      source: figure.source,
+      sample_size_stated: figure.sampleSizeStated,
+      margin_stated: figure.marginStated,
+      comparison_given: figure.comparisonGiven,
+    })),
+  };
+  const assessment = await askValidated<RawAssessment>(
+    deps,
+    'assessment',
+    [
+      { role: 'system', content: assessmentSystemPrompt(language) },
+      {
+        role: 'user',
+        content:
+          'Checked inventory of the article:\n' + JSON.stringify(inventory) + '\n\n' + article,
+      },
+    ],
+    parseAssessment,
+    vocabularyIssue,
+  );
+
+  deps.onStage?.('checking');
+  let droppedDetections = 0;
+  const detections: Detection[] = [];
+  for (const detection of assessment.data.detections) {
+    const quote = ground(detection.quote);
+    if (!quote) {
+      droppedDetections++;
+      continue;
     }
-  }
-  if (!analysis) {
-    throw new AnalysisFailure(
-      'MODEL_INVALID',
-      502,
-      'The model could not produce a complete report after one repair. Your article is unchanged; please retry.',
-    );
+    detections.push({
+      id: 'd' + (detections.length + 1),
+      technique: detection.technique,
+      explanation: polish(detection.explanation, language),
+      alternative: detection.alternative ? polish(detection.alternative, language) : null,
+      quote,
+    });
   }
 
-  // A plausible-looking model quote is never rendered as a quotation unless
-  // its exact bytes occur in the text the model actually received.
-  for (const claim of analysis.core_claims) {
-    if (claim.source_quote && !text.includes(claim.source_quote)) claim.source_quote = null;
-  }
+  const a = assessment.data;
+  const modelRepairs =
+    (reading.repairAttempts > 0 ? 1 : 0) + (assessment.repairAttempts > 0 ? 1 : 0);
+  const report: Report = {
+    schema: REPORT_SCHEMA,
+    title: reading.data.title,
+    byline,
+    genre: reading.data.genre,
+    genreReason: polish(reading.data.genre_reason, language),
+    summary: polish(reading.data.summary, language),
+    centralClaim,
+    voices,
+    claims,
+    figures,
+    detections,
+    insight: {
+      headline: polish(a.insight.headline, language),
+      explanation: polish(a.insight.explanation, language),
+      assumption: polish(a.insight.assumption, language),
+      test: polish(a.insight.test, language),
+    },
+    strongestCase: polish(a.strongest_case, language),
+    strongestObjection: polish(a.strongest_objection, language),
+    missingVoices: a.missing_voices.map((item) => ({
+      who: polish(item.who, language),
+      why: polish(item.why, language),
+    })),
+    questions: a.questions.map((item) => polish(item, language)),
+    whatWouldChange: a.what_would_change.map((item) => polish(item, language)),
+    metrics: computeMetrics({ text, voices, figures, detections }),
+    quality: {
+      proposedQuotes,
+      groundedQuotes,
+      droppedItems: reading.dropped + assessment.dropped + droppedDetections,
+      modelRepairs,
+    },
+  };
+
   return {
-    analysis,
+    report,
     sourceText: text,
+    language,
     origin: {
-      kind: input.mode === 'url' ? 'retrieved-page' : 'user-pasted-text',
+      kind,
       url: sourceUrl,
       title,
       attribution:
         input.mode === 'url' ? 'retrieved' : sourceUrl ? 'user-asserted' : 'not-provided',
       modelChars: text.length,
-      truncated: fetchTruncated || clipped,
+      truncated,
       textSha256: createHash('sha256').update(text, 'utf8').digest('hex'),
     },
-    modelId: generated.modelId,
     run: {
       generatedAt: new Date().toISOString(),
       methodVersion: METHOD_VERSION,
-      promptVersion: FIRST_PRINCIPLES_PROMPT_VERSION,
-      repairAttempts,
+      promptVersion: REPORT_PROMPT_VERSION,
+      passes: [
+        { pass: 'reading', modelId: reading.modelId, repairAttempts: reading.repairAttempts },
+        {
+          pass: 'assessment',
+          modelId: assessment.modelId,
+          repairAttempts: assessment.repairAttempts,
+        },
+      ],
     },
     durationMs: Date.now() - started,
     independentlyVerified: false,

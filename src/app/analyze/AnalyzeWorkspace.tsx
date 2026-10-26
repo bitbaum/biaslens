@@ -2,274 +2,372 @@
 
 import Link from 'next/link';
 import { HeroSection } from '@bitbaum/sitekit/react';
-
-import { useState, useRef, type FormEvent } from 'react';
+import { useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 
 import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
-import type { ArticleAnalysisResult } from '@/lib/analysis/run';
-import { ArticleConversation } from './ArticleConversation';
+import {
+  languageFromLocales,
+  OUTPUT_LANGUAGE_CODES,
+  OUTPUT_LANGUAGES,
+  type OutputLanguage,
+} from '@/lib/config/languages';
+import { reportCopy } from '@/lib/config/report-copy';
 
+import { ArticleConversation } from './ArticleConversation';
+import { ReportView, type ReportResult } from './report/ReportView';
+import { useAnalysis } from './useAnalysis';
 import styles from './analyze.module.css';
 
-type Mode = 'url' | 'text';
-type OutputLanguage = 'en' | 'de' | 'fr';
-
-const CLAIM_LABELS = {
-  factual: 'Factual assertion',
-  normative: 'Value judgement',
-  causal: 'Causal hypothesis',
-} as const;
+type Mode = 'url' | 'text' | 'pdf';
 
 const MIN_TEXT_LENGTH = 200;
+
+const noSubscription = () => () => undefined;
+
+const STAGE_TEXT = {
+  'reading-source': 'Reading the source…',
+  reading: 'Listing who speaks, what is claimed and which figures appear…',
+  assessing: 'Checking techniques, the key assumption and the strongest objection…',
+  checking: 'Matching every cited passage against the text…',
+} as const;
 
 export function AnalyzeWorkspace() {
   const [mode, setMode] = useState<Mode>('url');
   const [url, setUrl] = useState('');
   const [text, setText] = useState('');
-  const [outputLanguage, setOutputLanguage] = useState<OutputLanguage>('en');
-  const [report, setReport] = useState<ArticleAnalysisResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [sourceFailed, setSourceFailed] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [chosenLanguage, setChosenLanguage] = useState<OutputLanguage | null>(null);
+  // A Swiss reader gets a Swiss German report unless they choose otherwise.
+  const browserLanguage = useSyncExternalStore(
+    noSubscription,
+    () => languageFromLocales(navigator.languages ?? []),
+    () => 'en' as OutputLanguage,
+  );
+  const language = chosenLanguage ?? browserLanguage;
+  const [pdfNote, setPdfNote] = useState<string | null>(null);
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const analysis = useAnalysis();
   const reportRef = useRef<HTMLDivElement>(null);
-  const abortRef = useRef<AbortController | null>(null);
 
-  const canSubmit = mode === 'url' ? url.trim().length > 0 : text.trim().length >= MIN_TEXT_LENGTH;
+  const busy = analysis.busy || pdfBusy;
+  const canSubmit =
+    mode === 'url'
+      ? url.trim().length > 0
+      : mode === 'text' && text.trim().length >= MIN_TEXT_LENGTH;
+  const sourceFailed = ['SOURCE_UNAVAILABLE', 'SOURCE_TOO_SHORT'].includes(
+    analysis.error?.code ?? '',
+  );
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (busy || !canSubmit) return;
-    setBusy(true);
-    setError(null);
-    setSourceFailed(false);
-    setReport(null);
-
-    const controller = new AbortController();
-    abortRef.current = controller;
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        signal: controller.signal,
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          url: url.trim() || undefined,
-          text: mode === 'text' ? text : undefined,
-          outputLanguage,
-        }),
-      });
-      const payload: unknown = await response.json();
-      if (!payload || typeof payload !== 'object') {
-        throw new Error('The service returned an invalid response.');
-      }
-      const result = payload as {
-        ok?: boolean;
-        result?: ArticleAnalysisResult;
-        error?: { code?: string; message?: string };
-      };
-      if (!response.ok || !result.ok || !result.result) {
-        setSourceFailed(
-          ['SOURCE_UNAVAILABLE', 'SOURCE_TOO_SHORT'].includes(result.error?.code || ''),
-        );
-        throw new Error(result.error?.message || 'The article could not be analysed.');
-      }
-      setReport(result.result);
+    const result = await analysis.run({
+      url: url.trim() || undefined,
+      text: mode === 'text' ? text : undefined,
+      outputLanguage: language,
+    });
+    if (result) {
       window.setTimeout(() => {
         reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         reportRef.current?.focus({ preventScroll: true });
       }, 50);
-    } catch (reason) {
-      setError(
-        controller.signal.aborted
-          ? 'Examination stopped. Your article is still here.'
-          : reason instanceof Error
-            ? reason.message
-            : 'Could not reach the service.',
+    }
+  };
+
+  const choose = (next: Mode) => {
+    setMode(next);
+    analysis.clearError();
+  };
+
+  const uploadPdf = async (file: File) => {
+    setPdfBusy(true);
+    setPdfNote(null);
+    analysis.clearError();
+    try {
+      const response = await fetch('/api/extract-pdf', {
+        method: 'POST',
+        headers: { 'content-type': 'application/pdf' },
+        body: file,
+      });
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        text?: string;
+        pages?: number;
+        truncated?: boolean;
+        error?: { message?: string };
+      };
+      if (!payload.ok || !payload.text) {
+        setPdfNote(payload.error?.message ?? 'The PDF could not be read.');
+        return;
+      }
+      setText(payload.text);
+      setMode('text');
+      setPdfNote(
+        `Text read from ${file.name} (${payload.pages} ${payload.pages === 1 ? 'page' : 'pages'}${
+          payload.truncated ? ', shortened to 30,000 characters' : ''
+        }). Check it, then examine it.`,
       );
+    } catch {
+      setPdfNote('The PDF could not be uploaded. Check your connection and try again.');
     } finally {
-      setBusy(false);
+      setPdfBusy(false);
     }
   };
 
   return (
-    <>
-      <main id="main-content" className={`${styles.page} bb-frame`}>
-        <HeroSection
-          appearance="application"
-          section={{
-            kind: 'hero',
-            eyebrow: 'Source examination',
-            statement: 'Examine text.',
-            lead: [
-              'Find the claims, inspect the supporting passages and test the assumptions behind an argument.',
-            ],
-          }}
-        />
+    <main id="main-content" className={`${styles.page} bb-frame`}>
+      <HeroSection
+        appearance="application"
+        section={{
+          kind: 'hero',
+          eyebrow: 'Source examination',
+          statement: 'Examine text.',
+          lead: [
+            'See who speaks, which claims rest on what, and which passages shape your conclusion.',
+          ],
+        }}
+      />
 
-        <div className={styles.inputGrid}>
-          <section className={styles.tool} aria-label="Examine a source">
-            <div
-              className={`${styles.modeSwitch} bb-choice-row`}
-              role="group"
-              aria-label="Choose source format"
+      <div className={styles.inputGrid}>
+        <section className={styles.tool} aria-label="Examine a source">
+          <div
+            className={`${styles.modeSwitch} bb-choice-row`}
+            role="group"
+            aria-label="Choose source format"
+          >
+            {(
+              [
+                ['url', 'From a URL'],
+                ['text', 'Paste text'],
+                ['pdf', 'Upload PDF'],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={mode === value ? styles.activeMode : styles.modeButton}
+                disabled={busy}
+                aria-pressed={mode === value}
+                onClick={() => choose(value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className={styles.exampleRow}>
+            <span>Start with your own source, or try a fictional example.</span>
+            <button
+              type="button"
+              onClick={() => {
+                if (busy) return;
+                setMode('text');
+                setUrl('');
+                setText(EXAMPLE_ARTICLE);
+                analysis.setResult(null);
+              }}
+              disabled={busy}
             >
-              <button
-                type="button"
-                className={mode === 'url' ? styles.activeMode : styles.modeButton}
-                disabled={busy}
-                aria-pressed={mode === 'url'}
-                onClick={() => {
-                  setMode('url');
-                  setError(null);
-                }}
-              >
-                From a URL
-              </button>
-              <button
-                type="button"
-                className={mode === 'text' ? styles.activeMode : styles.modeButton}
-                disabled={busy}
-                aria-pressed={mode === 'text'}
-                onClick={() => {
-                  setMode('text');
-                  setError(null);
-                }}
-              >
-                Paste text
-              </button>
-            </div>
-            <div className={styles.exampleRow}>
-              <span>Start with your own source, or try a fictional example.</span>
-              <button
-                type="button"
-                onClick={() => {
-                  if (busy) return;
-                  setMode('text');
-                  setUrl('');
-                  setText(EXAMPLE_ARTICLE);
-                  setReport(null);
-                  setError(null);
-                }}
-                disabled={busy}
-              >
-                Try an example
-              </button>
-            </div>
-            <form onSubmit={submit} className={styles.form}>
-              <label className={styles.fieldLabel} htmlFor="analysis-language">
-                Analysis language
-              </label>
-              <select
-                id="analysis-language"
-                disabled={busy}
-                className={`${styles.input} bb-control`}
-                value={outputLanguage}
-                onChange={(event) => setOutputLanguage(event.target.value as OutputLanguage)}
-              >
-                <option value="en">English</option>
-                <option value="de">Deutsch</option>
-                <option value="fr">Français</option>
-              </select>
-              <label className={styles.fieldLabel} htmlFor="article-url">
-                {mode === 'url' ? 'Source URL' : 'Source URL (optional)'}
-              </label>
-              <input
-                id="article-url"
-                disabled={busy}
-                className={`${styles.input} bb-control`}
-                type="url"
-                placeholder="https://example.com/news/article"
-                value={url}
-                onChange={(event) => {
-                  setUrl(event.target.value);
-                  setReport(null);
-                }}
-                required={mode === 'url'}
-                maxLength={2048}
-                autoComplete="url"
-              />
+              Try an example
+            </button>
+          </div>
+          <form onSubmit={submit} className={styles.form}>
+            <label className={styles.fieldLabel} htmlFor="analysis-language">
+              Report language
+            </label>
+            <select
+              id="analysis-language"
+              disabled={busy}
+              className={`${styles.input} bb-control`}
+              value={language}
+              onChange={(event) => {
+                setChosenLanguage(event.target.value as OutputLanguage);
+              }}
+            >
+              {OUTPUT_LANGUAGE_CODES.map((code) => (
+                <option key={code} value={code}>
+                  {OUTPUT_LANGUAGES[code].label}
+                </option>
+              ))}
+            </select>
 
-              {mode === 'text' && (
-                <>
-                  <label className={styles.fieldLabel} htmlFor="article-text">
-                    Text to examine
-                  </label>
-                  <textarea
-                    id="article-text"
-                    disabled={busy}
-                    className={`${styles.textarea} bb-control`}
-                    placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated fetching."
-                    rows={9}
-                    value={text}
-                    onChange={(event) => {
-                      setText(event.target.value);
-                      setReport(null);
-                    }}
-                    minLength={MIN_TEXT_LENGTH}
-                    maxLength={30_000}
-                    required
-                  />
-                  <p className={styles.hint}>
-                    {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL,
-                    we will not independently check that your pasted text matches it.
-                  </p>
-                </>
-              )}
+            {mode === 'pdf' ? (
+              <>
+                <label className={styles.fieldLabel} htmlFor="article-pdf">
+                  PDF file
+                </label>
+                <input
+                  id="article-pdf"
+                  className={`${styles.input} bb-control`}
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  disabled={busy}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) void uploadPdf(file);
+                  }}
+                />
+                <p className={styles.hint}>
+                  A press clipping or a saved article, up to 10 MB. The text appears in the paste
+                  box for you to check; the file is not stored.
+                </p>
+              </>
+            ) : (
+              <>
+                <label className={styles.fieldLabel} htmlFor="article-url">
+                  {mode === 'url' ? 'Source URL' : 'Source URL (optional)'}
+                </label>
+                <input
+                  id="article-url"
+                  disabled={busy}
+                  className={`${styles.input} bb-control`}
+                  type="url"
+                  inputMode="url"
+                  placeholder="https://example.com/news/article"
+                  value={url}
+                  onChange={(event) => setUrl(event.target.value)}
+                  required={mode === 'url'}
+                  maxLength={2048}
+                  autoComplete="url"
+                />
+                {mode === 'url' && (
+                  <p className={styles.hint}>Web pages and PDF links, including press clippings.</p>
+                )}
+              </>
+            )}
 
+            {mode === 'text' && (
+              <>
+                <label className={styles.fieldLabel} htmlFor="article-text">
+                  Text to examine
+                </label>
+                <textarea
+                  id="article-text"
+                  disabled={busy}
+                  className={`${styles.textarea} bb-control`}
+                  placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated reading."
+                  rows={9}
+                  value={text}
+                  onChange={(event) => setText(event.target.value)}
+                  minLength={MIN_TEXT_LENGTH}
+                  maxLength={30_000}
+                  required
+                />
+                <p className={styles.hint}>
+                  {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL, we
+                  do not check that your pasted text matches it.
+                </p>
+              </>
+            )}
+            {pdfNote && (
+              <p className={styles.notice} role="status">
+                {pdfNote}
+              </p>
+            )}
+
+            {mode !== 'pdf' && (
               <div className={`${styles.formBottom} bb-actions`}>
                 <button
                   className={`${styles.submit} bb-button bb-button--primary`}
                   type="submit"
                   disabled={!canSubmit || busy}
                 >
-                  {busy ? 'Examining…' : 'Examine text'}
+                  {analysis.busy ? 'Examining…' : 'Examine text'}
                 </button>
                 <p className={styles.hint}>
-                  AI-generated interpretation. Check the sources before relying on a conclusion.
+                  AI-generated reading. Every marked passage is the text’s own words; the judgements
+                  are not a fact check.
                 </p>
               </div>
-            </form>
+            )}
+          </form>
 
-            <div role="status" aria-live="polite">
-              {busy && (
-                <div className={styles.progress}>
-                  <p>Tracing claims, checking passages, finding the hinge of the argument…</p>
-                  <p className={styles.hint}>
-                    Usually takes 15–60 seconds. Your article is sent to our model provider for
-                    analysis.
-                  </p>
+          <div role="status" aria-live="polite">
+            {(analysis.busy || pdfBusy) && (
+              <div className={styles.progress}>
+                <p>{pdfBusy ? 'Reading the PDF…' : STAGE_TEXT[analysis.stage ?? 'reading']}</p>
+                {analysis.busy && (
+                  <>
+                    <p className={styles.hint}>
+                      Usually 20–90 seconds. Your text is sent to our model provider for analysis.
+                    </p>
+                    <button type="button" className={styles.pasteFallback} onClick={analysis.stop}>
+                      Stop examination
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+            {analysis.error && (
+              <div role="alert" className={styles.error}>
+                <strong>Analysis unavailable</strong>
+                <p>{analysis.error.message}</p>
+                {mode === 'url' && sourceFailed && (
                   <button
                     type="button"
                     className={styles.pasteFallback}
-                    onClick={() => abortRef.current?.abort()}
+                    onClick={() => choose('text')}
                   >
-                    Stop examination
+                    Paste article text instead →
                   </button>
-                </div>
-              )}
-              {error && (
-                <div role="alert" className={styles.error}>
-                  <strong>Analysis unavailable</strong>
-                  <p>{error}</p>
-                  {mode === 'url' && sourceFailed && (
-                    <button
-                      type="button"
-                      className={styles.pasteFallback}
-                      onClick={() => setMode('text')}
-                    >
-                      Paste article text instead →
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          </section>
-          <AboutAnalysis />
-        </div>
-        <div ref={reportRef} tabIndex={-1} className={styles.reportTarget}>
-          {report && <AnalysisReport report={report} outputLanguage={outputLanguage} />}
-        </div>
-      </main>
-    </>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+        <AboutAnalysis />
+      </div>
+      <div ref={reportRef} tabIndex={-1} className={styles.reportTarget}>
+        {analysis.result && <AnalysisResult result={analysis.result} />}
+      </div>
+    </main>
+  );
+}
+
+function AnalysisResult({ result }: { result: ReportResult }) {
+  const copy = reportCopy(result.language);
+  const saveJson = () => {
+    const exported = {
+      schema: 'biaslens-analysis@2',
+      warning: 'Provisional AI-generated reading; not independently fact-checked.',
+      ...result,
+    };
+    const blob = new Blob([JSON.stringify(exported, null, 2)], {
+      type: 'application/json;charset=utf-8',
+    });
+    const location = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = location;
+    link.download = 'biaslens-report-' + result.run.generatedAt.slice(0, 10) + '.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(location), 0);
+  };
+  return (
+    <ReportView
+      result={result}
+      after={
+        <>
+          {result.sourceText && (
+            <ArticleConversation
+              sourceText={result.sourceText}
+              sourceDigest={result.origin.textSha256}
+              title={result.report.title}
+              outputLanguage={result.language}
+              heading={copy.sections.ask}
+            />
+          )}
+          <div className={styles.reportFooter}>
+            <button
+              className={`${styles.exportBtn} bb-button bb-button--secondary`}
+              type="button"
+              onClick={saveJson}
+            >
+              {copy.provenance.download}
+            </button>
+          </div>
+        </>
+      }
+    />
   );
 }
 
@@ -281,246 +379,31 @@ function AboutAnalysis() {
         <div>
           <span>01</span>
           <div>
-            <h3>The argument</h3>
-            <p>A concise explanation of the claims and the passages behind them.</p>
+            <h3>Who is speaking</h3>
+            <p>
+              Every quoted voice, how the text describes them and whether they back its main claim.
+            </p>
           </div>
         </div>
         <div>
           <span>02</span>
           <div>
-            <h3>The assumptions</h3>
-            <p>What the conclusion depends on, and which alternatives deserve attention.</p>
+            <h3>The text, marked up</h3>
+            <p>Passages that use a known technique, each with the reason and a neutral wording.</p>
           </div>
         </div>
         <div>
           <span>03</span>
           <div>
-            <h3>A way to test it</h3>
-            <p>The evidence that could strengthen or challenge the explanation.</p>
+            <h3>The numbers and the hinge</h3>
+            <p>Figures without a source or sample, and the one step the argument rests on.</p>
           </div>
         </div>
       </div>
       <p className={styles.aboutNote}>
-        This examines one text. It does not independently retrieve or verify outside evidence.
+        This examines one text. It does not retrieve or verify outside evidence.
       </p>
       <Link href="/methodology">How the analysis works →</Link>
     </aside>
-  );
-}
-
-function AnalysisReport({
-  report,
-  outputLanguage,
-}: {
-  report: ArticleAnalysisResult;
-  outputLanguage: OutputLanguage;
-}) {
-  const analysis = report.analysis;
-
-  const saveJson = () => {
-    const exported = {
-      schema: 'biaslens-analysis@1',
-      warning: 'Provisional AI-generated interpretation; not independently fact-checked.',
-      ...report,
-    };
-    const blob = new Blob([JSON.stringify(exported, null, 2)], {
-      type: 'application/json;charset=utf-8',
-    });
-    const location = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = location;
-    link.download = 'biaslens-report-' + report.run.generatedAt.slice(0, 10) + '.json';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(location), 0);
-  };
-
-  return (
-    <article className={styles.report} aria-label="Provisional article analysis">
-      <p className={styles.meta}>
-        AI interpretation · Evidence within this article, not independent fact-checking
-      </p>
-
-      <header className={styles.reportTitle}>
-        <p className={styles.eyebrow}>Article examination</p>
-        <h2>{analysis.title}</h2>
-        <p className={styles.meta}>
-          {[analysis.author, analysis.publication, analysis.publication_date, analysis.language]
-            .filter(Boolean)
-            .join(' · ')}
-        </p>
-        <p className={styles.meta}>
-          {report.origin.kind === 'retrieved-page'
-            ? 'Text retrieved from the linked page'
-            : report.origin.url
-              ? 'Text pasted by a user; linked source was not checked'
-              : 'Text pasted by a user; no source URL was provided'}
-        </p>
-        {report.origin.url && (
-          <a className={styles.source} href={report.origin.url} target="_blank" rel="noreferrer">
-            Open supplied source →
-          </a>
-        )}
-        {report.origin.truncated && (
-          <p className={styles.warning}>
-            Only part of this text was available to the model. Unexamined sections may affect the
-            interpretation.
-          </p>
-        )}
-      </header>
-
-      <div className={styles.reportOverview} aria-label="Analysis overview">
-        <div>
-          <strong>{analysis.core_claims.length}</strong>
-          <span>Claims examined</span>
-        </div>
-        <div>
-          <strong>{analysis.core_claims.filter((claim) => claim.source_quote).length}</strong>
-          <span>Quoted passages</span>
-        </div>
-        <div>
-          <strong>{analysis.named_sources.length}</strong>
-          <span>Named sources</span>
-        </div>
-      </div>
-      <nav className={styles.reportNav} aria-label="Report sections">
-        <a href="#report-claims">Claims</a>
-        <a href="#report-framing">Context</a>
-        <a href="#report-test">Tests</a>
-      </nav>
-
-      {analysis.insight && (
-        <section className={styles.insight} aria-label="The key insight">
-          <p className={styles.eyebrow}>The key assumption</p>
-          <h3>{analysis.insight.headline}</h3>
-          <p>{analysis.insight.explanation}</p>
-          <div className={styles.insightGrid}>
-            <div>
-              <h4>The assumption</h4>
-              <p>{analysis.insight.assumption}</p>
-            </div>
-            <div>
-              <h4>Put it to the test</h4>
-              <p>{analysis.insight.test}</p>
-            </div>
-          </div>
-        </section>
-      )}
-      <section className={styles.reportSection}>
-        <h3>The argument in brief</h3>
-        <p>{analysis.summary}</p>
-      </section>
-
-      <section id="report-claims" className={styles.reportSection}>
-        <h3>Core claims</h3>
-        <ol className={styles.claims}>
-          {analysis.core_claims.map((claim, index) => (
-            <li key={index} className={styles.claim}>
-              <div className={styles.claimHeader}>
-                <span>{CLAIM_LABELS[claim.type]}</span>
-                <span>Support in article: {claim.evidence_quality}</span>
-              </div>
-              <p>{claim.claim}</p>
-              {claim.source_quote ? (
-                <details className={styles.evidence}>
-                  <summary>Inspect the article passage</summary>
-                  <blockquote>{claim.source_quote}</blockquote>
-                  <p className={styles.hint}>
-                    Exact text found in the submitted article. This confirms the attribution, not
-                    the truth of the statement.
-                  </p>
-                </details>
-              ) : (
-                <p className={styles.hint}>No exact supporting passage identified.</p>
-              )}
-              <p className={styles.claimHint}>
-                {claim.supported_in_article
-                  ? 'Some support is presented in the article; not independently checked.'
-                  : 'The article does not appear to provide direct support; not externally checked.'}
-              </p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className={styles.reportSection}>
-        <h3>Reasoning to examine</h3>
-        <p className={styles.longText}>{analysis.first_principles_critique}</p>
-      </section>
-
-      {analysis.named_sources.length > 0 && (
-        <section className={styles.reportSection}>
-          <h3>Sources named within the article</h3>
-          <p className={styles.sectionHint}>
-            These are attributions identified in the article, not sources our system independently
-            authenticated.
-          </p>
-          <ul className={styles.namedSources}>
-            {analysis.named_sources.map((source, index) => (
-              <li key={index}>
-                <strong>{source.name}</strong> · {source.role}
-                <p>{source.attributed_claim}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section id="report-framing" className={styles.reportSection}>
-        <h3>Possible framing and selection bias</h3>
-        <p>{analysis.biases_to_consider}</p>
-      </section>
-
-      <section id="report-test" className={styles.reportSection}>
-        <h3>What could change the assessment?</h3>
-        <p>{analysis.what_would_change_assessment}</p>
-      </section>
-
-      {report.sourceText && (
-        <details className={styles.sourceText}>
-          <summary>
-            Inspect the full text examined ({report.origin.modelChars.toLocaleString()} characters)
-          </summary>
-          <pre>{report.sourceText}</pre>
-        </details>
-      )}
-      {report.sourceText && (
-        <ArticleConversation
-          sourceText={report.sourceText}
-          sourceDigest={report.origin.textSha256}
-          title={analysis.title}
-          outputLanguage={outputLanguage}
-        />
-      )}
-      <div className={styles.reportFooter}>
-        <span>
-          Analysed {report.origin.modelChars.toLocaleString()} characters ·{' '}
-          {(report.durationMs / 1_000).toFixed(1)}s{report.modelId ? ' · ' + report.modelId : ''}
-        </span>
-        <Link href="/methodology">Question or challenge the methodology →</Link>
-        <button
-          className={`${styles.exportBtn} bb-button bb-button--secondary`}
-          type="button"
-          onClick={saveJson}
-        >
-          Download JSON report
-        </button>
-      </div>
-      <details className={styles.sourceText}>
-        <summary>Analysis details & provenance</summary>
-        <p className={styles.exportNote}>
-          Method {report.run.methodVersion} · Prompt {report.run.promptVersion} ·{' '}
-          {report.run.generatedAt}
-        </p>
-        <p className={styles.exportNote}>
-          SHA-256 of the examined text: <code>{report.origin.textSha256}</code>
-        </p>
-        <p className={styles.exportNote}>
-          The digest identifies the text processed, not its authenticity or accuracy. The examined
-          text is included in your export. This report is not saved on our server.
-        </p>
-      </details>
-    </article>
   );
 }

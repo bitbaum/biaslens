@@ -4,6 +4,22 @@ What changed for people using BiasLens, newest first.
 
 ## 2026-10-26
 
+### Added
+
+- **Who is speaking.** Every report lists the people and organisations the article quotes or cites, how the article describes them and whether they support its main claim. The author is never listed as a source.
+- **The text, marked up.** The article is shown with flagged passages highlighted. Tap one to see which technique it is, why it was flagged and a neutral wording.
+- **A published technique catalogue.** Sixteen techniques, from a claim without a source to a poll without a sample size, each with what counts and what does not, on the method page.
+- **The numbers.** Figures are listed with whether the article names a source, a sample size or a comparison, and figures that do not match each other are flagged.
+- **PDFs.** Paste a link to a PDF, such as a press clipping, or upload one; its text appears in the paste box to check before examining.
+- **Report in your language.** Headings and text follow the report language, including Swiss German with Swiss spelling, and the language is preselected from your browser.
+- **Progress while it works.** The page says which step the examination is on.
+
+### Changed
+
+- **Claims belong to whoever made them.** An explanation offered by a quoted expert is shown as that expert’s, not the article’s.
+- **Quotes survive copy-paste.** A passage is found even when quotation marks, dashes, spaces or line breaks differ; a changed word still fails.
+- **No political labels.** BiasLens no longer applies left/right or similar labels in its own voice; the rule and its word list are on the method page.
+
 ### Fixed
 
 - **Second sign-in factors apply everywhere.** An account with two-factor sign-in now asks for it whichever way the person signs in.

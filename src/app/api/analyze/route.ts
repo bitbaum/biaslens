@@ -1,44 +1,18 @@
 import { complete, freeChain, usableChain } from '@bitbaum/ai-kit';
-import { readPage } from '@bitbaum/ai-kit/web';
 import { clientIp, slidingWindow, toHeaders } from 'limitkit';
 
-import { buildBrand } from '@/lib/config/brand';
-import { analyzeArticle, AnalysisFailure } from '@/lib/analysis/run';
-import { parseAnalyzeInput } from '@/lib/analysis/input';
+import { BodyTooLarge, originAllowed, readBoundedJson } from '@/lib/api/guard';
+import { analyzeArticle, AnalysisFailure, type AnalysisDeps, type Stage } from '@/lib/analysis/run';
+import { parseAnalyzeInput, type AnalyzeInput } from '@/lib/analysis/input';
+import { readSource } from '@/lib/analysis/source';
 
 export const runtime = 'nodejs';
-export const maxDuration = 90;
+export const maxDuration = 150;
 export const dynamic = 'force-dynamic';
 
-const MAX_BODY_BYTES = 50_000;
+const MAX_BODY_BYTES = 120_000;
 const REQUESTS_PER_HOUR = 8;
 const limiter = slidingWindow({ limit: REQUESTS_PER_HOUR, windowMs: 60 * 60_000 });
-
-class BodyTooLarge extends Error {}
-
-/** A size limit that still holds when Content-Length is missing or dishonest. */
-async function boundedJson(req: Request): Promise<unknown> {
-  const length = Number(req.headers.get('content-length'));
-  if (Number.isFinite(length) && length > MAX_BODY_BYTES) throw new BodyTooLarge();
-
-  const reader = req.body?.getReader();
-  if (!reader) return {};
-  const decoder = new TextDecoder();
-  let size = 0;
-  let raw = '';
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    size += value.byteLength;
-    if (size > MAX_BODY_BYTES) {
-      await reader.cancel().catch(() => undefined);
-      throw new BodyTooLarge();
-    }
-    raw += decoder.decode(value, { stream: true });
-  }
-  raw += decoder.decode();
-  return JSON.parse(raw);
-}
 
 const errorBody = (code: string, message: string) => ({
   ok: false as const,
@@ -51,22 +25,10 @@ const errorBody = (code: string, message: string) => ({
  * client-IP parser. For horizontal deployments a shared store is needed.
  */
 export async function POST(request: Request) {
-  const origin = request.headers.get('origin');
-  if (origin) {
-    try {
-      // The reverse proxy terminates HTTPS; request.url may name the internal
-      // listener. Trust the configured public origin, never forwarded headers.
-      const expected = buildBrand(process.env).siteOrigin ?? new URL(request.url).origin;
-      if (new URL(origin).origin !== expected) {
-        return Response.json(errorBody('ORIGIN_DENIED', 'Request origin is not allowed.'), {
-          status: 403,
-        });
-      }
-    } catch {
-      return Response.json(errorBody('ORIGIN_DENIED', 'Request origin is not allowed.'), {
-        status: 403,
-      });
-    }
+  if (!originAllowed(request)) {
+    return Response.json(errorBody('ORIGIN_DENIED', 'Request origin is not allowed.'), {
+      status: 403,
+    });
   }
   if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) {
     return Response.json(errorBody('BAD_MEDIA_TYPE', 'Send application/json.'), { status: 415 });
@@ -83,7 +45,7 @@ export async function POST(request: Request) {
 
   let parsedBody: unknown;
   try {
-    parsedBody = await boundedJson(request);
+    parsedBody = await readBoundedJson(request, MAX_BODY_BYTES);
   } catch (error) {
     const large = error instanceof BodyTooLarge;
     return Response.json(
@@ -108,48 +70,103 @@ export async function POST(request: Request) {
     );
   }
 
-  const modelSignal = AbortSignal.any([request.signal, AbortSignal.timeout(75_000)]);
+  const modelSignal = AbortSignal.any([request.signal, AbortSignal.timeout(140_000)]);
+  const deps = (onStage?: (stage: Stage) => void): AnalysisDeps => ({
+    readSource: (url, maxChars) => readSource(url, maxChars),
+    onStage,
+    complete: async (messages, pass) => {
+      const response = await complete({
+        chain,
+        messages,
+        signal: modelSignal,
+        timeoutMs: 40_000,
+        maxTokens: pass === 'reading' ? 3_600 : 3_200,
+        temperature: 0.2,
+        reasoning: 'light',
+        extraBody: { response_format: { type: 'json_object' } },
+      });
+      return { text: response.text, modelId: response.id };
+    },
+  });
+
+  // A client that asks for NDJSON gets progress events while the two model
+  // passes run (they take 20–90 s). Everyone else gets one JSON response.
+  if (request.headers.get('accept')?.includes('application/x-ndjson')) {
+    return streamAnalysis(input.data, deps, request.signal, headers);
+  }
   try {
-    const result = await analyzeArticle(input.data, {
-      readPage: (url) => readPage(url, { maxChars: 20_000, maxBytes: 1_000_000 }),
-      complete: async (messages) => {
-        const response = await complete({
-          chain,
-          messages,
-          signal: modelSignal,
-          timeoutMs: 22_000,
-          maxTokens: 3_600,
-          temperature: 0.2,
-          reasoning: 'light',
-          extraBody: { response_format: { type: 'json_object' } },
-        });
-        return { text: response.text, modelId: response.id };
-      },
-    });
+    const result = await analyzeArticle(input.data, deps());
     return Response.json({ ok: true, result }, { status: 200, headers });
   } catch (error) {
-    if (error instanceof AnalysisFailure) {
-      return Response.json(errorBody(error.code, error.message), {
-        status: error.status,
-        headers,
-      });
-    }
-    if (request.signal.aborted) {
-      return Response.json(errorBody('CANCELLED', 'The request was cancelled.'), {
-        status: 499,
-        headers,
-      });
-    }
-    console.error(
-      'BiasLens analysis provider error',
-      error instanceof Error ? error.name : 'unknown',
-    );
-    return Response.json(
-      errorBody(
-        'MODEL_UNAVAILABLE',
-        'The analysis service could not produce a report. Please retry later.',
-      ),
-      { status: 503, headers },
-    );
+    const failure = describeFailure(error, request.signal.aborted);
+    return Response.json(errorBody(failure.code, failure.message), {
+      status: failure.status,
+      headers,
+    });
   }
+}
+
+function describeFailure(error: unknown, aborted: boolean) {
+  if (error instanceof AnalysisFailure) {
+    return { code: error.code, message: error.message, status: error.status };
+  }
+  if (aborted) return { code: 'CANCELLED', message: 'The request was cancelled.', status: 499 };
+  console.error(
+    'BiasLens analysis provider error',
+    error instanceof Error ? error.name : 'unknown',
+  );
+  return {
+    code: 'MODEL_UNAVAILABLE',
+    message: 'The analysis service could not produce a report. Please retry later.',
+    status: 503,
+  };
+}
+
+function streamAnalysis(
+  input: AnalyzeInput,
+  deps: (onStage: (stage: Stage) => void) => AnalysisDeps,
+  signal: AbortSignal,
+  headers: HeadersInit,
+) {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (event: unknown) => {
+        try {
+          controller.enqueue(encoder.encode(JSON.stringify(event) + '\n'));
+        } catch {
+          // The reader went away; the analysis is abandoned with it.
+        }
+      };
+      try {
+        const result = await analyzeArticle(
+          input,
+          deps((stage) => send({ type: 'stage', stage })),
+        );
+        send({ type: 'result', result });
+      } catch (error) {
+        const failure = describeFailure(error, signal.aborted);
+        send({
+          type: 'error',
+          status: failure.status,
+          error: { code: failure.code, message: failure.message },
+        });
+      } finally {
+        try {
+          controller.close();
+        } catch {
+          // Already closed by a cancelled reader.
+        }
+      }
+    },
+  });
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      ...Object.fromEntries(new Headers(headers)),
+      'content-type': 'application/x-ndjson; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-accel-buffering': 'no',
+    },
+  });
 }

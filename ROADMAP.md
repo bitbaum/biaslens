@@ -13,13 +13,13 @@ Every finding points to a passage in the article, and every voice is named with
 who they are and whether they support the main claim.
 
 - [ ] A test set of real Swiss and English articles, scored before and after every method change
-- [ ] A published catalogue of writing techniques, each with what counts and what does not
-- [ ] Quotes found even when a PDF or a copy-paste changed the spacing, hyphens or quotation marks
-- [ ] Articles read from PDF links and uploaded PDFs, including press clippings
-- [ ] Claims attributed to the person who made them, not to the article
-- [ ] Figures checked for a source, a sample size and contradictions within the article
-- [ ] The article shown with its passages highlighted, one tap to see why
-- [ ] The report in the reader's language, including Swiss German
+- [x] A published catalogue of writing techniques, each with what counts and what does not
+- [x] Quotes found even when a PDF or a copy-paste changed the spacing, hyphens or quotation marks
+- [x] Articles read from PDF links and uploaded PDFs, including press clippings
+- [x] Claims attributed to the person who made them, not to the article
+- [x] Figures checked for a source, a sample size and contradictions within the article
+- [x] The article shown with its passages highlighted, one tap to see why
+- [x] The report in the reader's language, including Swiss German
 
 ## Next
 

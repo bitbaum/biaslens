@@ -3,223 +3,173 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 import { analyzeArticle, AnalysisFailure, type AnalysisDeps } from './run';
+import { FIXTURE_ARTICLE, FIXTURE_ASSESSMENT, FIXTURE_READING } from './test-fixture';
 
-const articleText = 'A factual news report describes a proposed government reform. '.repeat(6);
-const response = JSON.stringify({
-  title: 'Proposed reforms',
-  author: null,
-  publication: 'Example publication',
-  publication_date: null,
-  language: 'en',
-  summary: 'A proposal is under discussion.',
-  insight: {
-    headline: 'A proposal is not an outcome.',
-    explanation: 'Predictions need a comparison.',
-    assumption: 'Other conditions stay the same.',
-    test: 'Compare matched cases.',
-  },
-  core_claims: [
-    {
-      claim: 'The reform reduces costs.',
-      type: 'causal',
-      supported_in_article: true,
-      evidence_quality: 'weak',
-      source_quote: null,
-    },
-  ],
-  first_principles_critique: 'There are missing controls.',
-  named_sources: [],
-  biases_to_consider: 'Framing may favor one actor.',
-  what_would_change_assessment: 'An independently reviewed experiment.',
-});
-
-function deps(): AnalysisDeps {
+function deps(overrides: Partial<AnalysisDeps> = {}): AnalysisDeps {
   return {
-    readPage: vi.fn(async (url: string) => ({
-      ok: true,
+    readSource: vi.fn(async (url: string) => ({
+      ok: true as const,
       url,
-      title: 'Proposed reforms',
-      text: articleText,
+      kind: 'html' as const,
+      title: 'Seeländer Zeitung',
+      text: FIXTURE_ARTICLE,
+      truncated: false,
+      metadata: {
+        authors: ['Anna Muster'],
+        publication: 'Seeländer Zeitung',
+        date: '2026-10-26',
+        headline: null,
+      },
     })),
-    complete: vi.fn(async () => ({ text: response, modelId: 'mock/test' })),
+    complete: vi.fn(async (_messages, pass) => ({
+      text: JSON.stringify(pass === 'reading' ? FIXTURE_READING : FIXTURE_ASSESSMENT),
+      modelId: 'mock/' + pass,
+    })),
+    ...overrides,
   };
 }
 
-describe('analyzeArticle', () => {
-  it('repairs an older-shaped report once rather than silently omitting the insight', async () => {
-    const old = JSON.parse(response);
-    delete old.insight;
-    const providers = deps();
-    providers.complete = vi
-      .fn()
-      .mockResolvedValueOnce({ text: JSON.stringify(old), modelId: 'first' })
-      .mockResolvedValueOnce({ text: response, modelId: 'repaired' });
-    const result = await analyzeArticle({ mode: 'text', url: null, text: articleText }, providers);
-    expect(result.analysis.insight).toBeDefined();
-    expect(result.modelId).toBe('repaired');
-    expect(result.run.repairAttempts).toBe(1);
-    expect(providers.complete).toHaveBeenCalledTimes(2);
+const pasted = {
+  mode: 'text' as const,
+  url: null,
+  text: FIXTURE_ARTICLE,
+  outputLanguage: 'de-CH' as const,
+};
+
+describe('analyzeArticle (report v4)', () => {
+  it('never lists the author as a voice and attributes the expert’s explanation to the expert', async () => {
+    const { report } = await analyzeArticle(pasted, deps());
+    expect(report.voices.map((voice) => voice.name)).toEqual([
+      'Peter Beispiel',
+      'Hans Probe',
+      'Kritiker aus der Verwaltung',
+    ]);
+    const causal = report.claims.find((claim) => claim.type === 'causal');
+    expect(causal?.speaker).toBe('v1');
   });
 
-  it('stops after one unsuccessful repair and does not present a degraded report', async () => {
-    const old = JSON.parse(response);
-    delete old.insight;
-    const providers = deps();
-    providers.complete = vi.fn(async () => ({ text: JSON.stringify(old), modelId: 'incomplete' }));
-    await expect(
-      analyzeArticle({ mode: 'text', url: null, text: articleText }, providers),
-    ).rejects.toMatchObject({ code: 'MODEL_INVALID' });
-    expect(providers.complete).toHaveBeenCalledTimes(2);
-  });
-
-  it('retains only verbatim quotes found in the exact analysed source', async () => {
-    const data = JSON.parse(response);
-    data.core_claims[0].source_quote = 'A factual news report';
-    const providers = deps();
-    providers.complete = vi.fn(async () => ({ text: JSON.stringify(data), modelId: 'mock' }));
-    const valid = await analyzeArticle({ mode: 'text', url: null, text: articleText }, providers);
-    expect(valid.analysis.core_claims[0].source_quote).toBe('A factual news report');
-    expect(valid.sourceText).toBe(articleText);
-    data.core_claims[0].source_quote = 'An invented quote that sounds plausible';
-    const invented = await analyzeArticle(
-      { mode: 'text', url: null, text: articleText },
-      providers,
+  it('grounds quotes despite typographic differences and drops invented passages', async () => {
+    const { report, sourceText } = await analyzeArticle(pasted, deps());
+    const expert = report.voices.find((voice) => voice.id === 'v1')!;
+    expect(expert.quotes).toHaveLength(1);
+    expect(sourceText.slice(expert.quotes[0]!.start, expert.quotes[0]!.end)).toBe(
+      expert.quotes[0]!.text,
     );
-    expect(invented.analysis.core_claims[0].source_quote).toBeNull();
+    expect(report.claims[2]!.quote).toBeNull();
+    expect(report.detections.map((detection) => detection.technique)).toEqual([
+      'inconsistent_figures',
+      'poll_without_sample',
+      'anonymous_source',
+    ]);
+    expect(report.quality.groundedQuotes).toBeLessThan(report.quality.proposedQuotes);
+    expect(report.quality.droppedItems).toBeGreaterThanOrEqual(3);
   });
 
-  it('fetches a URL and never reports the analysis as independently verified', async () => {
-    const providers = deps();
+  it('computes measurements in code', async () => {
+    const { report } = await analyzeArticle(pasted, deps());
+    expect(report.metrics.stanceCounts.supports).toBe(2);
+    expect(report.metrics.stanceCounts.opposes).toBe(1);
+    expect(report.metrics.anonymousVoices).toBe(1);
+    expect(report.metrics.pollsWithoutSample).toBe(2);
+    expect(report.metrics.oneSided).toBeNull();
+    expect(report.metrics.quotedShare).toBeGreaterThan(0);
+  });
+
+  it('prefers the publisher’s byline metadata and records where it came from', async () => {
     const result = await analyzeArticle(
-      { mode: 'url', url: 'https://example.org/a', text: null },
-      providers,
-    );
-    expect(result.analysis.core_claims).toHaveLength(1);
-    expect(result.independentlyVerified).toBe(false);
-    expect(result.origin).toMatchObject({
-      kind: 'retrieved-page',
-      attribution: 'retrieved',
-      url: 'https://example.org/a',
-    });
-    expect(providers.readPage).toHaveBeenCalledOnce();
-    expect(providers.complete).toHaveBeenCalledOnce();
-  });
-
-  it('never fetches pasted text and marks a provided URL as unverified attribution', async () => {
-    const providers = deps();
-    const result = await analyzeArticle(
-      { mode: 'text', url: 'https://example.org/claimed', text: articleText },
-      providers,
-    );
-    expect(providers.readPage).not.toHaveBeenCalled();
-    expect(result.origin.attribution).toBe('user-asserted');
-    expect(result.origin.kind).toBe('user-pasted-text');
-  });
-
-  it('accepts pasted text without inventing a source URL', async () => {
-    const result = await analyzeArticle({ mode: 'text', url: null, text: articleText }, deps());
-    expect(result.origin.url).toBeNull();
-    expect(result.origin.attribution).toBe('not-provided');
-  });
-
-  it.each([
-    ['en', 'English'],
-    ['de', 'German'],
-    ['fr', 'French'],
-  ] as const)('requests reader-facing analysis in %s', async (outputLanguage, expected) => {
-    const providers = deps();
-    const input = { mode: 'text' as const, url: null, text: articleText, outputLanguage };
-    await analyzeArticle(input, providers);
-    const complete = vi.mocked(providers.complete);
-    expect(complete).toHaveBeenCalledOnce();
-    expect(complete.mock.calls[0][0][1].content).toContain(
-      `Write every reader-facing value in ${expected}`,
-    );
-  });
-
-  it('surfaces fetch failure with a paste fallback instead of calling a model', async () => {
-    const providers = deps();
-    providers.readPage = vi.fn(async () => ({
-      ok: false,
-      url: 'https://example.org/a',
-      failure: { reason: 'The site refused the request (403).' },
-    }));
-    await expect(
-      analyzeArticle({ mode: 'url', url: 'https://example.org/a', text: null }, providers),
-    ).rejects.toMatchObject({ code: 'SOURCE_UNAVAILABLE', status: 422 });
-    expect(providers.complete).not.toHaveBeenCalled();
-  });
-
-  it('reports both model-side and fetch-side truncation', async () => {
-    const providers = deps();
-    providers.readPage = vi.fn(async (url: string) => ({
-      ok: true,
-      url,
-      text: 'e'.repeat(22_000),
-      truncated: false,
-    }));
-    const result = await analyzeArticle(
-      { mode: 'url', url: 'https://example.org/a', text: null },
-      providers,
-    );
-    expect(result.origin.truncated).toBe(true);
-    expect(result.origin.modelChars).toBe(18_000);
-  });
-
-  it('rejects hallucinated or malformed result shapes at the boundary', async () => {
-    const providers = deps();
-    providers.complete = vi.fn(async () => ({
-      text: JSON.stringify({ title: 'Only a title' }),
-      modelId: null,
-    }));
-    await expect(
-      analyzeArticle({ mode: 'text', url: null, text: articleText }, providers),
-    ).rejects.toBeInstanceOf(AnalysisFailure);
-  });
-
-  it('rejects bot-gated pages returning almost no readable content', async () => {
-    const providers = deps();
-    providers.readPage = vi.fn(async (url: string) => ({
-      ok: true,
-      url,
-      title: 'Please sign in',
-      text: 'Sign in to read.',
-    }));
-    await expect(
-      analyzeArticle({ mode: 'url', url: 'https://example.org/a', text: null }, providers),
-    ).rejects.toMatchObject({ code: 'SOURCE_TOO_SHORT' });
-    expect(providers.complete).not.toHaveBeenCalled();
-  });
-
-  it('records the exact analysed-text digest and version, without claiming authenticity', async () => {
-    const result = await analyzeArticle(
-      { mode: 'text', url: 'https://example.org/claimed', text: articleText },
+      { mode: 'url', url: 'https://example.org/a', text: null, outputLanguage: 'en' },
       deps(),
     );
-    const expected = createHash('sha256').update(articleText, 'utf8').digest('hex');
-    expect(result.origin.textSha256).toBe(expected);
-    expect(result.origin.textSha256).toMatch(/^[a-f0-9]{64}$/);
-    expect(result.origin.attribution).toBe('user-asserted');
-    expect(result.run.methodVersion).toBe('0.1.0');
-    expect(result.run.promptVersion).toBe('first-principles@3');
-    expect(Number.isNaN(Date.parse(result.run.generatedAt))).toBe(false);
-    expect(result.independentlyVerified).toBe(false);
+    expect(result.report.byline).toMatchObject({
+      authors: ['Anna Muster'],
+      date: '2026-10-26',
+      source: 'page-metadata',
+    });
+    expect(result.origin.kind).toBe('retrieved-page');
   });
 
-  it('hashes the clipped content that the model received rather than unseen text', async () => {
-    const providers = deps();
-    providers.readPage = vi.fn(async (url: string) => ({
-      ok: true,
-      url,
-      text: 'X'.repeat(22_000),
-      truncated: true,
-    }));
-    const result = await analyzeArticle(
-      { mode: 'url', url: 'https://example.org/long', text: null },
-      providers,
+  it('writes Swiss spelling for de-CH and keeps quotes untouched', async () => {
+    const reading = {
+      ...FIXTURE_READING,
+      summary: 'Der Text schließt aus der Umfrage auf die Ursache. Das ist ein großer Schritt.',
+    };
+    const { report } = await analyzeArticle(
+      pasted,
+      deps({
+        complete: vi.fn(async (_messages, pass) => ({
+          text: JSON.stringify(pass === 'reading' ? reading : FIXTURE_ASSESSMENT),
+          modelId: 'mock',
+        })),
+      }),
     );
-    const expected = createHash('sha256').update('X'.repeat(18_000), 'utf8').digest('hex');
-    expect(result.origin.textSha256).toBe(expected);
-    expect(result.origin.truncated).toBe(true);
+    expect(report.summary).toBe(
+      'Der Text schliesst aus der Umfrage auf die Ursache. Das ist ein grosser Schritt.',
+    );
+  });
+
+  it('asks again once when a pass uses a forbidden label, then removes the sentence', async () => {
+    const labelled = {
+      ...FIXTURE_ASSESSMENT,
+      strongest_case: 'Die Zahl ist auffällig. Die Zeitung ist rechtsgerichtet.',
+    };
+    const complete = vi.fn(async (_messages: unknown, pass: 'reading' | 'assessment') => ({
+      text: JSON.stringify(pass === 'reading' ? FIXTURE_READING : labelled),
+      modelId: 'mock',
+    }));
+    const result = await analyzeArticle(pasted, deps({ complete }));
+    expect(complete).toHaveBeenCalledTimes(3);
+    expect(result.report.strongestCase).toBe('Die Zahl ist auffällig.');
+    expect(result.run.passes[1]!.repairAttempts).toBe(1);
+  });
+
+  it('repairs a malformed pass once and fails clearly after that', async () => {
+    const complete = vi
+      .fn()
+      .mockResolvedValueOnce({ text: '{"title": ""}', modelId: 'a' })
+      .mockResolvedValueOnce({ text: JSON.stringify(FIXTURE_READING), modelId: 'b' })
+      .mockResolvedValue({ text: 'no json here', modelId: 'c' });
+    await expect(analyzeArticle(pasted, deps({ complete }))).rejects.toMatchObject({
+      code: 'MODEL_INVALID',
+    });
+    expect(complete).toHaveBeenCalledTimes(4);
+  });
+
+  it('accepts a fenced or prose-wrapped JSON answer', async () => {
+    const complete = vi.fn(async (_messages: unknown, pass: 'reading' | 'assessment') => ({
+      text:
+        pass === 'reading'
+          ? '```json\n' + JSON.stringify(FIXTURE_READING) + '\n```'
+          : 'Here it is: ' + JSON.stringify(FIXTURE_ASSESSMENT),
+      modelId: 'mock',
+    }));
+    const { report } = await analyzeArticle(pasted, deps({ complete }));
+    expect(report.insight.headline).toBe('Eine Umfragezahl ist noch keine Erklärung');
+  });
+
+  it('reports an unreadable source before spending a model call', async () => {
+    const complete = vi.fn();
+    const failing = deps({
+      complete,
+      readSource: vi.fn(async (url: string) => ({
+        ok: false as const,
+        url,
+        reason: 'The site refused automated reading (403).',
+      })),
+    });
+    const error = await analyzeArticle(
+      { mode: 'url', url: 'https://example.org/a', text: null },
+      failing,
+    ).catch((reason: unknown) => reason);
+    expect(error).toBeInstanceOf(AnalysisFailure);
+    expect((error as AnalysisFailure).message).toMatch(/Paste the article text instead/);
+    expect(complete).not.toHaveBeenCalled();
+  });
+
+  it('hashes exactly the text the model saw', async () => {
+    const result = await analyzeArticle(pasted, deps());
+    expect(result.origin.textSha256).toBe(
+      createHash('sha256').update(result.sourceText, 'utf8').digest('hex'),
+    );
+    expect(result.independentlyVerified).toBe(false);
   });
 });

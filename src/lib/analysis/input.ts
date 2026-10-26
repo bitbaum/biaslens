@@ -1,3 +1,5 @@
+import { isOutputLanguage, type OutputLanguage } from '@/lib/config/languages';
+
 /**
  * Input boundary for a real on-demand analysis. Parsing does not perform
  * network access and never treats a pasted URL as verified attribution.
@@ -10,7 +12,7 @@ export interface AnalyzeInput {
   mode: 'url' | 'text';
   url: string | null;
   text: string | null;
-  outputLanguage?: 'en' | 'de' | 'fr';
+  outputLanguage?: OutputLanguage;
 }
 
 export type InputResult = { ok: true; data: AnalyzeInput } | { ok: false; error: string };
@@ -23,8 +25,8 @@ export function parseAnalyzeInput(value: unknown): InputResult {
 
   const raw = value as Record<string, unknown>;
   const outputLanguage = raw.outputLanguage ?? 'en';
-  if (!['en', 'de', 'fr'].includes(String(outputLanguage))) {
-    return invalid('Choose English, German or French for the analysis.');
+  if (!isOutputLanguage(outputLanguage)) {
+    return invalid('Choose English, German, Swiss German or French for the analysis.');
   }
   if (raw.url !== undefined && typeof raw.url !== 'string') {
     return invalid('URL must be a string.');
@@ -68,7 +70,7 @@ export function parseAnalyzeInput(value: unknown): InputResult {
       mode: text ? 'text' : 'url',
       url: url || null,
       text: text || null,
-      outputLanguage: outputLanguage as AnalyzeInput['outputLanguage'],
+      outputLanguage,
     },
   };
 }

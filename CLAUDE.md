@@ -16,7 +16,7 @@ both in the same PR as the change they describe. Build plans for agents live in
 - [Truth Seeker → BiasLens migration handoff](docs/convergence-truthseeker.md)
 - [Repository README](README.md) for the current implemented state and commands
 - `src/lib/domain/epistemic-graph.ts` for claim/evidence/causal-link audit types
-- `src/lib/domain/first-principles.ts` for the model-output contract
+- `src/lib/analysis/report.ts` (report contract), `prompts.ts` (the two model passes) and `src/lib/domain/techniques.ts` (the published technique catalogue)
 - `src/lib/analysis/` and `src/app/api/analyze/route.ts` for the first working
   URL/paste workflow; `src/app/analyze/` for the browser report
 
