@@ -2,12 +2,9 @@
 # their builds: esbuild installs its platform binary, unrs-resolver its
 # native resolver (used by eslint-config-next).
 allowBuilds:
+  ai-forms@https://codeload.github.com/bitbaum/ai-forms/tar.gz/f5689bbdf60c1e4ab0651d828c6478ee94ecdd64: set this to true or false
   esbuild: true
   unrs-resolver: true
-  # A git dependency needs its prepare build, and pnpm wants the exact
-  # resolved URL. If the @fleet/ai-forms pin moves, update this sha (pnpm
-  # prints the new key in ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED).
-  'ai-forms@https://codeload.github.com/bitbaum/ai-forms/tar.gz/f5689bbdf60c1e4ab0651d828c6478ee94ecdd64': true
 # Reviewed exact first-party releases, exercised by BiasLens browser and user-flow tests.
 minimumReleaseAgeExclude:
   - '@bitbaum/ai-kit@1.21.3 || 1.21.4'
