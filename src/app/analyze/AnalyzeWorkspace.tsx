@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { HeroSection } from '@bitbaum/sitekit/react';
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 
 import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
@@ -35,8 +34,7 @@ const STAGE_TEXT = {
   checking: 'Matching every cited passage against the text…',
 } as const;
 
-export function AnalyzeWorkspace() {
-  const incoming = useIncomingSource();
+export function AnalyzeWorkspace({ incoming }: { incoming: string | null }) {
   const [mode, setMode] = useState<Mode>('url');
   const [url, setUrl] = useState(incoming ?? '');
   const [text, setText] = useState('');
@@ -339,23 +337,6 @@ export function AnalyzeWorkspace() {
 }
 
 /** A link handed to the page by ?u=, or by a share sheet as ?url= / ?text=. */
-function useIncomingSource(): string | null {
-  const params = useSearchParams();
-  const candidates = [params.get('u'), params.get('url'), params.get('text'), params.get('title')];
-  for (const candidate of candidates) {
-    const match = candidate?.match(/https?:\/\/[^\s<>"']+/);
-    if (match) {
-      try {
-        const parsed = new URL(match[0]);
-        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.toString();
-      } catch {
-        continue;
-      }
-    }
-  }
-  return null;
-}
-
 function AnalysisResult({ result }: { result: ReportResult }) {
   const copy = reportCopy(result.language);
   const saveJson = () => {
