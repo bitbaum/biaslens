@@ -12,7 +12,7 @@ importers:
         specifier: ^1.7.12
         version: 1.7.12(@better-auth/core@1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.5.4))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-auth@1.7.12(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@electric-sql/pglite@0.5.11)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(next@16.4.2(@babel/core@7.29.7)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5(@types/node@26.6.5)(vite@8.2.2(@types/node@26.6.5)(esbuild@0.28.2)(tsx@4.23.13))))(better-call@1.4.4(zod@4.5.4))(nanostores@1.5.5)
       '@bitbaum/accountkit':
-        specifier: github:bitbaum/accountkit#v0.6.3
+        specifier: github:bitbaum/accountkit#d9c311e54fe97442f367874cfaa0ef451ba0f2bd
         version: https://codeload.github.com/bitbaum/accountkit/tar.gz/d9c311e54fe97442f367874cfaa0ef451ba0f2bd(63067988fb03eb80a10f184005b96b44)
       '@bitbaum/ai-kit':
         specifier: ^1.21.4
@@ -21,7 +21,7 @@ importers:
         specifier: ^0.15.3
         version: 0.15.3(react@19.3.1)
       '@bitbaum/design-tokens':
-        specifier: github:bitbaum/design-tokens#v1.2.0
+        specifier: github:bitbaum/design-tokens#5c31f48743dabf9294bf9380a15862b4efbc68a0
         version: https://codeload.github.com/bitbaum/design-tokens/tar.gz/5c31f48743dabf9294bf9380a15862b4efbc68a0
       '@bitbaum/mail-kit':
         specifier: ^0.2.0

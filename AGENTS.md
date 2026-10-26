@@ -7,8 +7,8 @@ restart the TruthSeeker migration or deploy the superseded standalone
 prototype. Read `docs/consolidation.md` for source inventory and
 owner-approved public branding; preserve technical repository/hosting keys.
 Before editing, inspect current main and open pull requests and use your own
-branch. Canonical mission and identity remain in Loki/Fleet; the roadmap and
-changelog are `ROADMAP.md` and `CHANGELOG.md` at the repository root, updated in the same PR as the change.
+branch. `ROADMAP.md` and `CHANGELOG.md` here are the canonical development
+records; Loki ingests them into the fleet profile.
 
 Media bias analysis engine. See `CLAUDE.md` for the product contract and
 `README.md` for the vision; this file is the short operational guide for agents.
@@ -78,8 +78,9 @@ and the complete design-tokens theme. Product-specific investigation logic and
 editorial content stay here. `package-plan.json` maps actual bindings; it is not
 a copy of the package registry or a second roadmap.
 
-Shared package composition CI checks adoption and the update path. Dependency
-updates pass tests and browser checks, merge under the fleet policy, then deploy
+Shared package composition CI checks adoption, declared product surfaces and
+the update path. Dependency updates pass tests and browser checks, merge under
+the fleet policy, then deploy
 through the existing host. A dependency listed but unused is not adoption.
 
 ## Design acceptance

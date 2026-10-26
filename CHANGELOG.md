@@ -61,6 +61,8 @@ What changed for people using BiasLens, newest first.
 
 ### Added
 
+- **The open method, versioned.** The Open Epistemic Method was published with its limits, evidence requirements and a public challenge path.
+
 - **Debate airtime.** Paste a timestamped transcript to see each speaker's speaking time and where speakers overlapped, computed in your browser.
 - **Journal.** Essays on the method, with an RSS feed.
 

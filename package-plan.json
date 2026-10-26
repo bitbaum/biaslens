@@ -40,6 +40,11 @@
     },
     "publishing": {
       "package": "bip-kit",
+      "surfaces": [
+        "src/app/roadmap/page.tsx",
+        "src/app/changelog/page.tsx",
+        "src/app/blog/page.tsx"
+      ],
       "bindings": [
         {
           "file": "src/app/_components/DevelopmentRecords.tsx",

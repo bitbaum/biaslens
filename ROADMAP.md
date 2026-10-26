@@ -3,7 +3,8 @@
 BiasLens shows how an article argues: who speaks, which claims rest on what, and
 which techniques shape the reader's conclusion. Then it lets a reader send a
 reply worth reading. The build plan behind these items is
-`docs/plans/2026-10-report-v2.md`.
+`docs/plans/2026-10-report-v2.md`. It carries no delivery dates; a checked
+milestone means the capability is implemented and verified, not merely proposed.
 
 ## Now
 
@@ -48,7 +49,25 @@ person who opens it sees something they had not noticed within ten seconds.
 - [ ] "How would this outlet write it", always marked as a simulation
 - [ ] A check that a rewrite kept the original facts and added none
 
+### Investigations you can return to
+
+Preserve the path from a question and source through claims, evidence and
+uncertainty, while keeping model interpretation distinct from independent
+verification.
+
+- [ ] Save, revisit and revise investigations across sessions
+- [ ] Independent source retrieval with traceable citations
+- [ ] Compare claims across sources without collapsing disagreement into a single truth or bias score
+
 ## Later
+
+### Conversation analysis you can inspect
+
+The transcript tools keep their limits: an overlap is not proof of an
+interruption, and a speaker label is not independently verified.
+
+- [ ] Reviewable source timestamps and correction history on conversation records
+- [ ] Audio and video transcription with editable speaker attribution, evaluated before any comparison is shown
 
 ### Reasons to come back
 
@@ -61,6 +80,8 @@ person who opens it sees something they had not noticed within ten seconds.
 
 - [ ] "Disagree with this" on every finding, with corrections shown on the report
 - [ ] Published accuracy per technique and per method version
+- [ ] Moderated discussion and challenge resolution with a visible record of what changed and why
+- [ ] Reproducible records of which model and provider produced a report, without implying that availability means quality
 
 ### BiasLens as a publication
 

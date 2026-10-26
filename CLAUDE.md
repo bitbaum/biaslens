@@ -5,10 +5,10 @@
 
 Do not create a second product brief, brand, identity register or
 shared-package implementation here. Loki's project profile is the source for
-mission, vision, problem and solution. The roadmap and changelog are `ROADMAP.md` and `CHANGELOG.md` at the repository root
-(the fleet contract: Loki's map reads them and `/roadmap` renders them). Update
-both in the same PR as the change they describe. Build plans for agents live in
-`docs/plans/`.
+mission, vision, problem and solution. `ROADMAP.md` and `CHANGELOG.md` in this
+repository are the canonical development records, which Loki ingests into the
+project profile. Update both in the same PR as the change they describe. Build
+plans for agents live in `docs/plans/`.
 
 ## Product and engineering references
 
@@ -16,7 +16,8 @@ both in the same PR as the change they describe. Build plans for agents live in
 - [Truth Seeker → BiasLens migration handoff](docs/convergence-truthseeker.md)
 - [Repository README](README.md) for the current implemented state and commands
 - `src/lib/domain/epistemic-graph.ts` for claim/evidence/causal-link audit types
-- `src/lib/analysis/report.ts` (report contract), `prompts.ts` (the two model passes) and `src/lib/domain/techniques.ts` (the published technique catalogue)
+- `src/lib/analysis/report.ts` (report contract), `prompts.ts` (the two model passes) and
+  `src/lib/domain/techniques.ts` (the published technique catalogue)
 - `src/lib/analysis/` and `src/app/api/analyze/route.ts` for the first working
   URL/paste workflow; `src/app/analyze/` for the browser report
 
