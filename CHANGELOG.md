@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-26 — One password field
+
+### Changed
+
+- **Signing up asks for the password once.** The repeat field is gone; an eye inside the password field shows what you typed instead (accountkit 0.8.0, the same in every product on it).
+
 ## 2026-10-26 — Say it instead of filling it in
 
 ### Changed
