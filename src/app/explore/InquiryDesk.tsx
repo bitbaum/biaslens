@@ -1,50 +1,73 @@
 'use client';
 
+import { useAiForm } from '@fleet/ai-forms/react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { INQUIRY_FIELDS, INQUIRY_FORM } from '@/lib/config/ai-forms';
 import { ROUTES } from '@/lib/config/routes';
 import {
   EMPTY_INQUIRY,
   INQUIRY_STORAGE_KEY,
-  isSourceURL,
   parseInquiryRecord,
   type InquiryRecord,
+  type InquirySource,
 } from '@/lib/domain/inquiry-record';
 
+import { NotebookAssistant } from './NotebookAssistant';
+import { explanationList, NotebookFields } from './NotebookFields';
+import { SourceAdder } from './SourceAdder';
 import styles from './explore.module.css';
 
-export function InquiryDesk() {
-  const [record, setRecord] = useState<InquiryRecord>(EMPTY_INQUIRY);
-  const [ready, setReady] = useState(false);
-  const [status, setStatus] = useState('Loading local notes…');
-  const [message, setMessage] = useState('');
+const TEXT_FIELDS = ['question', 'scope', 'notes', 'challenge'] as const;
 
+/**
+ * The research notebook. One box to say what you want to understand; the
+ * notebook fills itself and changes when you talk to it. Everything stays in
+ * this browser (the same record and storage key as before, so earlier
+ * notebooks open unchanged) until you export it.
+ */
+export function InquiryDesk() {
+  const form = useAiForm({ target: INQUIRY_FORM.key, fields: INQUIRY_FIELDS });
+  const [sources, setSources] = useState<InquirySource[]>([]);
+  const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState('');
+  const loaded = useRef(false);
+  const { setValues } = form;
+
+  // Restore once. setValues may change identity; the guard keeps this a load.
   useEffect(() => {
     let cancelled = false;
     queueMicrotask(() => {
-      if (cancelled) return;
+      if (cancelled || loaded.current) return;
+      loaded.current = true;
       try {
         const raw = localStorage.getItem(INQUIRY_STORAGE_KEY);
-        if (raw) {
-          const restored = parseInquiryRecord(JSON.parse(raw));
-          if (restored) setRecord(restored);
-          else {
-            setStatus(
-              'Saved data could not be read and has been left untouched. Clear local storage to enable saving a new notebook.',
-            );
-            return;
-          }
+        const restored = raw ? parseInquiryRecord(JSON.parse(raw)) : null;
+        if (raw && !restored) {
+          setStatus('A saved notebook could not be read and was left untouched.');
+          return;
+        }
+        if (restored) {
+          setValues(Object.fromEntries(TEXT_FIELDS.map((k) => [k, restored[k]])));
+          setSources(restored.sources);
         }
         setReady(true);
       } catch {
-        setStatus('Browser storage is unavailable. Export your notes before leaving.');
+        setStatus('This browser cannot save. Export your notebook before leaving.');
       }
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [setValues]);
+
+  const record: InquiryRecord = {
+    ...EMPTY_INQUIRY,
+    ...Object.fromEntries(TEXT_FIELDS.map((k) => [k, form.text(k)])),
+    sources,
+  };
+  const serialized = JSON.stringify(record);
 
   useEffect(() => {
     if (!ready) return;
@@ -52,16 +75,16 @@ export function InquiryDesk() {
     queueMicrotask(() => {
       if (cancelled) return;
       try {
-        localStorage.setItem(INQUIRY_STORAGE_KEY, JSON.stringify(record));
-        setStatus('Saved in this browser only. Export a copy to keep it.');
+        localStorage.setItem(INQUIRY_STORAGE_KEY, serialized);
+        setStatus('Saved in this browser.');
       } catch {
-        setStatus('Could not save. Export your notes before leaving.');
+        setStatus('Could not save. Export your notebook before leaving.');
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [record, ready]);
+  }, [serialized, ready]);
 
   function exportRecord() {
     const blob = new Blob(
@@ -88,224 +111,64 @@ export function InquiryDesk() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function addSource(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const url = String(data.get('url') || '').trim();
-    if (!isSourceURL(url)) {
-      setMessage('Use an HTTP or HTTPS URL without embedded credentials.');
-      return;
-    }
-    if (record.sources.length >= 100) {
-      setMessage('This notebook holds 100 sources. Export it before starting another.');
-      return;
-    }
-    const title = String(data.get('title') || '').trim();
-    const locator = String(data.get('locator') || '').trim();
-    if (!title || !locator) {
-      setMessage('Add a title and an exact page, table, paragraph or timestamp.');
-      return;
-    }
-    const stance = String(data.get('stance') || 'context');
-    if (stance !== 'supports' && stance !== 'contradicts' && stance !== 'context') return;
-    setRecord((r) => ({
-      ...r,
-      sources: [
-        ...r.sources,
-        {
-          id: crypto.randomUUID(),
-          title,
-          url,
-          locator,
-          excerpt: String(data.get('excerpt') || '').trim(),
-          stance,
-          addedAt: new Date().toISOString(),
-        },
-      ],
-    }));
-    setMessage(
-      'Reference added as an unverified lead. Its relationship to your question is your annotation.',
-    );
-    form.reset();
-  }
+  const started = !form.isEmpty || sources.length > 0;
+  const open = explanationList(record.notes).length;
 
   return (
     <>
-      <p className={styles.notice}>
-        Saved in this browser. Added sources are your research notes, not independently verified
-        evidence.
-      </p>
-      <div className={styles.desk}>
-        <div>
-          <section className={styles.section} aria-labelledby="question-heading">
-            <h2 id="question-heading">01 / Define the question</h2>
-            <label>
-              Question
-              <textarea
-                aria-label="Question"
-                rows={3}
-                maxLength={2000}
-                value={record.question}
-                onChange={(e) => setRecord({ ...record, question: e.target.value })}
-                placeholder="What would you like to understand?"
-              />
-            </label>
-            <label>
-              Scope
-              <input
-                aria-label="Scope"
-                maxLength={2000}
-                value={record.scope}
-                onChange={(e) => setRecord({ ...record, scope: e.target.value })}
-                placeholder="Place, period, population, definitions…"
-              />
-            </label>
-          </section>
-          <section className={styles.section} aria-labelledby="sources-heading">
-            <h2 id="sources-heading">02 / Follow the sources</h2>
-            <ul className={styles.sources}>
-              {record.sources.map((source) => (
-                <li key={source.id}>
-                  <p>
-                    <strong>{source.title}</strong> · Unverified lead
-                  </p>
-                  <a href={source.url} target="_blank" rel="noopener noreferrer">
-                    Open original source →
-                  </a>
-                  <p>
-                    {source.locator} · Your annotation: {source.stance}
-                  </p>
-                  {source.excerpt && <blockquote>{source.excerpt}</blockquote>}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setRecord({
-                        ...record,
-                        sources: record.sources.filter((s) => s.id !== source.id),
-                      })
-                    }
-                  >
-                    Remove reference
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <details>
-              <summary>Add a source reference</summary>
-              <form onSubmit={addSource}>
-                <label>
-                  Document or dataset title
-                  <input name="title" maxLength={500} required />
-                </label>
-                <label>
-                  Original URL
-                  <input name="url" type="url" maxLength={3000} required />
-                </label>
-                <label>
-                  Exact location
-                  <input
-                    name="locator"
-                    maxLength={2000}
-                    placeholder="Page 12, table 3; paragraph 5; 02:14…"
-                    required
-                  />
-                </label>
-                <label>
-                  Your relationship annotation
-                  <select name="stance" defaultValue="context">
-                    <option value="context">Context</option>
-                    <option value="supports">Supports an explanation</option>
-                    <option value="contradicts">Challenges an explanation</option>
-                  </select>
-                </label>
-                <label>
-                  Relevant excerpt
-                  <textarea name="excerpt" rows={3} maxLength={10000} />
-                </label>
-                <button className="bb-button bb-button--primary" type="submit">
-                  Add reference
-                </button>
-              </form>
-            </details>
-            <p role="status">{message}</p>
-          </section>
-          <section className={styles.section} aria-labelledby="challenge-heading">
-            <h2 id="challenge-heading">03 / Keep the question open</h2>
-            <label>
-              Reasoning & alternative explanations
-              <textarea
-                aria-label="Reasoning & alternative explanations"
-                rows={5}
-                maxLength={20000}
-                value={record.notes}
-                onChange={(e) => setRecord({ ...record, notes: e.target.value })}
-              />
-            </label>
-            <label>
-              Strongest challenge & what would change your mind
-              <textarea
-                aria-label="Strongest challenge & what would change your mind"
-                rows={4}
-                maxLength={20000}
-                value={record.challenge}
-                onChange={(e) => setRecord({ ...record, challenge: e.target.value })}
-              />
-            </label>
-          </section>
-        </div>
-        <aside className={styles.section} aria-labelledby="audit-heading">
-          <p className={styles.eyebrow}>Your research</p>
-          <h2 id="audit-heading">Investigation summary.</h2>
-          <ul className={styles.audit}>
-            <li>{record.question.trim() ? 'Question recorded.' : 'Add a question to begin.'}</li>
-            <li>
-              {record.scope.trim()
-                ? 'Scope supplied by you.'
-                : 'Define the scope of your question.'}
-            </li>
-            <li>{record.sources.length} user-supplied references; none independently verified.</li>
-            <li>
-              {record.challenge.trim()
-                ? 'A challenge has been recorded.'
-                : 'Add a challenge or alternative explanation.'}
-            </li>
-            <li>Sources have not been checked for independence or completeness.</li>
-          </ul>
-          <p className={styles.state} role="status">
-            {status}
-          </p>
-          <div className={`${styles.actions} bb-actions`}>
-            <button className="bb-button bb-button--primary" onClick={exportRecord}>
-              Export investigation ↓
-            </button>
-            <Link className={styles.methodLink} href={ROUTES.methodology}>
-              Inspect the method →
-            </Link>
+      <NotebookAssistant form={form} />
+      {started && (
+        <div className={styles.desk}>
+          <div>
+            <NotebookFields form={form} />
+            <SourceAdder sources={sources} onChange={setSources} />
           </div>
-          <details>
-            <summary>Local storage controls</summary>
-            <p>Export first. Clearing deletes this notebook from this browser.</p>
+          <aside className={styles.section} aria-labelledby="audit-heading">
+            <h2 id="audit-heading">Where you are</h2>
+            <ul className={styles.audit}>
+              <li>{open === 1 ? '1 explanation kept open.' : `${open} explanations kept open.`}</li>
+              <li>
+                {sources.length === 1 ? '1 source' : `${sources.length} sources`} added by you, none
+                checked by BiasLens.
+              </li>
+              <li>
+                {record.challenge.trim()
+                  ? 'You know what would change your mind.'
+                  : 'Not yet written: what would change your mind.'}
+              </li>
+            </ul>
+            <p className={styles.state} role="status">
+              {status}
+            </p>
+            <div className={`${styles.actions} bb-actions`}>
+              <button className="bb-button bb-button--primary" onClick={exportRecord}>
+                Export notebook ↓
+              </button>
+              <Link className={styles.methodLink} href={ROUTES.methodology}>
+                How BiasLens works →
+              </Link>
+            </div>
             <button
+              type="button"
+              className={styles.textButton}
               onClick={() => {
-                if (
-                  !window.confirm('Delete this browser-local notebook? Export first to retain it.')
-                )
+                if (!window.confirm('Start over? This notebook is deleted from this browser.'))
                   return;
                 try {
                   localStorage.removeItem(INQUIRY_STORAGE_KEY);
                 } catch {
-                  /* UI remains usable without storage. */
+                  /* the page works without storage */
                 }
-                setRecord({ ...EMPTY_INQUIRY, sources: [] });
-                setReady(true);
+                form.reset();
+                setSources([]);
               }}
             >
-              Clear local notebook
+              Start over
             </button>
-          </details>
-        </aside>
-      </div>
+          </aside>
+        </div>
+      )}
+      {!started && status && <p className={styles.state}>{status}</p>}
     </>
   );
 }

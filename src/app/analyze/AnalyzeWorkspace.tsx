@@ -373,6 +373,7 @@ function AnalysisResult({ result }: { result: ReportResult }) {
               title={result.report.title}
               outputLanguage={result.language}
               heading={copy.sections.ask}
+              starters={result.report.questions.slice(0, 2)}
             />
           )}
           <div className={styles.reportFooter}>

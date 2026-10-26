@@ -73,6 +73,10 @@
         {
           "file": "src/app/analyze/ArticleConversation.tsx",
           "symbols": ["ChatThread", "ChatStarters", "Composer"]
+        },
+        {
+          "file": "src/app/explore/NotebookAssistant.tsx",
+          "symbols": ["Composer"]
         }
       ]
     },
@@ -90,6 +94,14 @@
         {
           "file": "src/app/api/article-chat/route.ts",
           "symbols": ["complete"]
+        },
+        {
+          "file": "src/app/api/transcribe/route.ts",
+          "symbols": ["transcribe", "speechChain", "speechConfigured", "looksLikeSilence"]
+        },
+        {
+          "file": "src/app/api/ai/form-assist/route.ts",
+          "symbols": ["complete", "freeChain", "usableChain"]
         }
       ]
     },
@@ -112,6 +124,23 @@
         {
           "file": "src/app/api/article-chat/route.ts",
           "symbols": ["slidingWindow", "clientIp"]
+        }
+      ]
+    },
+    "forms": {
+      "package": "ai-forms",
+      "bindings": [
+        {
+          "file": "src/lib/config/ai-forms.ts",
+          "symbols": ["defineFields"]
+        },
+        {
+          "file": "src/app/api/ai/form-assist/route.ts",
+          "symbols": ["createFormAssistHandler"]
+        },
+        {
+          "file": "src/app/explore/InquiryDesk.tsx",
+          "symbols": ["useAiForm"]
         }
       ]
     }

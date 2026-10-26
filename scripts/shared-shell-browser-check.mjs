@@ -103,11 +103,51 @@ try {
     .waitFor();
   await page.getByRole('link', { name: 'Continue investigating →', exact: true }).click();
   await page.waitForURL('**/explore');
-  await page.waitForFunction(
-    () =>
-      document.querySelector('[aria-label="Question"]')?.value ===
-      'What explains this financial result?',
+  // The notebook shows a saved question as text, editable with one tap.
+  await page
+    .getByRole('button', { name: 'Edit question', exact: true })
+    .getByText('What explains this financial result?')
+    .waitFor();
+
+  // Speaking or typing one sentence fills the notebook; a link is a source.
+  await page.evaluate(() => localStorage.removeItem('biaslens:inquiry:v1'));
+  await page.route('**/api/ai/form-assist', (route) =>
+    route.fulfill({
+      json: {
+        ok: true,
+        values: {
+          question: 'Why did electricity prices rise in 2022?',
+          scope: 'Switzerland, 2021–2023, household tariffs',
+          notes:
+            '- Gas prices fed through to power prices\n- Grid fees rose\n- Tariffs lag the market',
+          challenge: 'Tariff data by canton would settle how much was the market.',
+        },
+        changed: ['question', 'scope', 'notes', 'challenge'],
+        message: 'Filled in.',
+      },
+    }),
   );
+  await page.route('**/api/source-preview**', (route) =>
+    route.fulfill({ json: { ok: true, title: 'Electricity tariffs 2023', publication: 'ElCom' } }),
+  );
+  await page.goto(base + '/explore', { waitUntil: 'networkidle' });
+  const box = page.getByRole('textbox', { name: 'Your research question' });
+  await box.fill('why did my power bill go up');
+  await box.press('Enter');
+  await page.getByText('Gas prices fed through to power prices', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Remove: Grid fees rose', exact: true }).click();
+  assert.equal(await page.getByText('Grid fees rose', { exact: true }).count(), 0);
+  await page
+    .getByRole('textbox', { name: 'Paste a link to a source' })
+    .fill('https://www.elcom.admin.ch/tarife');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.getByRole('link', { name: 'Electricity tariffs 2023 — ElCom' }).waitFor();
+  await page.getByRole('button', { name: 'Challenges', exact: true }).click();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('biaslens:inquiry:v1')));
+  assert.equal(saved.sources[0].stance, 'contradicts');
+  assert.equal(saved.notes, '- Gas prices fed through to power prices\n- Tariffs lag the market');
+  await page.unroute('**/api/ai/form-assist');
+  await page.unroute('**/api/source-preview**');
   await page.goto(base + '/sign-in', { waitUntil: 'networkidle' });
   assert.equal(
     await page.locator('.sk-masthead').getByRole('link', { name: 'Sign in', exact: true }).count(),
