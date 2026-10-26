@@ -10,7 +10,7 @@ author: Product research desk
 
 This is a technical working paper, not a certification that a system can determine truth. It describes how an investigation can be represented, inspected, tested and corrected. It covers public arguments, scientific explanations, historical narratives, economic hypotheses, media coverage and debates. It does not claim that every question is empirically decidable or that every disagreement can be resolved by software.
 
-The product's canonical problem, solution, mission, vision, roadmap and changelog remain in its [Loki project profile](https://loki.orangecat.ch/fleet/biaslens). This paper specifies methods and engineering requirements; it does not establish a second project registry. Public display names can change without replacing the existing repository or historical records.
+The product's canonical problem, solution, mission and vision remain in its [Loki project profile](https://loki.orangecat.ch/fleet/biaslens). The repository's `ROADMAP.md` and `CHANGELOG.md` are the source for planned work and shipped changes; Loki ingests them into that profile. This paper specifies methods and engineering requirements; it does not establish a second project registry. Public display names can change without replacing the existing repository or historical records.
 
 Implementation statements below refer to source code, not observed production behavior. A passing test, a merged pull request and a reachable service are different facts. [Source](https://github.com/bitbaum/biaslens), [development records](/development), and [the public method](/methodology) should be read together.
 
