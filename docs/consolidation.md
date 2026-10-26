@@ -5,8 +5,10 @@ All truth-seeking product development belongs in `bitbaum/biaslens`.
 Keep the existing repository, deployment, database and project identifiers.
 No repository rename, alternative brand, new hosting stack or domain purchase.
 
-This is an engineering migration record, not a duplicate mission, roadmap or
-changelog. Those remain in the [canonical project profile](https://loki.orangecat.ch/fleet/biaslens).
+This is an engineering migration record, not a duplicate mission. The canonical
+mission remains in the [project profile](https://loki.orangecat.ch/fleet/biaslens);
+`ROADMAP.md` and `CHANGELOG.md` in this repository are its development-record
+sources and are ingested into that profile.
 
 ## Inventory and disposition
 

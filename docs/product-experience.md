@@ -1,7 +1,8 @@
 # Experience and audience hypotheses
 
-This is a working product/validation brief, not a second canonical roadmap or
-mission. The canonical project records remain in Loki.
+This is a working product/validation brief, not a replacement for the product
+mission. The canonical mission remains in Loki; planned work and shipped
+changes live in this repository's `ROADMAP.md` and `CHANGELOG.md`.
 
 ## Design assessment
 

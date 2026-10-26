@@ -5,9 +5,11 @@
 **Donor implementation:** `bitbaum/truthseeker`. 
 No new product repository, no second database, no parallel frontend.
 
-This is a **technical integration handoff**, not the canonical project identity,
-mission, public roadmap or changelog. Those remain in Loki's project profile and
-Fleet's registers per [fleet/AGENTS.md](https://github.com/bitbaum/fleet/blob/main/AGENTS.md).
+This is a **technical integration handoff**, not the canonical project identity
+or mission. Those remain in Loki's project profile and Fleet's registers per
+[fleet/AGENTS.md](https://github.com/bitbaum/fleet/blob/main/AGENTS.md). The
+repository's `ROADMAP.md` and `CHANGELOG.md` are canonical for development
+records; Loki ingests them into the project profile.
 If the project key, product name, status, or URL needs changing, update its
 canonical producer through the owner-approved Loki/Fleet workflow rather than
 making up a second copy here. Until that happens, BiasLens is the repo identifier,
