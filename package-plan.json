@@ -81,7 +81,11 @@
       "bindings": [
         {
           "file": "src/app/api/analyze/route.ts",
-          "symbols": ["complete", "readPage"]
+          "symbols": ["complete", "freeChain", "usableChain"]
+        },
+        {
+          "file": "src/lib/analysis/source.ts",
+          "symbols": ["extractReadableText", "validateFetchTarget"]
         },
         {
           "file": "src/app/api/article-chat/route.ts",
