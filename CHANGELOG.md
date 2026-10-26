@@ -2,6 +2,12 @@
 
 What changed for people using BiasLens, newest first.
 
+## 2026-10-26 — Signing up takes an email and a password
+
+### Changed
+
+- **Nothing else is asked.** No display name, and a password needs 8 characters instead of 12, with no other rule. The same change reaches every product on the shared account package (accountkit 0.7.0), so signing up looks and works the same everywhere.
+
 ## 2026-10-26 — A neutral version adds nothing
 
 ### Fixed

@@ -55,7 +55,7 @@ export async function AccountScreen({
               : recovering
                 ? 'Choose a new password, then sign in again.'
                 : mode === 'sign-up'
-                  ? 'Choose a display name and a secure sign-in method.'
+                  ? 'An email and a password — that’s all.'
                   : 'Sign in to manage your profile and security.'}
           </p>
         </header>
