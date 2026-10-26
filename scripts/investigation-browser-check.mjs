@@ -186,7 +186,7 @@ try {
             simulated: true,
             factDiff: { total: 2, kept: 2, changed: [], dropped: [], added: [] },
             modelId: 'fixture',
-            promptVersion: 'rewrite@1.1',
+            promptVersion: 'rewrite@1.2',
           },
         },
       });
