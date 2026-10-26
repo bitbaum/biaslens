@@ -69,6 +69,46 @@ describe('writeRewrite', () => {
     expect(output.factDiff!.total).toBe(originalFacts(result).length);
   });
 
+  it('sends invented facts back once, and shows the diff of the text the reader gets', async () => {
+    const result = await fixture();
+    const invented = body + ' Die Umfrage hatte 500 Teilnehmende (±3 % Fehlermarge).';
+    let writes = 0;
+    let diffs = 0;
+    const complete = vi.fn(
+      async (messages: { role: string; content: string }[], pass: 'write' | 'facts') => {
+        if (pass === 'write') {
+          writes++;
+          if (writes === 2) {
+            expect(messages[1]!.content).toContain('500 Teilnehmende');
+            expect(messages[1]!.content).toContain('Write it again without them');
+          }
+          return {
+            text: JSON.stringify({ title: 'T', text: writes === 1 ? invented : body }),
+            modelId: 'm',
+          };
+        }
+        diffs++;
+        return {
+          text: JSON.stringify({ facts: [], added: diffs === 1 ? ['500 Teilnehmende'] : [] }),
+          modelId: 'm',
+        };
+      },
+    );
+    const output = await writeRewrite(
+      {
+        result,
+        text: result.sourceText,
+        form: 'rewrite',
+        voice: { kind: 'neutral' },
+        length: 'short',
+      },
+      { complete },
+    );
+    expect(writes).toBe(2);
+    expect(output.text).toBe(body);
+    expect(output.factDiff!.added).toEqual([]);
+  });
+
   it('refuses to rewrite without the article text, but can respond from the reading', async () => {
     const result = await fixture();
     const complete = vi.fn(async () => ({

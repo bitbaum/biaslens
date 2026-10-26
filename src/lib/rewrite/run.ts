@@ -20,7 +20,7 @@ import { stylePreset } from '@/lib/config/style-presets';
 import { forbiddenLabelsIn, stripForbiddenSentences } from '@/lib/config/vocabulary';
 import { rankFindings } from '@/lib/replies/findings';
 
-export const REWRITE_PROMPT_VERSION = 'rewrite@1' as const;
+export const REWRITE_PROMPT_VERSION = 'rewrite@1.1' as const;
 
 export interface FactDiff {
   total: number;
@@ -93,7 +93,8 @@ function voiceInstruction(input: RewriteInput): string {
     case 'neutral':
       return [
         'Write the same story as a neutral news report: attribute every claim to whoever makes it, replace loaded words with neutral ones, give each quoted side its position, and keep every figure with its stated source.',
-        'Fix these flagged passages:',
+        'Where the article leaves something out (a sample size, a source, a response), say that it is not stated. Never fill the gap: a neutral version of an unsourced poll is an unsourced poll, plainly marked.',
+        'Fix these flagged passages (the suggested wording is a hint, not a source of facts):',
         ...result.report.detections.map(
           (d) =>
             `- "${d.quote.text}" (${d.technique})${d.alternative ? ' → ' + d.alternative : ''}`,
@@ -120,7 +121,11 @@ function voiceInstruction(input: RewriteInput): string {
   }
 }
 
-function writeMessages(input: RewriteInput, language: OutputLanguage): Messages {
+function writeMessages(
+  input: RewriteInput,
+  language: OutputLanguage,
+  revise?: { draft: string; added: string[] },
+): Messages {
   const { report } = input.result;
   const findings = rankFindings(report, language).slice(0, 5);
   const task =
@@ -154,7 +159,16 @@ function writeMessages(input: RewriteInput, language: OutputLanguage): Messages 
     input.text
       ? '<<<ARTICLE\n' + input.text + '\nARTICLE>>>'
       : '(The full article text is not available; use the summary and claims.)',
-  ].join('\n\n');
+    revise
+      ? 'Your draft:\n<<<DRAFT\n' +
+        revise.draft +
+        '\nDRAFT>>>\n\nThe draft states facts the article does not contain:\n' +
+        revise.added.map((item) => '- ' + item).join('\n') +
+        '\nWrite it again without them. Where the article lacks the information, say it is not stated. Keep everything else.'
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n');
   return [
     { role: 'system', content: system },
     { role: 'user', content: user },
@@ -228,15 +242,16 @@ async function factDiff(
   }
 }
 
-export async function writeRewrite(input: RewriteInput, deps: RewriteDeps): Promise<RewriteResult> {
-  const language = input.result.language;
-  if (input.form === 'rewrite' && !input.text) {
-    throw new RewriteFailure('Rewriting the article needs its text. Examine it again or paste it.');
-  }
+async function draft(
+  input: RewriteInput,
+  language: OutputLanguage,
+  deps: RewriteDeps,
+  revise?: { draft: string; added: string[] },
+): Promise<{ title: string; text: string; modelId: string | null }> {
   let parsed: { title?: unknown; text?: unknown } | null = null;
   let modelId: string | null = null;
   for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
-    const response = await deps.complete(writeMessages(input, language), 'write');
+    const response = await deps.complete(writeMessages(input, language, revise), 'write');
     modelId = response.modelId;
     try {
       const candidate = parseModelJson(response.text) as { title?: unknown; text?: unknown };
@@ -258,10 +273,32 @@ export async function writeRewrite(input: RewriteInput, deps: RewriteDeps): Prom
     text = stripForbiddenSentences(text);
     title = stripForbiddenSentences(title);
   }
-  text = localizeSpelling(text, language);
-  title = localizeSpelling(title, language);
-  const diff =
-    input.form === 'rewrite' ? await factDiff(input, text, deps).catch(() => null) : null;
+  return {
+    title: localizeSpelling(title, language),
+    text: localizeSpelling(text, language),
+    modelId,
+  };
+}
+
+export async function writeRewrite(input: RewriteInput, deps: RewriteDeps): Promise<RewriteResult> {
+  const language = input.result.language;
+  if (input.form === 'rewrite' && !input.text) {
+    throw new RewriteFailure('Rewriting the article needs its text. Examine it again or paste it.');
+  }
+  let { title, text, modelId } = await draft(input, language, deps);
+  let diff = input.form === 'rewrite' ? await factDiff(input, text, deps).catch(() => null) : null;
+  // A rewrite that adds facts is not the same story told differently. One
+  // revision names the additions back to the model; the diff shown is always
+  // the one of the text the reader gets.
+  if (diff?.added.length) {
+    const revised = await draft(input, language, deps, { draft: text, added: diff.added }).catch(
+      () => null,
+    );
+    if (revised) {
+      ({ title, text, modelId } = revised);
+      diff = await factDiff(input, text, deps).catch(() => null);
+    }
+  }
   return {
     title,
     text,
