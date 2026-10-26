@@ -57,3 +57,28 @@ describe('glanceSentences', () => {
     ]);
   });
 });
+
+describe('figures from the same source', () => {
+  it('notes two different values from one source when the model did not flag them', async () => {
+    const assessment = {
+      ...FIXTURE_ASSESSMENT,
+      detections: FIXTURE_ASSESSMENT.detections.filter(
+        (d) => d.technique !== 'inconsistent_figures',
+      ),
+    };
+    const { report } = await analyzeArticle(
+      { mode: 'text', url: null, text: FIXTURE_ARTICLE, outputLanguage: 'de-CH' },
+      {
+        readSource: async () => ({ ok: false, url: '', reason: '' }),
+        complete: async (_messages, pass) => ({
+          text: JSON.stringify(pass === 'reading' ? FIXTURE_READING : assessment),
+          modelId: null,
+        }),
+      },
+    );
+    expect(report.metrics.sameSourceFigures).toEqual([['n1', 'n2']]);
+    expect(glanceSentences(report, 'de-CH')).toContain(
+      '40 Prozent und 31 Prozent stammen aus derselben Quelle; prüfen Sie, ob sie dasselbe messen.',
+    );
+  });
+});

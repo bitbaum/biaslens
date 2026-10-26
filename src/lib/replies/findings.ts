@@ -13,6 +13,7 @@ import type { LocatedQuote } from '@/lib/analysis/quote-locate';
 import { AUTHOR, type Report } from '@/lib/analysis/report';
 import type { OutputLanguage } from '@/lib/config/languages';
 import { replyCopy } from '@/lib/config/reply-copy';
+import { reportCopy } from '@/lib/config/report-copy';
 import { techniqueName, type TechniqueId } from '@/lib/domain/techniques';
 
 export interface Finding {
@@ -91,6 +92,22 @@ export function rankFindings(report: Report, language: OutputLanguage): Finding[
       passage: figure.quote,
       weight: noSample ? 7.5 : 4.5,
     });
+  }
+
+  // Figures the model did not flag but code found worth comparing.
+  if (!report.detections.some((d) => d.technique === 'inconsistent_figures')) {
+    for (const [first, second] of report.metrics.sameSourceFigures ?? []) {
+      const a = report.figures.find((figure) => figure.id === first);
+      const b = report.figures.find((figure) => figure.id === second);
+      if (!a || !b) continue;
+      candidates.push({
+        id: `f-${a.id}-${b.id}`,
+        kind: 'figure',
+        text: reportCopy(language).glance.sameSource(a.value, b.value),
+        passage: b.quote ?? a.quote,
+        weight: 8.8,
+      });
+    }
   }
 
   const { supports, opposes } = report.metrics.stanceCounts;
