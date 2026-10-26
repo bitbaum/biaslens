@@ -2,6 +2,12 @@
 
 What changed for people using BiasLens, newest first.
 
+## 2026-10-26 — A neutral version adds nothing
+
+### Fixed
+
+- **No invented figures.** A neutral rewrite of an article that cites a poll without its sample once supplied a sample size and a margin of error the article never gave. A rewrite now says when the article leaves something out instead of filling the gap, and when the facts check finds an added fact the text is sent back once to remove it. The check shown is always the one of the text you read. Suggested rewordings in a report follow the same rule.
+
 ## 2026-10-26 — Who is speaking: profiles
 
 ### Added
