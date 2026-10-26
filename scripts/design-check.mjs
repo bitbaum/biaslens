@@ -68,7 +68,9 @@ test('every public route uses the same navigational frame and one skip target', 
 
 test('composition comes from one pinned source and frames are not duplicated', () => {
   const ref = packageJson.dependencies['@bitbaum/design-tokens'];
-  assert.match(ref, /github:bitbaum\/design-tokens#v[0-9.]+|\^[0-9.]+/);
+  // Package releases are pinned to immutable Git refs. Both version tags and
+  // reviewed release commit SHAs are valid; reject unpinned moving branches.
+  assert.match(ref, /^github:bitbaum\/design-tokens#(?:v[0-9.]+|[0-9a-f]{40})$/i);
   assert.match(layout, /@bitbaum\/design-tokens\/tokens\.css/);
   assert.match(layout, /@bitbaum\/sitekit\/styles\.css/);
   assert.match(layout, /@bitbaum\/design-tokens\/composition\.css/);
