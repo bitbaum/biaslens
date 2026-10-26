@@ -12,3 +12,4 @@ next-env.d.ts
 # Synthetic account browser evidence is uploaded by CI.
 auth-journey-artifacts/
 .tmp/
+eval/out/

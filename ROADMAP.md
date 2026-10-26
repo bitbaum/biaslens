@@ -13,7 +13,8 @@ milestone means the capability is implemented and verified, not merely proposed.
 Every finding points to a passage in the article, and every voice is named with
 who they are and whether they support the main claim.
 
-- [ ] A test set of real Swiss and English articles, scored before and after every method change
+- [x] An evaluation harness and rubric that score reports before and after every method change
+- [ ] A test set of about twelve real Swiss and English articles in it
 - [x] A published catalogue of writing techniques, each with what counts and what does not
 - [x] Quotes found even when a PDF or a copy-paste changed the spacing, hyphens or quotation marks
 - [x] Articles read from PDF links and uploaded PDFs, including press clippings
