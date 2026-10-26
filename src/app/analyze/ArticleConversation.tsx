@@ -12,8 +12,11 @@ export function ArticleConversation({
   title,
   outputLanguage,
   heading = 'Ask about this article',
+  starters = [],
 }: {
   heading?: string;
+  /** Questions this article raises (the report's own), offered as one tap. */
+  starters?: string[];
   sourceText: string;
   sourceDigest: string;
   title: string;
@@ -116,10 +119,11 @@ export function ArticleConversation({
             <ChatStarters
               title="Start with a question"
               starters={[
+                ...starters,
                 'What is the article’s main argument?',
                 'Which assumption matters most?',
                 'What evidence would challenge this conclusion?',
-              ]}
+              ].slice(0, 4)}
               onPick={(question) => void ask(question)}
             />
           }
@@ -139,7 +143,9 @@ export function ArticleConversation({
         value={draft}
         onValueChange={setDraft}
         attach={false}
-        voice={false}
+        // Speaking works on every browser: where the browser cannot listen,
+        // chatkit records and /api/transcribe writes it down.
+        voice={{ transcribeUrl: '/api/transcribe' }}
         labels={{ send: 'Ask', stop: 'Stop' }}
       />
       <p className={styles.conversationNote}>

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-26 — Say it instead of filling it in
+
+### Changed
+
+- **The research notebook is one box.** Say or type what you want to understand, or tap one of three examples, and the notebook sets out the question, its scope, the explanations to keep open and what would change your mind. Talk to the same box to change it ("only Switzerland", "add an economic explanation"), take a suggestion with one tap, or undo. Everything it wrote is marked as a draft and editable with a tap.
+- **A source is a link.** Paste it and the page's title fills itself; "supports, challenges or context" is one tap, and where in the source is optional.
+- **Speak to the article.** The chat under a report has a microphone that works in every browser, and its first suggestions are the questions the report itself raised.
+
 ## 2026-10-26 — shared signup safeguards
 
 - Registration confirms the chosen password before submitting and offers show/hide controls. The shared account forms also include Spanish labels.

@@ -135,3 +135,133 @@
   font: var(--type-label);
   color: var(--color-text);
 }
+
+/* The one input: chatkit's composer, then examples or the assistant's actions. */
+.assistant {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.error {
+  color: var(--color-danger, var(--color-text));
+  font: var(--type-meta);
+}
+.examples {
+  display: grid;
+  gap: 8px;
+}
+.examples button,
+.suggestions button {
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: var(--type-body);
+  text-align: left;
+}
+.assistantActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.suggestions {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+
+/* A filled notebook reads as text; a tap edits it. */
+.editable {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: var(--type-body);
+  text-align: left;
+  white-space: pre-wrap;
+  cursor: text;
+}
+.editableBig {
+  font: var(--type-card-title);
+}
+.aiMark,
+.placeholder,
+.fieldLabel {
+  color: var(--color-text-muted);
+  font: var(--type-meta);
+}
+.fieldLabel {
+  margin: 12px 0 0;
+}
+.explanations {
+  list-style: none;
+  padding: 0;
+}
+.explanations li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+.explanations button,
+.textButton {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font: var(--type-label);
+  cursor: pointer;
+}
+
+/* Supports · Challenges · Context: one row, equal cells. */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-block: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+}
+.segmented button {
+  min-height: 44px;
+  border: 0;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font: var(--type-label);
+}
+.segmented button + button {
+  border-left: 1px solid var(--color-border);
+}
+.segmented button[aria-pressed='true'] {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+.sourceDetails {
+  display: grid;
+  gap: 8px;
+}
+.addSource {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+.addSource input {
+  margin-top: 0;
+}
+.rowActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
