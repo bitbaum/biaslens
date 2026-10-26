@@ -1,11 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useCallback, useMemo, useState, type ReactNode } from 'react';
+
+import { ProfileName } from '@/app/_components/profile/ProfileName';
 
 import { reportAnnotations, type AnnotationKind } from '@/lib/analysis/annotations';
 import { glanceSentences } from '@/lib/analysis/glance';
-import type { ArticleAnalysisResult } from '@/lib/analysis/run';
+import type { ReportResult } from '@/lib/analysis/run';
 import { OUTPUT_LANGUAGES } from '@/lib/config/languages';
 import { reportCopy } from '@/lib/config/report-copy';
 
@@ -20,9 +22,7 @@ import {
 } from './Sections';
 import styles from './report.module.css';
 
-export type ReportResult = Omit<ArticleAnalysisResult, 'sourceText'> & {
-  sourceText: string | null;
-};
+export type { ReportResult };
 
 /**
  * One report, rendered the same everywhere it appears: right after an
@@ -72,13 +72,27 @@ export function ReportView({
         : result.origin.url
           ? copy.origin.pastedWithUrl
           : copy.origin.pasted;
-  const byline = [
-    report.byline.authors.join(', '),
-    report.byline.publication,
+  const bylineParts: ReactNode[] = [
+    ...report.byline.authors.map((author) => (
+      <ProfileName
+        key={'a-' + author}
+        name={author}
+        role="author"
+        context={report.byline.publication}
+        language={language}
+      />
+    )),
+    report.byline.publication && (
+      <ProfileName
+        key="publication"
+        name={report.byline.publication}
+        role="outlet"
+        context={null}
+        language={language}
+      />
+    ),
     formatDate(report.byline.date),
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  ].filter(Boolean);
 
   return (
     <article
@@ -90,7 +104,16 @@ export function ReportView({
         <p className={styles.note}>{copy.aiNote}</p>
         <p className={styles.genre}>{copy.genre[report.genre]}</p>
         <h2 className={styles.title}>{report.title}</h2>
-        {byline && <p className={styles.byline}>{byline}</p>}
+        {bylineParts.length > 0 && (
+          <p className={styles.byline}>
+            {bylineParts.map((part, index) => (
+              <Fragment key={index}>
+                {index > 0 && ' · '}
+                {part}
+              </Fragment>
+            ))}
+          </p>
+        )}
         <p className={styles.meta}>
           {originLine}
           {report.byline.source === 'page-metadata' && ' · ' + copy.bylineFromPage}
@@ -165,11 +188,27 @@ export function ReportView({
         </section>
       )}
 
-      <DetectionsSection report={report} language={language} copy={copy} onShow={show} />
-      <VoicesSection report={report} copy={copy} onShow={show} />
-      <FiguresSection report={report} copy={copy} onShow={show} />
-      <ClaimsSection report={report} copy={copy} onShow={show} />
-      <ArgumentsSection report={report} copy={copy} />
+      <DetectionsSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <VoicesSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <FiguresSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <ClaimsSection
+        report={report}
+        language={language}
+        onShow={result.sourceText ? show : undefined}
+      />
+      <ArgumentsSection report={report} language={language} />
 
       {after}
 

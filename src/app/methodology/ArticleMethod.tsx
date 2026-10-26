@@ -69,6 +69,11 @@ export function ArticleMethod() {
           <dd>The share of characters inside quotation marks.</dd>
           <dt>Figures without a source</dt>
           <dd>Figures for which the text names no person, document, data set or link.</dd>
+          <dt>Figures from the same source</dt>
+          <dd>
+            Two figures of the same kind attributed to the same named source with different values.
+            Not a contradiction by itself: a prompt to check whether they measure the same thing.
+          </dd>
           <dt>Poll results without a sample size</dt>
           <dd>Poll figures reported with neither a number of respondents nor a margin of error.</dd>
         </dl>

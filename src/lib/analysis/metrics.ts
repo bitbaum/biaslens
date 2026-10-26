@@ -53,6 +53,7 @@ export function computeMetrics(input: {
     detectionCounts[detection.technique] = (detectionCounts[detection.technique] ?? 0) + 1;
   }
   return {
+    sameSourceFigures: sameSourceFigures(input.figures),
     voices: input.voices.length,
     stanceCounts,
     quotedWordsByStance,
@@ -69,6 +70,26 @@ export function computeMetrics(input: {
       (detection) => detection.technique === 'missing_response',
     ),
   };
+}
+
+/**
+ * Two figures of the same kind from the same named source with different
+ * values. Not a verdict that they contradict each other — they may measure
+ * different things — but a reader should check which (the owner's 40 % vs 31 %).
+ */
+export function sameSourceFigures(figures: Figure[]): [string, string][] {
+  const key = (value: string | null) => (value ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const pairs: [string, string][] = [];
+  for (let i = 0; i < figures.length; i++) {
+    for (let j = i + 1; j < figures.length; j++) {
+      const a = figures[i]!;
+      const b = figures[j]!;
+      if (!a.source || key(a.source) !== key(b.source) || a.kind !== b.kind) continue;
+      if (key(a.value) === key(b.value)) continue;
+      pairs.push([a.id, b.id]);
+    }
+  }
+  return pairs.slice(0, 3);
 }
 
 export { STANCE_KEYS };

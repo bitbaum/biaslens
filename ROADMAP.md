@@ -13,7 +13,8 @@ milestone means the capability is implemented and verified, not merely proposed.
 Every finding points to a passage in the article, and every voice is named with
 who they are and whether they support the main claim.
 
-- [ ] A test set of real Swiss and English articles, scored before and after every method change
+- [x] An evaluation harness and rubric that score reports before and after every method change
+- [ ] A test set of about twelve real Swiss and English articles in it
 - [x] A published catalogue of writing techniques, each with what counts and what does not
 - [x] Quotes found even when a PDF or a copy-paste changed the spacing, hyphens or quotation marks
 - [x] Articles read from PDF links and uploaded PDFs, including press clippings
@@ -30,24 +31,27 @@ Someone sends you an article. You send back BiasLens's reading of it, as a
 one-line message, an image, a short brief, a full page or a document, and the
 person who opens it sees something they had not noticed within ten seconds.
 
-- [ ] Saved reports with their own link
-- [ ] A reply page made for the person receiving it
-- [ ] Reply lengths from one line to a full dossier, chosen by occasion
-- [ ] Share images for messages, posts and stories
-- [ ] Open any article by putting the BiasLens address in front of its link, or from the phone's share menu
+- [x] Saved reports with their own link
+- [x] A reply page made for the person receiving it
+- [x] Reply lengths for every occasion: one line, a short brief, a full page
+- [ ] A printable dossier of a reading, for classes and letters to the editor
+- [x] Share images for messages, posts and stories
+- [x] Open any article by putting the BiasLens address in front of its link, or from the phone's share menu
 
 ### Who is speaking
 
-- [ ] Profiles of authors, quoted people and outlets from sourced public records, with a source on every line
+- [x] Profiles of authors, quoted people and outlets from sourced public records, with a source on every line
 - [ ] What BiasLens reports on an author's or outlet's articles show, with the number of articles and its limits stated
 
 ### Rewrite studio
 
-- [ ] A neutral version of the article, each change linked to the passage it fixes
-- [ ] A reply or op-ed answering the article
-- [ ] The same facts written from stated values instead of a political label
-- [ ] "How would this outlet write it", always marked as a simulation
-- [ ] A check that a rewrite kept the original facts and added none
+- [x] A neutral version of the article that fixes the flagged passages
+- [ ] Each change in the neutral version linked to the passage it fixes
+- [x] A response to the article: from BiasLens, as a letter to the editor, or as a draft of your own
+- [x] The same facts written from stated values (the eight smartvote dimensions) instead of a political label
+- [x] "How would this outlet write it", always marked as a simulation
+- [x] "How would this public figure answer it", only for people with a public body of work, always marked as a simulation
+- [x] A check that a rewrite kept the original facts and added none
 
 ### Investigations you can return to
 

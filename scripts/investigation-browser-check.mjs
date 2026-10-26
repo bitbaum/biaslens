@@ -116,6 +116,7 @@ const report = {
   },
   durationMs: 500,
   independentlyVerified: false,
+  saved: { id: 'fixtureRpt1', cached: false },
 };
 try {
   for (const width of [390, 834, 1440]) {
@@ -143,6 +144,60 @@ try {
         });
       await responseReady;
       return route.fulfill({ json: { ok: true, result: report } });
+    });
+    await page.route('**/api/profile?*', async (route) =>
+      route.fulfill({
+        json: {
+          ok: true,
+          result: {
+            status: 'found',
+            profile: {
+              qid: 'Q1',
+              label: 'Fictional browser test',
+              description: 'fictional newspaper used in tests',
+              kind: 'outlet',
+              facts: [
+                {
+                  property: 'P127',
+                  values: [{ label: 'Example Media Group', qid: 'Q2' }],
+                  source: 'https://www.wikidata.org/wiki/Q1#P127',
+                },
+              ],
+              ownershipChain: [],
+              wikidataUrl: 'https://www.wikidata.org/wiki/Q1',
+              wikipedia: null,
+            },
+          },
+        },
+      }),
+    );
+    let rewriteRequest = null;
+    await page.route('**/api/rewrite', async (route) => {
+      rewriteRequest = route.request().postDataJSON();
+      return route.fulfill({
+        json: {
+          ok: true,
+          rewrite: {
+            id: 'fixtureRew1',
+            title: 'Traffic fell; the cause is open',
+            text: 'Traffic on West Street fell by 30 percent after a cycle lane opened.\n\nA nearby junction was closed at the same time.',
+            label:
+              'Simulation · not written by The Guardian. Written by AI from this article’s facts.',
+            simulated: true,
+            factDiff: { total: 2, kept: 2, changed: [], dropped: [], added: [] },
+            modelId: 'fixture',
+            promptVersion: 'rewrite@1',
+          },
+        },
+      });
+    });
+    let replyRequest = null;
+    await page.route('**/api/replies', async (route) => {
+      replyRequest = route.request().postDataJSON();
+      return route.fulfill({
+        status: 201,
+        json: { ok: true, id: 'fixtureRep1', path: '/a/fixtureRep1' },
+      });
     });
     await page.route('**/api/article-chat', async (route) => {
       chatRequests++;
@@ -180,6 +235,34 @@ try {
     await page.getByRole('button', { name: 'Close', exact: true }).click();
     await page.getByRole('button', { name: 'Numbers 1' }).click();
     await page.getByText('No source named').first().waitFor();
+    await page.getByRole('button', { name: 'Fictional browser test', exact: true }).click();
+    const profile = page.getByRole('dialog', { name: 'About Fictional browser test' });
+    await profile.getByText('Example Media Group').waitFor();
+    await profile.getByText('Owned by').waitFor();
+    await profile.getByRole('button', { name: 'Close', exact: true }).click();
+    await page.getByRole('button', { name: 'As an outlet', exact: true }).click();
+    await page.getByLabel('Outlet').selectOption('guardian');
+    await page.getByRole('button', { name: 'Write it', exact: true }).click();
+    await page.getByText('Simulation · not written by The Guardian.', { exact: false }).waitFor();
+    await page.getByText('2 of 2 facts from the original kept.').waitFor();
+    assert.deepEqual(rewriteRequest.voice, { kind: 'outlet', outlet: 'guardian' });
+    assert.equal(rewriteRequest.text, source);
+    await page.getByRole('button', { name: 'Send a reply', exact: true }).click();
+    await page.getByRole('button', { name: /The author or paper/ }).click();
+    await page.getByLabel('Your name (optional)').fill('Ana');
+    await page.getByRole('button', { name: 'Create the reply link', exact: true }).click();
+    await page.getByRole('button', { name: 'Share', exact: true }).waitFor();
+    assert.deepEqual(replyRequest, {
+      reportId: 'fixtureRpt1',
+      parentReplyId: null,
+      occasion: 'author',
+      length: 'brief',
+      blocks: ['findings', 'questions'],
+      senderName: 'Ana',
+      note: null,
+      rewriteId: null,
+    });
+    assert.match(await page.locator('pre').first().innerText(), /\/a\/fixtureRep1$/);
     await page.getByRole('link', { name: 'Claims', exact: true }).click();
     assert.match(page.url(), /#report-claims$/);
     await page.getByRole('button', { name: 'What is the article’s main argument?' }).click();

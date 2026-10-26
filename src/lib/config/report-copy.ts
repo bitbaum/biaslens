@@ -61,6 +61,7 @@ export interface ReportCopy {
     figures: (total: number, unsourced: number) => string;
     polls: (count: number) => string;
     missingResponse: string;
+    sameSource: (a: string, b: string) => string;
     detections: (count: number) => string;
     noDetections: string;
   };
@@ -185,6 +186,8 @@ const en: ReportCopy = {
       (unsourced ? `${unsourced} without a named source.` : 'each with a named source.'),
     polls: (count) => `${count} poll ${count === 1 ? 'result' : 'results'} without a sample size.`,
     missingResponse: 'A criticised party’s response is not reported.',
+    sameSource: (a, b) =>
+      `${a} and ${b} come from the same source; check whether they measure the same thing.`,
     detections: (count) => `${count} ${count === 1 ? 'passage' : 'passages'} flagged.`,
     noDetections: 'No passages flagged.',
   },
@@ -306,6 +309,8 @@ const de: ReportCopy = {
     polls: (count) =>
       `${count} ${count === 1 ? 'Umfrageergebnis' : 'Umfrageergebnisse'} ohne Stichprobengrösse.`,
     missingResponse: 'Die Stellungnahme einer kritisierten Seite fehlt.',
+    sameSource: (a, b) =>
+      `${a} und ${b} stammen aus derselben Quelle; prüfen Sie, ob sie dasselbe messen.`,
     detections: (count) => `${count} ${count === 1 ? 'Stelle' : 'Stellen'} markiert.`,
     noDetections: 'Keine Stellen markiert.',
   },
@@ -428,6 +433,8 @@ const fr: ReportCopy = {
     polls: (count) =>
       `${count} ${count === 1 ? 'résultat de sondage' : 'résultats de sondage'} sans taille d’échantillon.`,
     missingResponse: 'La réponse d’une partie critiquée n’est pas rapportée.',
+    sameSource: (a, b) =>
+      `${a} et ${b} viennent de la même source ; vérifiez s’ils mesurent la même chose.`,
     detections: (count) => `${count} ${count === 1 ? 'passage signalé' : 'passages signalés'}.`,
     noDetections: 'Aucun passage signalé.',
   },

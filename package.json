@@ -19,7 +19,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "design:check": "node --test scripts/design-check.mjs",
-    "browser:smoke": "bash scripts/browser-smoke.sh"
+    "browser:smoke": "bash scripts/browser-smoke.sh",
+    "eval:reports": "vitest run --config vitest.eval.config.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.12",

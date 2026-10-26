@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { HeroSection } from '@bitbaum/sitekit/react';
-import { useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 
 import { EXAMPLE_ARTICLE } from '@/lib/analysis/example';
 import {
@@ -12,6 +12,9 @@ import {
   type OutputLanguage,
 } from '@/lib/config/languages';
 import { reportCopy } from '@/lib/config/report-copy';
+
+import { ReplyLauncher } from '@/app/_components/replies/ReplyLauncher';
+import { RewriteStudio } from '@/app/_components/rewrite/RewriteStudio';
 
 import { ArticleConversation } from './ArticleConversation';
 import { ReportView, type ReportResult } from './report/ReportView';
@@ -31,9 +34,9 @@ const STAGE_TEXT = {
   checking: 'Matching every cited passage against the text…',
 } as const;
 
-export function AnalyzeWorkspace() {
+export function AnalyzeWorkspace({ incoming }: { incoming: string | null }) {
   const [mode, setMode] = useState<Mode>('url');
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(incoming ?? '');
   const [text, setText] = useState('');
   const [chosenLanguage, setChosenLanguage] = useState<OutputLanguage | null>(null);
   // A Swiss reader gets a Swiss German report unless they choose otherwise.
@@ -47,6 +50,17 @@ export function AnalyzeWorkspace() {
   const [pdfBusy, setPdfBusy] = useState(false);
   const analysis = useAnalysis();
   const reportRef = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
+
+  // /analyze?u=<link>, the address prefix and the phone's share menu all land
+  // here: fill the form and start, exactly as if the reader had pressed Examine.
+  useEffect(() => {
+    if (!incoming || startedRef.current) return;
+    startedRef.current = true;
+    void analysis.run({ url: incoming, outputLanguage: language }).then((result) => {
+      if (result) reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [incoming, analysis, language]);
 
   const busy = analysis.busy || pdfBusy;
   const canSubmit =
@@ -322,6 +336,7 @@ export function AnalyzeWorkspace() {
   );
 }
 
+/** A link handed to the page by ?u=, or by a share sheet as ?url= / ?text=. */
 function AnalysisResult({ result }: { result: ReportResult }) {
   const copy = reportCopy(result.language);
   const saveJson = () => {
@@ -345,8 +360,12 @@ function AnalysisResult({ result }: { result: ReportResult }) {
   return (
     <ReportView
       result={result}
+      actions={
+        result.saved ? <ReplyLauncher reportId={result.saved.id} result={result} /> : undefined
+      }
       after={
         <>
+          {result.saved && <RewriteStudio reportId={result.saved.id} result={result} />}
           {result.sourceText && (
             <ArticleConversation
               sourceText={result.sourceText}

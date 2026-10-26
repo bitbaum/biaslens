@@ -15,6 +15,20 @@
       "when": 1792772671327,
       "tag": "0001_tan_luminals",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793011185765,
+      "tag": "0002_boring_princess_powerful",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793012537832,
+      "tag": "0003_jittery_kylun",
+      "breakpoints": true
     }
   ]
 }

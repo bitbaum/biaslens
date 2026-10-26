@@ -1,0 +1,29 @@
+{
+  "about": "Articles for scoring BiasLens reports before and after a method change. Store links and human notes only, never article bodies. 'expect' holds what a careful human reader found; the harness compares the report with it. Add real articles here (aim for ~12 across outlets, genres and languages).",
+  "articles": [
+    {
+      "id": "fixture-poll-de",
+      "fixture": "src/lib/analysis/test-fixture.ts#FIXTURE_ARTICLE",
+      "language": "de-CH",
+      "notes": "Fictional poll story modelled on the owner's 2026-10-26 test: quoted expert's explanation, 40 vs 31 percent, no sample size, anonymous critics.",
+      "expect": {
+        "voices": ["Peter Beispiel", "Hans Probe", "Kritiker aus der Verwaltung"],
+        "notVoices": ["Anna Muster"],
+        "techniques": ["inconsistent_figures", "poll_without_sample", "anonymous_source"],
+        "attributedTo": { "Patriarchale Herkunftskulturen": "Peter Beispiel" }
+      }
+    },
+    {
+      "id": "fixture-cycle-lane-en",
+      "fixture": "src/lib/analysis/example.ts#EXAMPLE_ARTICLE",
+      "language": "en",
+      "notes": "Fictional council claim: before/after traffic with a confounder (roadworks).",
+      "expect": {
+        "voices": ["Alex Reed"],
+        "notVoices": [],
+        "techniques": ["causal_leap"],
+        "attributedTo": {}
+      }
+    }
+  ]
+}

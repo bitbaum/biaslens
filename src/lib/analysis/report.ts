@@ -112,6 +112,8 @@ export interface Metrics {
   /** ≥ ONE_SIDED.minKnown voices with a known stance and ≥ ONE_SIDED.share on one side. */
   oneSided: 'supports' | 'opposes' | null;
   missingResponse: boolean;
+  /** Pairs of figure ids from the same named source with different values: worth comparing. */
+  sameSourceFigures?: [string, string][];
 }
 
 export interface ReportQuality {

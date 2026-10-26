@@ -2,6 +2,33 @@
 
 What changed for people using BiasLens, newest first.
 
+## 2026-10-26 — Who is speaking: profiles
+
+### Added
+
+- **Tap a name.** Authors, quoted people and the outlet in a report open a profile: occupation, employer, offices, recorded party membership, owner and the owner’s owner, founding year, and the opening of the Wikipedia article — every line linked to its source on Wikidata.
+- **No guessing.** A name is linked only when the article’s own description of the person matches the record; when two people fit, the reader chooses. BiasLens adds no rating or label of its own, and every profile has a way to report a mistake.
+
+## 2026-10-26 — Rewrite studio
+
+### Added
+
+- **The same facts, told another way.** Under every reading: rewrite the article as a neutral report, from one or two stated values (the smartvote dimensions), as a chosen outlet would have written it, or as a public figure might — or write a response to it from BiasLens, as a letter to the editor, or as your own reply.
+- **Labels that cannot be lost.** Every text says who wrote it. An outlet or person is always marked “Simulation · not written by …”, and that label is written by BiasLens, not by the model.
+- **Only public figures.** A person can be simulated only if Wikidata shows a public figure with a public body of work; private people never are, two people with the same name are not guessed between, and anyone can ask to be left out.
+- **What the framing did to the facts.** A rewrite of the article is checked against the original: how many of its facts were kept, which were changed or left out, and any fact that was added.
+- **Send it.** A rewrite can go out with a reply, and the person who receives it sees it with its label and the facts check.
+
+## 2026-10-26 — Replies you can send
+
+### Added
+
+- **Every reading has a link.** A finished report is saved, without the article text, so it can be opened again and shared. The same text examined again opens the saved reading at once.
+- **Send a reply.** Choose who it is for (a friend, a group chat, the author, a public post, a disagreement, a class), a length and what to include, and see exactly what will be sent before creating the link.
+- **A page for the person who receives it.** It opens on their article and the three findings they can check against its own words, with an optional “guess first” question, the sender’s note and a way to reply back.
+- **Share images.** Every reading and reply has a link preview image and downloadable square and story images that carry “AI reading · not a fact check” in the picture itself.
+- **More ways in.** Put the BiasLens address in front of any article link, open `/analyze?u=` with a link, or install BiasLens and use “Share → BiasLens” from a news app on Android.
+
 ## 2026-10-26
 
 ### Added

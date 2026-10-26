@@ -24,6 +24,12 @@ export function glanceSentences(report: Report, language: OutputLanguage): strin
   if (metrics.figures) {
     sentences.push(copy.glance.figures(metrics.figures, metrics.figuresWithoutSource));
     if (metrics.pollsWithoutSample) sentences.push(copy.glance.polls(metrics.pollsWithoutSample));
+    const pair = metrics.sameSourceFigures?.[0];
+    const flagged = report.detections.some((d) => d.technique === 'inconsistent_figures');
+    if (pair && !flagged) {
+      const [a, b] = pair.map((id) => report.figures.find((figure) => figure.id === id)!.value);
+      sentences.push(copy.glance.sameSource(a!, b!));
+    }
   }
   if (metrics.missingResponse) sentences.push(copy.glance.missingResponse);
   sentences.push(
