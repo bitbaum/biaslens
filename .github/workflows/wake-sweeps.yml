@@ -9,7 +9,7 @@ name: Wake sweeps
 
 on:
   workflow_run:
-    workflows: [Deploy, "Browser design smoke"]
+    workflows: [Deploy, 'Browser design smoke']
     types: [completed]
     branches: [main]
 
