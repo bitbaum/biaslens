@@ -12,6 +12,7 @@ minimumReleaseAgeExclude:
   - '@bitbaum/chatkit@0.15.2 || 0.15.3 || 0.16.0 || 0.17.1'
   - '@bitbaum/design-tokens@1.2.0'
   - bip-kit@0.6.1
+  - '@bitbaum/accountkit@0.8.0'
 
 # Legacy Drizzle Kit TS-config loader uses esbuild transform, never its dev server.
 # Keep that loader on the patched API; drizzle-kit check validates config loading.
