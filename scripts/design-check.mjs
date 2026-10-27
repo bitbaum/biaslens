@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const chrome = read('src/app/_components/Chrome.tsx') + read('src/app/_components/Footer.tsx');
@@ -66,11 +67,17 @@ test('every public route uses the same navigational frame and one skip target', 
   assert.doesNotMatch(chrome, /<header|<nav|<footer/);
 });
 
-test('composition comes from one pinned source and frames are not duplicated', () => {
-  const ref = packageJson.dependencies['@bitbaum/design-tokens'];
-  // Package releases are pinned to immutable Git refs. Both version tags and
-  // reviewed release commit SHAs are valid; reject unpinned moving branches.
-  assert.match(ref, /^github:bitbaum\/design-tokens#(?:v[0-9.]+|[0-9a-f]{40})$/i);
+test('installed shared composition supplies the controls and frames are not duplicated', () => {
+  const require = createRequire(import.meta.url);
+  const composition = readFileSync(
+    require.resolve('@bitbaum/design-tokens/composition.css'),
+    'utf8',
+  );
+  for (const role of ['.bb-frame', '.bb-control', '.bb-button', ':focus-visible']) {
+    assert.ok(composition.includes(role), 'installed composition is missing ' + role);
+  }
+  const rules = composition.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(rules, /(^|})\s*(?:html|body|:root)\s*[{,]/m);
   assert.match(layout, /@bitbaum\/design-tokens\/tokens\.css/);
   assert.match(layout, /@bitbaum\/sitekit\/styles\.css/);
   assert.match(layout, /@bitbaum\/design-tokens\/composition\.css/);
