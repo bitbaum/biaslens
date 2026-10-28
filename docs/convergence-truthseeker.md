@@ -17,7 +17,7 @@ not a final brand decision.
 
 ## Donor inventory (original main branches checked 20 October 2026)
 
-- Truth Seeker: `src/lib/analysis.ts` orchestrates URL/body analysis,
+- Truth Seeker (its own repo, not this tree): `src/lib/analysis.ts` orchestrates URL/body analysis, <!-- docs-truth: keep — a path in the donor repo bitbaum/truthseeker -->
   `article-fetch.ts` and `public-url.ts` implement guarded ingestion;
   `llm.ts` uses `@bitbaum/ai-kit` cross-vendor fallback;
   `prompts.ts` contains the first-principles rubric.
