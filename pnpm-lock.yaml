@@ -21,8 +21,8 @@ importers:
         specifier: ^1.21.4
         version: 1.21.4(react@19.3.1)
       '@bitbaum/chatkit':
-        specifier: ^0.21.1
-        version: 0.21.1(react@19.3.1)
+        specifier: github:bitbaum/chatkit#378430bdaa52f11d56bf91880977980c707b86f0
+        version: https://codeload.github.com/bitbaum/chatkit/tar.gz/378430bdaa52f11d56bf91880977980c707b86f0(react@19.3.1)
       '@bitbaum/design-tokens':
         specifier: ^1.2.0
         version: 1.2.0
@@ -48,8 +48,8 @@ importers:
         specifier: ^0.45.4
         version: 0.45.4(@electric-sql/pglite@0.5.11)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
       limitkit:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.1
+        version: 0.2.1
       next:
         specifier: ^16.4.3
         version: 16.4.3(@babel/core@7.29.7)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -292,8 +292,9 @@ packages:
       react:
         optional: true
 
-  '@bitbaum/chatkit@0.21.1':
-    resolution: {integrity: sha512-4zTtBHEDJV3oTh8j8DlCGDpiIHC7jHlbhCgBip0QEFy+Py88P9+ZqVZWEeCvYi3IDt3X0WiBCLsM8B6PZRGKNw==}
+  '@bitbaum/chatkit@https://codeload.github.com/bitbaum/chatkit/tar.gz/378430bdaa52f11d56bf91880977980c707b86f0':
+    resolution: {gitHosted: true, integrity: sha512-u9UxQDjL7E0l9cyQO3hjdg+8uo8TtzkhKqTxxNQ8ykK4QmYF1HvDDhkSpMV4kQLQcEOl1cQ6zAlSenw2wqyUYg==, tarball: https://codeload.github.com/bitbaum/chatkit/tar.gz/378430bdaa52f11d56bf91880977980c707b86f0}
+    version: 0.21.2
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -2517,6 +2518,10 @@ packages:
     resolution: {integrity: sha512-x05857iOBGf04eRBAXWTtRTrGhRdBfW9fZa8rfJDx3rQNRBVQpwK2z9aiMYNWhRp71QoIjvA0rl4ZiL4+6O8rA==}
     engines: {node: '>=20'}
 
+  limitkit@0.2.1:
+    resolution: {integrity: sha512-8IBrAi+W9axLDDiUE5F2+wabhLTNs1wpaBSf+RfytdXDm/KpOB6S8Xw7j0uoTQH5ti4A/EiRfyK1DbR6NcY1gA==}
+    engines: {node: '>=20'}
+
   linkedom@0.18.14:
     resolution: {integrity: sha512-BRUnkOm4YR5vo+qI3j0EbungB0vZPSCue5AdnTQRaxAGSbsOZiBFRO0rh4zlo8qXUhli8pxvnpEXDklMnlq2Rg==}
     engines: {node: '>=16'}
@@ -3408,7 +3413,7 @@ snapshots:
     transitivePeerDependencies:
       - canvas
 
-  '@bitbaum/chatkit@0.21.1(react@19.3.1)':
+  '@bitbaum/chatkit@https://codeload.github.com/bitbaum/chatkit/tar.gz/378430bdaa52f11d56bf91880977980c707b86f0(react@19.3.1)':
     dependencies:
       pdfjs-dist: 6.4.299
       react: 19.3.1
@@ -5426,6 +5431,8 @@ snapshots:
       lightningcss-win32-x64-msvc: 1.33.0
 
   limitkit@0.2.0: {}
+
+  limitkit@0.2.1: {}
 
   linkedom@0.18.14:
     dependencies:
