@@ -92,7 +92,7 @@ intentionally retained as migration history and rollback.
   solution, mission and vision. `ROADMAP.md` and `CHANGELOG.md` in this
   repository are the canonical development records; Loki ingests them for the
   public fleet profile. Do not copy these records into this README or
-  `CLAUDE.md`.
+  `AGENTS.md`.
 
 The database model is `src/lib/db/schema.ts`; analysis contracts are in
 `src/lib/domain`, and the no-persistence entrypoint is `src/lib/analysis`.
