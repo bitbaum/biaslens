@@ -39,8 +39,37 @@ Before editing, inspect current main and open pull requests and use your own
 branch. `ROADMAP.md` and `CHANGELOG.md` here are the canonical development
 records; Loki ingests them into the fleet profile.
 
-Media bias analysis engine. See `CLAUDE.md` for the product contract and
-`README.md` for the vision; this file is the short operational guide for agents.
+Media bias analysis engine. `README.md` holds the vision and the current
+implemented state; this file is the operational guide and product contract for
+agents.
+
+## Product contract
+
+Do not create a second product brief, brand, identity register or
+shared-package implementation here. Loki's project profile is the source for
+mission, vision, problem and solution. Update `ROADMAP.md` and `CHANGELOG.md`
+in the same PR as the change they describe. Build plans for agents live in
+`docs/plans/`.
+
+The article output is **unverified AI analysis**, not an external fact verdict.
+Keep evidence quality, framing, attribution and causal hypotheses visibly
+distinct. A claim can be challenged; a human disagreement cannot be closed
+merely by generating an AI answer.
+
+References:
+
+- [Public Open Epistemic Method v0.1](docs/methodology/open-epistemic-method-v0.1.md)
+- [Truth Seeker → BiasLens migration handoff](docs/convergence-truthseeker.md)
+- `src/lib/domain/epistemic-graph.ts` for claim/evidence/causal-link audit types
+- `src/lib/analysis/report.ts` (report contract), `prompts.ts` (the two model
+  passes) and `src/lib/domain/techniques.ts` (the published technique catalogue)
+- `src/lib/analysis/` and `src/app/api/analyze/route.ts` for the URL/paste
+  workflow; `src/app/analyze/` for the browser report
+
+The first on-demand slice was integrated in
+[PR #49](https://github.com/bitbaum/biaslens/pull/49), superseding the older
+integration draft #46. Do **not** redo that migration, and keep historical
+Truth Seeker code intact until production parity and rollback checks succeed.
 
 ## Stack
 
@@ -84,7 +113,7 @@ src/lib/api/           HTTP result shape
 src/lib/config/        verification config
 ```
 
-## Principles (from CLAUDE.md)
+## Principles
 
 Separate facts (`Claim`/`Evidence`) from framing (`Narrative`/`Frame`). Scores are
 functions of stored evidence — never hard-coded — so they recompute and stay
