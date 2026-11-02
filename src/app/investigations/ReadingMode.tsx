@@ -61,36 +61,39 @@ export function ReadingMode({ draft }: { draft: DraftVersion | undefined }) {
               evidence
             </p>
             <h1>{draft.title}</h1>
-            {draft.text.split(/\n{2,}/).map((p, i) => {
-              const heading = p.match(/^##\s+(.+)$/);
-              if (heading) return <h2 key={i}>{heading[1]}</h2>;
-              return (
-                <p key={i}>
-                  {p.split(/(\[E\d{1,2}\])/g).map((part, j) => {
-                    const key = part.match(/^\[(E\d{1,2})\]$/)?.[1];
-                    if (!key) return <span key={j}>{part}</span>;
-                    const id = `${i}-${j}`;
-                    return (
-                      <span key={j}>
-                        <button
-                          type="button"
-                          className={styles.readCite}
-                          aria-expanded={card === id}
-                          onClick={() => setCard(card === id ? null : id)}
-                        >
-                          {key}
-                        </button>
-                        {card === id && (
-                          <span className={styles.readCard} role="note">
-                            {byKey.get(key) ?? 'This key is not in the version’s source list.'}
-                          </span>
-                        )}
-                      </span>
-                    );
-                  })}
-                </p>
-              );
-            })}
+            {draft.text
+              .split(/\n+/)
+              .filter((p, i) => !(i === 0 && p.trim() === draft.title.trim()))
+              .map((p, i) => {
+                const heading = p.match(/^##\s+(.+)$/);
+                if (heading) return <h2 key={i}>{heading[1]}</h2>;
+                return (
+                  <p key={i}>
+                    {p.split(/(\[E\d{1,2}\])/g).map((part, j) => {
+                      const key = part.match(/^\[(E\d{1,2})\]$/)?.[1];
+                      if (!key) return <span key={j}>{part}</span>;
+                      const id = `${i}-${j}`;
+                      return (
+                        <span key={j}>
+                          <button
+                            type="button"
+                            className={styles.readCite}
+                            aria-expanded={card === id}
+                            onClick={() => setCard(card === id ? null : id)}
+                          >
+                            {key}
+                          </button>
+                          {card === id && (
+                            <span className={styles.readCard} role="note">
+                              {byKey.get(key) ?? 'This key is not in the version’s source list.'}
+                            </span>
+                          )}
+                        </span>
+                      );
+                    })}
+                  </p>
+                );
+              })}
             {draft.flags && draft.flags.length > 0 && (
               <p className={styles.flagBox}>
                 Citation check flagged {draft.flags.length} sentence

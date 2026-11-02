@@ -54,6 +54,7 @@ export default async function SavedInvestigationPage({ params }: Props) {
       <EvidenceCharts investigation={saved.investigation} />
       <InvestigationView investigation={saved.investigation} />
       <InvestigationEditor
+        key={saved.revision}
         id={saved.id}
         revision={saved.revision}
         investigation={saved.investigation}
