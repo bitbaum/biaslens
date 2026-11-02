@@ -49,16 +49,19 @@ export function VersionHistory({ investigation }: { investigation: Investigation
             </summary>
             <article className={styles.reading}>
               <h3>{draft.title}</h3>
-              {draft.text.split(/\n{2,}/).map((p, i) => {
-                const heading = p.match(/^(?:##\s+|\*\*)(.+?)(?:\*\*)?$/);
-                return heading && heading[1]!.length < 90 ? (
-                  <h4 key={i}>{heading[1]}</h4>
-                ) : (
-                  <p key={i}>
-                    <Cited text={p.replace(/\*\*(.+?)\*\*/g, '$1')} />
-                  </p>
-                );
-              })}
+              {draft.text
+                .split(/\n+/)
+                .filter((p, i) => !(i === 0 && p.trim() === draft.title.trim()))
+                .map((p, i) => {
+                  const heading = p.match(/^(?:##\s+|\*\*)(.+?)(?:\*\*)?$/);
+                  return heading && heading[1]!.length < 90 ? (
+                    <h4 key={i}>{heading[1]}</h4>
+                  ) : (
+                    <p key={i}>
+                      <Cited text={p.replace(/\*\*(.+?)\*\*/g, '$1')} />
+                    </p>
+                  );
+                })}
               {dataset && <DatasetChart dataset={dataset} />}
             </article>
             {draft.flags && (

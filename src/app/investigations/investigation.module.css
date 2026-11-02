@@ -521,6 +521,7 @@
 }
 .readCard {
   display: block;
+  overflow-wrap: anywhere;
   font-family: system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.45;
