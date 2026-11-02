@@ -33,14 +33,14 @@ try {
     assert.ok(titleStyle.weight >= 600, 'application title weight');
     const headerHeight = (await page.locator('.sk-masthead').boundingBox()).height;
     assert.ok(headerHeight >= 64 && headerHeight <= 70, 'compact shared header at ' + width);
-    assert.equal(await page.locator('.sk-footer-group').count(), 2);
+    assert.equal(await page.locator('.sk-footer-group').count(), 3);
     if (width <= 1100) {
       const menu = page.locator('[data-sitekit-menu]');
       const summary = menu.locator('summary');
       await summary.click();
       assert.equal(await menu.evaluate((el) => el.open), true);
       const links = menu.getByRole('link');
-      assert.equal(await links.count(), 4);
+      assert.equal(await links.count(), 5);
       for (const link of await links.all()) assert.ok((await link.boundingBox()).height >= 44);
       await links.first().focus();
       await page.keyboard.press('Escape');
@@ -50,14 +50,12 @@ try {
       await page.mouse.click(4, 500);
       assert.equal(await menu.evaluate((el) => el.open), false);
       await summary.click();
-      await menu.getByRole('link', { name: 'Notebook', exact: true }).click();
-      await page.waitForURL('**/explore');
+      await menu.getByRole('link', { name: 'My desk', exact: true }).click();
+      await page.waitForURL('**/desk');
       assert.equal(await menu.evaluate((el) => el.open), false);
       await summary.click();
       assert.equal(
-        await menu
-          .getByRole('link', { name: 'Notebook', exact: true })
-          .getAttribute('aria-current'),
+        await menu.getByRole('link', { name: 'My desk', exact: true }).getAttribute('aria-current'),
         'page',
       );
     } else assert.equal(await page.locator('.sk-desktop-nav').isVisible(), true);
