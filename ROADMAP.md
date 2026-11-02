@@ -65,7 +65,11 @@ verification.
 - [x] Compare claims across sources without collapsing disagreement into a single truth or bias score
 - [x] Article claims linked to specific study findings, with design, horizon, strength notes and disconfirmation criteria
 - [x] First-principles questions for economic claims (supply elasticity, binding constraints, short vs long run, identification)
+- [x] Gap suggestions with one-tap rewrites, a visible version history and the sources behind each version
+- [x] Sources tagged by side, and candidate sources suggested from several sides (OpenAlex, Crossref)
+- [x] Evidence charts from published tables
 - [ ] Draft an investigation from a saved reading and attach studies from PDFs
+- [ ] Animated evidence graph and a methodology timeline
 
 ## Later
 

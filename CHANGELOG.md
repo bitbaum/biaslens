@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-02 — Suggestions you can tap, sources from all sides, charts
+
+### Added
+
+- **What this article doesn't explain yet.** An investigation lists its gaps, found from the evidence map: a cause stated but not explained, only one side, no numbers, something left out, data that a chart would show faster. Each has one-tap actions (Explain it, Dig deeper into the reasons, Add the other side, Add the numbers, Add a chart) that write the next version of your article from the linked sources, every source sentence cited [E1], [E2]…
+- **Every version kept.** The article's versions are listed newest first with the sentences added and removed, the sources that drove each version, the AI's change note (labelled) and the method version.
+- **Sources from all sides.** Each source carries a tag (official statistics, international organisation, academic, market-urbanist, tenant-protection) and a balance bar shows the mix. The housing demo adds Diamond, McQuade & Qian (San Francisco), Glaeser & Gyourko, the NYU Furman Center, the Urban Institute, the OECD, Statistik Stadt Zürich and the BFS household budget survey.
+- **Suggest sources from all sides** on every claim: candidates from OpenAlex (Crossref as fallback) under supporting, market, tenant and critical framings. A candidate is a lead until you read it and write down what it finds.
+- **Charts** drawn with the shared chartkit: overburden by country, the EU trend since 2014, Zurich rents for non-profit and for-profit flats.
+
 ## 2026-11-02 — Rewrites that cite the evidence
 
 ### Added

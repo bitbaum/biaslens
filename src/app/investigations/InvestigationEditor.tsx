@@ -14,7 +14,8 @@ import {
 
 import styles from './investigation.module.css';
 
-const tokenKey = (id: string) => 'biaslens:investigation-token:' + id;
+import { tokenKey } from './GapDesk';
+import { PREFILL_EVENT } from './SuggestSources';
 
 type Props = { id: string | null; revision: number; investigation: Investigation };
 
@@ -54,6 +55,33 @@ export function InvestigationEditor({ id, revision: initialRevision, investigati
       }
     });
   }, [id]);
+  useEffect(() => {
+    const onPrefill = (event: Event) => {
+      const c = (event as CustomEvent).detail as {
+        title: string;
+        authors: string;
+        year: number | null;
+        url: string;
+        doi: string | null;
+        claimId: string;
+      };
+      setDraft((d) => ({
+        ...d,
+        claimId: c.claimId,
+        title: c.title,
+        authors: c.authors,
+        year: c.year ? String(c.year) : '',
+        url: c.url,
+        doi: c.doi ?? '',
+        statement: '',
+        locator: '',
+      }));
+      setStatus('Lead copied below. Open it, then write what it actually finds and where.');
+      document.getElementById('edit-heading')?.scrollIntoView({ behavior: 'smooth' });
+    };
+    window.addEventListener(PREFILL_EVENT, onPrefill);
+    return () => window.removeEventListener(PREFILL_EVENT, onPrefill);
+  }, []);
 
   async function saveCopy(data: Investigation) {
     setStatus('Saving…');

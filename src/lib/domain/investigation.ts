@@ -172,8 +172,58 @@ export interface StudyFinding {
   horizon: Horizon;
 }
 
+/** Where a source stands in the debate. A tag for balance, not a credibility score. */
+export const PERSPECTIVES = [
+  'official_statistics',
+  'international_org',
+  'academic',
+  'market_urbanist',
+  'tenant_advocate',
+] as const;
+export type SourcePerspective = (typeof PERSPECTIVES)[number];
+
+export const PERSPECTIVE_LABEL: Record<SourcePerspective, string> = {
+  official_statistics: 'Official statistics',
+  international_org: 'International organisation',
+  academic: 'Academic research',
+  market_urbanist: 'Market-urbanist / pro-supply',
+  tenant_advocate: 'Tenant-protection / pro-regulation',
+};
+
+/** A small table of published figures, drawn as a chart. Every row comes from `source`. */
+export interface Dataset {
+  id: string;
+  title: string;
+  unit: string;
+  sourceTitle: string;
+  sourceUrl: string;
+  kind: 'ranking' | 'series';
+  rows: { label: string; value: number }[];
+  highlight?: string;
+}
+
+/** One version of the reader's article, written in response to a gap action. */
+export interface DraftVersion {
+  version: number;
+  createdAt: string;
+  action: string;
+  gapId: string | null;
+  title: string;
+  text: string;
+  /** Why this version exists, in one sentence (model-written, labelled as such). */
+  changeNote: string;
+  /** Evidence keys ([E#]) the text cites, resolved to their findings. */
+  citations: string[];
+  datasetId: string | null;
+  added: string[];
+  removed: string[];
+  promptVersion: string;
+  modelId: string | null;
+}
+
 export interface Study {
   id: string;
+  perspective?: SourcePerspective;
   title: string;
   authors: string;
   year: number | null;
@@ -220,6 +270,8 @@ export interface Investigation {
   /** Things the article leaves out that the studies or the method raise. */
   omissions: string[];
   notes: string;
+  datasets?: Dataset[];
+  drafts?: DraftVersion[];
 }
 
 const LIMITS = { claims: 60, studies: 40, findings: 20, links: 200, text: 4000, omissions: 40 };
@@ -318,6 +370,8 @@ export function investigationProblems(input: unknown): string[] {
     if (!oneOf(IDENTIFICATION_DESIGNS, s.design))
       problems.push('Study ' + s.id + ' design is unknown');
     if (!oneOf(REVIEWS, s.review)) problems.push('Study ' + s.id + ' review state is unknown');
+    if (s.perspective !== undefined && !oneOf(PERSPECTIVES, s.perspective))
+      problems.push('Study ' + s.id + ' perspective is unknown');
     const ids = new Set<string>();
     const findings = Array.isArray(s.findings) ? s.findings : [];
     if (!Array.isArray(s.findings) || findings.length > LIMITS.findings)
@@ -336,6 +390,52 @@ export function investigationProblems(input: unknown): string[] {
       if (!oneOf(HORIZONS, f.horizon)) problems.push('Finding ' + f.id + ' horizon is unknown');
     }
     findingsByStudy.set(s.id, ids);
+  }
+  if (r.datasets !== undefined) {
+    if (!Array.isArray(r.datasets) || r.datasets.length > 12)
+      problems.push('Datasets must be a list');
+    else
+      for (const raw of r.datasets) {
+        const d = raw as Record<string, unknown>;
+        const rows = Array.isArray(d?.rows) ? d.rows : null;
+        if (
+          !nonempty(d?.id) ||
+          !nonempty(d.title) ||
+          !isString(d.unit, 40) ||
+          !nonempty(d.sourceTitle) ||
+          !httpUrl(d.sourceUrl) ||
+          !oneOf(['ranking', 'series'] as const, d.kind) ||
+          !rows ||
+          rows.length > 60 ||
+          !rows.every(
+            (row) =>
+              nonempty((row as Record<string, unknown>)?.label) &&
+              Number.isFinite((row as Record<string, unknown>).value),
+          )
+        )
+          problems.push('Dataset ' + String(d?.id) + ' is malformed');
+      }
+  }
+  if (r.drafts !== undefined) {
+    if (!Array.isArray(r.drafts) || r.drafts.length > 40)
+      problems.push('Drafts must be a list (max 40)');
+    else
+      for (const raw of r.drafts) {
+        const d = raw as Record<string, unknown>;
+        if (
+          !Number.isInteger(d?.version) ||
+          !isString(d.createdAt, 40) ||
+          !isString(d.action, 40) ||
+          !nonempty(d.title) ||
+          !isString(d.text, 20000) ||
+          !isString(d.changeNote) ||
+          !Array.isArray(d.citations) ||
+          !Array.isArray(d.added) ||
+          !Array.isArray(d.removed) ||
+          !isString(d.promptVersion, 40)
+        )
+          problems.push('Draft ' + String(d?.version) + ' is malformed');
+      }
   }
   const linkIds = new Set<string>();
   for (const raw of links!) {

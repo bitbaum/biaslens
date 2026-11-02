@@ -1,5 +1,8 @@
+import { SourceBalance } from './EvidenceCharts';
+import { SuggestSources } from './SuggestSources';
 import {
   DESIGN_PROFILE,
+  PERSPECTIVE_LABEL,
   compareClaims,
   studyHref,
   type ComparedEvidence,
@@ -23,6 +26,11 @@ function EvidenceList({ rows }: { rows: ComparedEvidence[] }) {
       {rows.map((row) => (
         <li key={row.linkId} className={styles.evidence}>
           <span className={styles.tier}>{TIER_LABEL[row.tier]}</span>
+          {row.study.perspective && (
+            <span className={styles.side} data-side={row.study.perspective}>
+              {PERSPECTIVE_LABEL[row.study.perspective]}
+            </span>
+          )}
           <span className={styles.tier}>{row.finding.horizon.replace('_', '-')}</span>
           {row.review !== 'reviewed' && <span className={styles.tier}>unreviewed lead</span>}
           <br />
@@ -76,6 +84,11 @@ export function InvestigationView({ investigation }: { investigation: Investigat
         <h2 id="claims-heading">Claims and the evidence on them</h2>
         {comparison.map((row) => (
           <article key={row.claim.id} className={styles.claim} id={'claim-' + row.claim.id}>
+            <span className={styles.stanceBar} aria-hidden="true">
+              <span style={{ flex: row.supports.length }} data-stance="supports" />
+              <span style={{ flex: row.contradicts.length }} data-stance="contradicts" />
+              <span style={{ flex: row.context.length }} data-stance="context" />
+            </span>
             <p className={styles.eyebrow}>
               {row.claim.kind} claim ·{' '}
               {row.claim.quote ? 'in the article' : 'investigation hypothesis'}
@@ -126,6 +139,7 @@ export function InvestigationView({ investigation }: { investigation: Investigat
             {row.gaps.length > 0 && (
               <p className={styles.meta}>Still needed: {row.gaps.join(' · ')}</p>
             )}
+            <SuggestSources claimId={row.claim.id} query={row.claim.text} />
           </article>
         ))}
       </section>
@@ -162,7 +176,8 @@ export function InvestigationView({ investigation }: { investigation: Investigat
       </section>
 
       <section className={styles.section} aria-labelledby="studies-heading">
-        <h2 id="studies-heading">Studies</h2>
+        <h2 id="studies-heading">Sources from all sides</h2>
+        <SourceBalance investigation={investigation} />
         <ul className={styles.list}>
           {investigation.studies.map((study) => (
             <li key={study.id}>
@@ -170,7 +185,13 @@ export function InvestigationView({ investigation }: { investigation: Investigat
                 {study.authors}
                 {study.year ? ` (${study.year})` : ''}, {study.title}
               </a>
-              . {study.venue}. <em>{DESIGN_PROFILE[study.design].label}</em>: can support{' '}
+              . {study.venue}.{' '}
+              {study.perspective && (
+                <span className={styles.side} data-side={study.perspective}>
+                  {PERSPECTIVE_LABEL[study.perspective]}
+                </span>
+              )}{' '}
+              <em>{DESIGN_PROFILE[study.design].label}</em>: can support{' '}
               {DESIGN_PROFILE[study.design].canSupport.toLowerCase()} Main threat:{' '}
               {DESIGN_PROFILE[study.design].threats.toLowerCase()}
             </li>
