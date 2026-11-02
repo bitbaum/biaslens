@@ -43,6 +43,13 @@
       "when": 1793634415659,
       "tag": "0005_foamy_tony_stark",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793647694950,
+      "tag": "0006_thin_vin_gonzales",
+      "breakpoints": true
     }
   ]
 }

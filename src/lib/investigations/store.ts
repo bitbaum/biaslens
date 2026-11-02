@@ -100,3 +100,20 @@ export async function updateInvestigation(
   if (!updated.length) return { ok: false, reason: 'conflict', revision: row.revision };
   return { ok: true, revision: updated[0].revision };
 }
+
+/** True when the token opens this investigation. Constant-time compare. */
+export async function canEditInvestigation(
+  db: Db,
+  id: string,
+  editToken: string,
+): Promise<boolean> {
+  const [row] = await db
+    .select({ hash: investigations.editTokenSha256 })
+    .from(investigations)
+    .where(eq(investigations.id, id))
+    .limit(1);
+  if (!row) return false;
+  const a = Buffer.from(row.hash);
+  const b = Buffer.from(sha256(editToken));
+  return a.length === b.length && timingSafeEqual(a, b);
+}

@@ -360,3 +360,15 @@ export const investigations = pgTable('Investigation', {
 });
 
 export type InvestigationRow = typeof investigations.$inferSelect;
+
+/// An AI-generated image made for an investigation. Bytes are stored as
+/// base64 so no blob store is needed; the investigation's `images` entry
+/// points here and is always labelled as AI-generated.
+export const generatedImages = pgTable('GeneratedImage', {
+  id: text('id').primaryKey(),
+  investigationId: text('investigationId').notNull(),
+  mimeType: text('mimeType').notNull(),
+  dataBase64: text('dataBase64').notNull(),
+  prompt: text('prompt').notNull(),
+  createdAt: createdAt(),
+});

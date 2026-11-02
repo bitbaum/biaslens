@@ -15,16 +15,27 @@ import {
 import styles from './investigation.module.css';
 
 import { tokenKey } from './GapDesk';
+import { AiIllustration } from './AiIllustration';
 import { PhotoSearch } from './PhotoSearch';
 import { PREFILL_EVENT } from './SuggestSources';
 
-type Props = { id: string | null; revision: number; investigation: Investigation };
+type Props = {
+  aiImages?: boolean;
+  id: string | null;
+  revision: number;
+  investigation: Investigation;
+};
 
 /**
  * Save a copy (anyone) or update (holder of the edit token, kept in this
  * browser). Adds a study finding linked to a claim and edits the notes.
  */
-export function InvestigationEditor({ id, revision: initialRevision, investigation }: Props) {
+export function InvestigationEditor({
+  id,
+  revision: initialRevision,
+  investigation,
+  aiImages = false,
+}: Props) {
   const router = useRouter();
   const [revision, setRevision] = useState(initialRevision);
   const [status, setStatus] = useState('');
@@ -199,6 +210,14 @@ export function InvestigationEditor({ id, revision: initialRevision, investigati
             })
           }
         />
+        {aiImages && id && (
+          <AiIllustration
+            id={id}
+            revision={revision}
+            token={token}
+            defaultSubject={investigation.question}
+          />
+        )}
         <h3>Link a study to a claim</h3>
         <label>
           Claim

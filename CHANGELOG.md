@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — AI illustrations (off by default)
+
+- Investigations can get an AI illustration, always badged "AI-generated", through the shared `@bitbaum/ai-kit/images` transport. Hidden until the server sets `IMAGE_GEN_API` and `IMAGE_GEN_MODEL`. Additive migration: new `GeneratedImage` table.
+
 ## Unreleased — Today page
 
 - The home page is now Today: a dated masthead, the lead investigation with its stance balance, what changed since your last visit (with a visit streak kept on this device), evidence of the day, the claims under the most scrutiny, and the tools to start your own.
