@@ -691,6 +691,20 @@ export const HOUSING_DEMO: Investigation = {
     'Whether owners and renters are affected differently; tenure is not broken out.',
     'No policy evidence: neither supply reforms nor rent regulation and their measured effects are discussed.',
   ],
+  images: [
+    {
+      kind: 'photo',
+      src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Apartment_building_on_Patriarchou_Ioakeim_and_Irodotou_Streets%2C_Athens%2C_Greece.jpg/1280px-Apartment_building_on_Patriarchou_Ioakeim_and_Irodotou_Streets%2C_Athens%2C_Greece.jpg',
+      alt: 'A multi-storey apartment building with balconies on a street corner in Athens',
+      caption:
+        'Athens apartment block. Greece has the highest housing cost overburden rate in the EU (Eurostat, 2025).',
+      credit: 'Dimitris Kamaras',
+      license: 'CC BY 2.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Apartment_building_on_Patriarchou_Ioakeim_and_Irodotou_Streets,_Athens,_Greece.jpg',
+    },
+  ],
   datasets: [
     {
       id: 'd-overburden',

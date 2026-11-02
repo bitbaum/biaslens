@@ -274,6 +274,23 @@ export interface Investigation {
   notes: string;
   datasets?: Dataset[];
   drafts?: DraftVersion[];
+  images?: InvestigationImage[];
+}
+
+/**
+ * A picture shown with the investigation. Photos must be openly licensed
+ * and credited; AI images are always labelled as such.
+ */
+export interface InvestigationImage {
+  kind: 'photo' | 'ai';
+  src: string;
+  alt: string;
+  caption: string;
+  /** Photographer or, for AI images, the tool run that made it. */
+  credit: string;
+  license: string;
+  licenseUrl: string | null;
+  sourceUrl: string | null;
 }
 
 const LIMITS = { claims: 60, studies: 40, findings: 20, links: 200, text: 4000, omissions: 40 };
@@ -416,6 +433,29 @@ export function investigationProblems(input: unknown): string[] {
           )
         )
           problems.push('Dataset ' + String(d?.id) + ' is malformed');
+      }
+  }
+  if (r.images !== undefined) {
+    if (!Array.isArray(r.images) || r.images.length > 6)
+      problems.push('Images must be a list of up to 6');
+    else
+      for (const raw of r.images) {
+        const im = (raw ?? {}) as Record<string, unknown>;
+        if (
+          !oneOf(['photo', 'ai'] as const, im.kind) ||
+          !httpUrl(im.src) ||
+          !(im.src as string).startsWith('https://') ||
+          !nonempty(im.alt) ||
+          !isString(im.caption, 600) ||
+          !nonempty(im.credit) ||
+          !nonempty(im.license) ||
+          (im.kind === 'photo' && !httpUrl(im.sourceUrl))
+        ) {
+          problems.push(
+            'Each image needs https src, alt text, credit and licence; photos need a source page',
+          );
+          break;
+        }
       }
   }
   if (r.drafts !== undefined) {

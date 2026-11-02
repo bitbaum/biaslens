@@ -107,3 +107,14 @@ describe('citableFindings', () => {
     expect(lines.every((l) => /https:\/\//.test(l))).toBe(true);
   });
 });
+
+describe('investigation images', () => {
+  it('accepts the credited demo photo and rejects an uncredited one', () => {
+    expect(investigationProblems(HOUSING_DEMO)).toEqual([]);
+    const bad = {
+      ...HOUSING_DEMO,
+      images: [{ ...HOUSING_DEMO.images![0]!, credit: '', sourceUrl: null }],
+    };
+    expect(investigationProblems(bad).join()).toMatch(/credit and licence/);
+  });
+});

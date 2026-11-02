@@ -9,7 +9,10 @@ import '@bitbaum/chartkit/styles.css';
 import { detectGaps } from '@/lib/domain/gaps';
 
 import { EvidenceCharts } from '../EvidenceCharts';
+import { EpistemicMap } from '../EpistemicMap';
 import { GapDesk } from '../GapDesk';
+import { InvestigationImages } from '../InvestigationImages';
+import { MethodTimeline } from '../MethodTimeline';
 import { InvestigationEditor } from '../InvestigationEditor';
 import { VersionHistory } from '../VersionHistory';
 import { InvestigationView } from '../InvestigationView';
@@ -34,6 +37,8 @@ export default async function SavedInvestigationPage({ params }: Props) {
         </p>
         <h1>{saved.investigation.question}</h1>
       </header>
+      <InvestigationImages images={saved.investigation.images} />
+      <EpistemicMap investigation={saved.investigation} />
       <GapDesk
         id={saved.id}
         revision={saved.revision}
@@ -41,6 +46,7 @@ export default async function SavedInvestigationPage({ params }: Props) {
         gaps={detectGaps(saved.investigation)}
       />
       <VersionHistory investigation={saved.investigation} />
+      <MethodTimeline investigation={saved.investigation} />
       <EvidenceCharts investigation={saved.investigation} />
       <InvestigationView investigation={saved.investigation} />
       <InvestigationEditor
