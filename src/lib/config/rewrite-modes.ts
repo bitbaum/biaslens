@@ -45,6 +45,8 @@ export type ParsedRewriteRequest = {
   length: RewriteLength;
   text: string | null;
   language: string | null;
+  /** A saved investigation whose linked findings the rewrite may cite. */
+  investigationId: string | null;
 };
 
 /** Validate a studio request at the boundary. */
@@ -114,6 +116,10 @@ export function parseRewriteRequest(
       length: raw.length as RewriteLength,
       text,
       language: isOutputLanguage(raw.language) ? raw.language : null,
+      investigationId:
+        typeof raw.investigationId === 'string' && /^[a-zA-Z0-9]{8,16}$/.test(raw.investigationId)
+          ? raw.investigationId
+          : null,
     },
   };
 }

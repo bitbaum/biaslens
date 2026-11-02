@@ -175,3 +175,70 @@ describe('parseRewriteRequest', () => {
     });
   });
 });
+
+describe('writeRewrite with investigation evidence', () => {
+  it('lets the rewrite cite linked findings, keeps the simulation label and returns what was omitted', async () => {
+    const { citableFindings } = await import('@/lib/domain/investigation');
+    const { HOUSING_DEMO } = await import('@/lib/investigations/housing-demo');
+    const result = await fixture();
+    const findings = citableFindings(HOUSING_DEMO);
+    const complete = vi.fn(
+      async (messages: { role: string; content: string }[], pass: 'write' | 'facts') => {
+        if (pass === 'write') {
+          expect(messages[0]!.content).toContain('[E#]');
+          expect(messages[0]!.content).toContain('FIRST PRINCIPLES');
+          expect(messages[1]!.content).toContain('[E1] ');
+          expect(messages[1]!.content).toContain('Elfert & Thomsen');
+          return {
+            text: JSON.stringify({
+              title: 'Supply, not slogans',
+              text: body + ' In Buenos Aires, listings rose after the repeal [E9].',
+              omitted: ['Whether supply can respond at all [E3].', 'The trend since 2014.'],
+            }),
+            modelId: 'm',
+          };
+        }
+        expect(messages[1]!.content).toContain('EVIDENCE the rewrite may cite');
+        return {
+          text: JSON.stringify({
+            facts: [{ n: 1, status: 'kept' }],
+            added: ['Listings rose after the repeal [E9].'],
+          }),
+          modelId: 'm',
+        };
+      },
+    );
+    const output = await writeRewrite(
+      {
+        result,
+        text: result.sourceText,
+        form: 'rewrite',
+        voice: { kind: 'outlet', outlet: 'economist' },
+        length: 'short',
+        evidence: { investigationId: 'abcdEFGH23', findings, omissions: HOUSING_DEMO.omissions },
+      },
+      { complete },
+    );
+    expect(output.simulated).toBe(true);
+    expect(output.label).toContain('The Economist');
+    // A cited finding is not an "added" fact, so no revision pass was needed.
+    expect(output.factDiff?.added).toEqual([]);
+    expect(complete).toHaveBeenCalledTimes(2);
+    expect(output.evidence?.cited).toHaveLength(findings.length);
+    expect(output.evidence?.omitted).toEqual([
+      'Whether supply can respond at all [E3].',
+      'The trend since 2014.',
+    ]);
+  });
+
+  it('accepts an investigation id in a studio request', () => {
+    const parsed = parseRewriteRequest({
+      reportId: 'abcdEFGH23',
+      form: 'rewrite',
+      voice: { kind: 'outlet', outlet: 'ft' },
+      length: 'short',
+      investigationId: 'abcdEFGH24',
+    });
+    expect(parsed.ok && parsed.data.investigationId).toBe('abcdEFGH24');
+  });
+});

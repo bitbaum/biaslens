@@ -1,0 +1,1 @@
+ALTER TABLE "Rewrite" ADD COLUMN "evidence" jsonb;

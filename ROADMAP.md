@@ -52,6 +52,7 @@ person who opens it sees something they had not noticed within ten seconds.
 - [x] "How would this outlet write it", always marked as a simulation
 - [x] "How would this public figure answer it", only for people with a public body of work, always marked as a simulation
 - [x] A check that a rewrite kept the original facts and added none
+- [x] Rewrites that cite findings from a linked investigation, each marked, and list what the original left out
 
 ### Investigations you can return to
 

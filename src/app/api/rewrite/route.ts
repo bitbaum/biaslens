@@ -16,6 +16,8 @@ import {
   normalizeName,
   PUBLIC_VOICE_OCCUPATIONS,
 } from '@/lib/entities/wikidata';
+import { citableFindings } from '@/lib/domain/investigation';
+import { getInvestigation } from '@/lib/investigations/store';
 import { getReport, saveRewrite } from '@/lib/reports/store';
 import { RewriteFailure, writeRewrite } from '@/lib/rewrite/run';
 
@@ -115,6 +117,17 @@ export async function POST(request: Request) {
     }
   }
 
+  let evidence: { investigationId: string; findings: string[]; omissions: string[] } | null = null;
+  if (input.investigationId) {
+    const investigation = await getInvestigation(db, input.investigationId);
+    if (!investigation) return fail('Unknown investigation.', 404, headers);
+    evidence = {
+      investigationId: investigation.id,
+      findings: citableFindings(investigation.investigation),
+      omissions: investigation.investigation.omissions,
+    };
+  }
+
   const chain = usableChain(freeChain('BIASLENS'), process.env);
   if (chain.length === 0)
     return fail('The rewrite studio is not configured on this server yet.', 503, headers);
@@ -128,6 +141,7 @@ export async function POST(request: Request) {
         voice: input.voice,
         length: input.length,
         personDescription,
+        evidence,
       },
       {
         complete: async (messages, pass) => {
