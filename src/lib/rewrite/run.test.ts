@@ -224,7 +224,7 @@ describe('writeRewrite with investigation evidence', () => {
     // A cited finding is not an "added" fact, so no revision pass was needed.
     expect(output.factDiff?.added).toEqual([]);
     expect(complete).toHaveBeenCalledTimes(2);
-    expect(output.evidence?.cited).toHaveLength(Math.min(findings.length, 16));
+    expect(output.evidence?.cited).toHaveLength(Math.min(findings.length, 24));
     expect(output.evidence?.omitted).toEqual([
       'Whether supply can respond at all [E3].',
       'The trend since 2014.',
