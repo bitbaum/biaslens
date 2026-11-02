@@ -131,9 +131,15 @@ export function detectGaps(investigation: Investigation): Gap[] {
 
 /** Split into sentences for a readable diff. */
 export function sentences(text: string): string[] {
+  // Lines and list items are units of their own; then split prose into sentences.
   return text
-    .replace(/\s+/g, ' ')
-    .split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ“"(\[])/)
+    .split(/\n+|\s(?=(?:[*•–-]|\d{1,2}\.)\s)/)
+    .flatMap((block) =>
+      block
+        .replace(/^\s*(?:[*•–-]|\d{1,2}\.)\s+/, '')
+        .replace(/\s+/g, ' ')
+        .split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ“"(\[])/),
+    )
     .map((s) => s.trim())
     .filter(Boolean);
 }

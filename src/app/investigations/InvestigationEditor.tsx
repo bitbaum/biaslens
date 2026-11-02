@@ -15,6 +15,7 @@ import {
 import styles from './investigation.module.css';
 
 import { tokenKey } from './GapDesk';
+import { PhotoSearch } from './PhotoSearch';
 import { PREFILL_EVENT } from './SuggestSources';
 
 type Props = { id: string | null; revision: number; investigation: Investigation };
@@ -186,6 +187,18 @@ export function InvestigationEditor({ id, revision: initialRevision, investigati
             {id && token ? 'Save notes' : 'Save a copy'}
           </button>
         </div>
+        <PhotoSearch
+          onPick={(image) =>
+            void update({
+              ...investigation,
+              notes,
+              images: [
+                image,
+                ...(investigation.images ?? []).filter((i) => i.src !== image.src),
+              ].slice(0, 6),
+            })
+          }
+        />
         <h3>Link a study to a claim</h3>
         <label>
           Claim

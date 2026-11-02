@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — reading mode, evidence cards, photo search
+
+- Reading mode for the latest version: full-screen serif layout, progress bar, tap a source key to open its evidence in place.
+- Evidence cards for every linked finding; whoever saved the investigation can mark a link reviewed or disputed.
+- Photo search on Wikimedia Commons (open licences only), credit and licence filled in from the file page.
+- Citation check splits list items; rewrites keep only [E#] citations (revise@1.2).
+- Stance colours on the map and cards; times shown in Europe/Zurich.
+
 ## Unreleased — map, timeline, images
 
 - Investigations show an animated epistemic map (claims in the middle, sources by side, one line per linked finding, coloured by stance; not a score).

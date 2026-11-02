@@ -70,3 +70,12 @@ describe('reviseInvestigation', () => {
     ).rejects.toBeInstanceOf(ReviseFailure);
   });
 });
+
+describe('onlyEvidenceCitations', () => {
+  it('keeps [E#] and drops other bracket citations', async () => {
+    const { onlyEvidenceCitations } = await import('./revise');
+    expect(
+      onlyEvidenceCitations('Greece is at 26.4 % [EU-27, 2025] [E1]. Costs rise [Widmer].'),
+    ).toBe('Greece is at 26.4 % [E1]. Costs rise.');
+  });
+});

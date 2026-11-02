@@ -1,3 +1,4 @@
+import { zurichTime } from '@/lib/format-time';
 import { GAP_ACTIONS, isGapAction } from '@/lib/domain/gaps';
 import type { Investigation } from '@/lib/domain/investigation';
 
@@ -44,7 +45,7 @@ export function VersionHistory({ investigation }: { investigation: Investigation
             <summary>
               <strong>v{draft.version}</strong> ·{' '}
               {isGapAction(draft.action) ? GAP_ACTIONS[draft.action].label : draft.action} ·{' '}
-              {draft.createdAt.slice(0, 16).replace('T', ' ')} UTC
+              {zurichTime(draft.createdAt)}
             </summary>
             <article className={styles.reading}>
               <h3>{draft.title}</h3>

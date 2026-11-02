@@ -10,7 +10,9 @@ import { detectGaps } from '@/lib/domain/gaps';
 
 import { EvidenceCharts } from '../EvidenceCharts';
 import { EpistemicMap } from '../EpistemicMap';
+import { EvidenceCards } from '../EvidenceCards';
 import { GapDesk } from '../GapDesk';
+import { ReadingMode } from '../ReadingMode';
 import { InvestigationImages } from '../InvestigationImages';
 import { MethodTimeline } from '../MethodTimeline';
 import { InvestigationEditor } from '../InvestigationEditor';
@@ -45,7 +47,9 @@ export default async function SavedInvestigationPage({ params }: Props) {
         investigation={saved.investigation}
         gaps={detectGaps(saved.investigation)}
       />
+      <ReadingMode draft={saved.investigation.drafts?.at(-1)} />
       <VersionHistory investigation={saved.investigation} />
+      <EvidenceCards id={saved.id} revision={saved.revision} investigation={saved.investigation} />
       <MethodTimeline investigation={saved.investigation} />
       <EvidenceCharts investigation={saved.investigation} />
       <InvestigationView investigation={saved.investigation} />

@@ -5,6 +5,9 @@
   --primitive-accent-600: #3949ab;
   --primitive-paper: #f7f8fa;
   --primitive-white: #ffffff;
+  --primitive-teal-700: #11786a;
+  --primitive-vermilion-700: #b4432b;
+  --primitive-amber-600: #a87a12;
   --surface-page: 220 23% 97%;
   --surface-base: 0 0% 100%;
   --surface-raised: 220 18% 95%;
@@ -26,6 +29,10 @@
   --color-tone-positive: var(--color-text);
   --color-tone-negative: var(--color-text);
   --color-tone-neutral: var(--color-text-muted);
+  /* Stance colours for evidence maps: hue plus line weight, never a score. */
+  --color-stance-supports: var(--primitive-teal-700);
+  --color-stance-contradicts: var(--primitive-vermilion-700);
+  --color-stance-context: var(--primitive-amber-600);
   --font-display: var(--font-sans);
   --font-display-weight: 600;
   --font-display-tracking: -0.04em;

@@ -1,3 +1,4 @@
+import { zurichTime } from '@/lib/format-time';
 import type { Investigation } from '@/lib/domain/investigation';
 import { DESIGN_PROFILE } from '@/lib/domain/investigation';
 
@@ -43,9 +44,7 @@ export function MethodTimeline({ investigation }: { investigation: Investigation
         {steps.map((step, i) => (
           <li key={i} style={{ animationDelay: `${i * 90}ms` }}>
             <strong>{step.title}</strong>
-            {step.when && (
-              <span className={styles.meta}> · {step.when.slice(0, 16).replace('T', ' ')} UTC</span>
-            )}
+            {step.when && <span className={styles.meta}> · {zurichTime(step.when)}</span>}
             <p>{step.body}</p>
           </li>
         ))}
