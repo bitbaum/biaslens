@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-02 — Multi-source investigations
+
+### Added
+
+- **An article, set against the studies.** A multi-source investigation links each claim in an article to specific findings in external studies, with the study's identification design, the horizon it measures (short or long run), a strength-of-evidence note and what would disconfirm the claim. Supporting, contradicting and context evidence sit side by side; where they seem to disagree, the page says whether they measure different horizons or places. No single bias or truth score.
+- **First-principles questions for economic claims**: supply elasticity, the binding constraint, short versus long run, identification and who bears the cost.
+- **Saved with its own link.** Save a copy, come back and add studies or notes; the edit key stays in your browser and a newer save is never overwritten silently.
+- **A worked example**: Euronews on housing cost overburden (31 October 2026) with Eurostat, Hilber & Vermeulen, Greenaway-McGrevy & Phillips, Autor, Palmer & Pathak, Kholodilin, Elfert & Thomsen and a Rosario follow-up, at `/investigations/demo`.
+
 ## 2026-10-26 — One password field
 
 ### Changed

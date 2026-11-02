@@ -3,6 +3,7 @@ export const ROUTES = {
   home: '/',
   workspace: '/workspace',
   explore: '/explore',
+  investigations: '/investigations/demo',
   analyze: '/analyze',
   account: '/account',
   methodology: '/methodology',

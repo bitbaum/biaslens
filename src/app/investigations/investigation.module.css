@@ -1,0 +1,99 @@
+.page {
+  padding-block: var(--space-page);
+}
+.eyebrow {
+  font: 700 11px/1.6 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.hero p {
+  max-width: 68ch;
+  line-height: 1.7;
+}
+.section {
+  margin-block: 40px;
+}
+.section h2 {
+  margin-bottom: 12px;
+}
+.claim {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background: var(--color-surface);
+  padding: 20px;
+  margin-block: 20px;
+}
+.quote {
+  border-left: 3px solid var(--color-border);
+  padding-left: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+.meta {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.columns h4 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.columns ul,
+.list {
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.evidence {
+  margin-bottom: 12px;
+}
+.tier {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  margin-right: 6px;
+}
+.callout {
+  border: 1px dashed var(--color-border);
+  padding: 12px 16px;
+  font-size: 14px;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-block: 16px;
+}
+.form label {
+  display: block;
+  font-size: 13px;
+  margin-block: 12px;
+}
+.form input,
+.form select,
+.form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-btn);
+  font: inherit;
+  min-height: 44px;
+}
+@media (max-width: 860px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}

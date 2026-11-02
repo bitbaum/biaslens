@@ -59,9 +59,12 @@ Preserve the path from a question and source through claims, evidence and
 uncertainty, while keeping model interpretation distinct from independent
 verification.
 
-- [ ] Save, revisit and revise investigations across sessions
+- [x] Save, revisit and revise investigations across sessions
 - [ ] Independent source retrieval with traceable citations
-- [ ] Compare claims across sources without collapsing disagreement into a single truth or bias score
+- [x] Compare claims across sources without collapsing disagreement into a single truth or bias score
+- [x] Article claims linked to specific study findings, with design, horizon, strength notes and disconfirmation criteria
+- [x] First-principles questions for economic claims (supply elasticity, binding constraints, short vs long run, identification)
+- [ ] Draft an investigation from a saved reading and attach studies from PDFs
 
 ## Later
 

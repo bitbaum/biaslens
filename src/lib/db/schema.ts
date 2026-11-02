@@ -20,6 +20,7 @@ import {
   doublePrecision,
   foreignKey,
   index,
+  integer,
   jsonb,
   pgTable,
   text,
@@ -340,3 +341,20 @@ export type RewriteRow = typeof rewrites.$inferSelect;
 
 // Shared account schema owns credentials, sessions, passkeys and second factors.
 export * from '@bitbaum/accountkit/auth/schema';
+
+/// A multi-source investigation: an article, the studies linked to its claims
+/// and the reader's notes. Anyone with the link can read it; only the holder
+/// of the edit token (kept in their browser, stored here as a SHA-256) can
+/// change it. `revision` guards against two tabs overwriting each other.
+export const investigations = pgTable('Investigation', {
+  id: text('id').primaryKey(),
+  editTokenSha256: text('editTokenSha256').notNull(),
+  title: text('title').notNull(),
+  /** `Investigation` from `lib/domain/investigation.ts`, validated on write. */
+  data: jsonb('data').notNull(),
+  revision: integer('revision').notNull().default(1),
+  createdAt: createdAt(),
+  updatedAt: timestamp('updatedAt', { precision: 3, mode: 'date' }).notNull().defaultNow(),
+});
+
+export type InvestigationRow = typeof investigations.$inferSelect;

@@ -25,6 +25,15 @@ const tools = [
   },
   {
     number: '03',
+    href: '/investigations/demo',
+    title: 'Multi-source investigation',
+    description:
+      'Set an article’s claims against specific findings in studies: design, horizon, strength and what would prove each claim wrong.',
+    input: 'An article and the studies on it',
+    status: 'Saved with its own link · no single score',
+  },
+  {
+    number: '04',
     href: '/debates',
     title: 'Conversation analysis',
     description:
