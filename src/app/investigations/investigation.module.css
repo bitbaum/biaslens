@@ -263,3 +263,10 @@
   font-size: clamp(28px, 6vw, 44px);
   line-height: 1.15;
 }
+.flagBox {
+  border-left: 3px solid var(--color-tone-negative);
+  background: color-mix(in srgb, var(--color-tone-negative) 8%, transparent);
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-block: 12px;
+}
