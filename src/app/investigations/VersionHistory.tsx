@@ -70,6 +70,12 @@ export function VersionHistory({ investigation }: { investigation: Investigation
                 {draft.flags.length
                   ? `${draft.flags.length} sentence${draft.flags.length === 1 ? '' : 's'} may say more than the cited source.`
                   : 'every cited sentence matched its source.'}
+                {index === 0 && draft.flags.length > 0 && (
+                  <>
+                    {' '}
+                    <a href="#gaps-heading">Fix them from the suggestions</a>.
+                  </>
+                )}
                 {draft.flags.length > 0 && (
                   <ul className={styles.list}>
                     {draft.flags.map((f) => (

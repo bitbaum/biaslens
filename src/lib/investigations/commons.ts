@@ -21,7 +21,7 @@ export async function searchCommons(
   fetcher: typeof fetch = fetch,
 ): Promise<InvestigationImage[]> {
   const url =
-    'https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=12' +
+    'https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=24' +
     '&prop=imageinfo&iiprop=url|extmetadata|mime&iiurlwidth=1280&gsrsearch=' +
     encodeURIComponent(query + ' filetype:bitmap');
   const response = await fetcher(url, {
@@ -65,5 +65,29 @@ export async function searchCommons(
       sourceUrl: info.descriptionurl,
     });
   }
-  return out.slice(0, 8);
+  return rankPhotos(query, out).slice(0, 8);
+}
+
+const NOT_PHOTO = /\b(map|logo|diagram|chart|plan|coat of arms|flag|svg|icon|drawing|scan)\b/i;
+
+/**
+ * Orders results by how well their own title and description match the
+ * query, and pushes maps, logos and diagrams down. Commons' own search order
+ * is by text relevance across the whole file page, which surfaces off-topic
+ * files whose categories happen to match.
+ */
+export function rankPhotos(query: string, images: InvestigationImage[]): InvestigationImage[] {
+  const terms = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((t) => t.length > 2);
+  const score = (image: InvestigationImage) => {
+    const hay = (image.caption + ' ' + image.sourceUrl).toLowerCase();
+    const hits = terms.filter((t) => hay.includes(t) || hay.includes(t.replace(/s$/, ''))).length;
+    return hits / Math.max(terms.length, 1) - (NOT_PHOTO.test(hay) ? 1 : 0);
+  };
+  return images
+    .map((image, i) => ({ image, s: score(image), i }))
+    .sort((a, b) => b.s - a.s || a.i - b.i)
+    .map((x) => x.image);
 }

@@ -552,3 +552,9 @@
   object-fit: cover;
   border-radius: 8px;
 }
+.gap[data-kind='flagged'] {
+  border-color: var(--color-stance-contradicts);
+}
+.gap[data-kind='flagged'] .gapIcon {
+  color: var(--color-stance-contradicts);
+}

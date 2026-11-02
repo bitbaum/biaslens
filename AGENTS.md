@@ -81,6 +81,11 @@ The first on-demand slice was integrated in
 integration draft #46. Do **not** redo that migration, and keep historical
 Truth Seeker code intact until production parity and rollback checks succeed.
 
+## Handoff
+
+Start with `docs/HANDOFF.md`: current state, live URLs, known issues and ready-to-paste
+next briefs. Every PR refreshes it together with `ROADMAP.md`.
+
 ## Stack
 
 - Next.js (App Router) + TypeScript (strict)
