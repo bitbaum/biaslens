@@ -310,6 +310,8 @@ export const rewrites = pgTable(
     label: text('label').notNull(),
     simulated: boolean('simulated').notNull(),
     factDiff: jsonb('factDiff'),
+    /** RewriteEvidence: findings it could cite from an investigation, and what the original omitted. */
+    evidence: jsonb('evidence'),
     modelId: text('modelId'),
     promptVersion: text('promptVersion').notNull(),
     createdAt: createdAt(),

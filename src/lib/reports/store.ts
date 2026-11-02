@@ -177,6 +177,7 @@ export async function saveRewrite(
     label: result.label,
     simulated: result.simulated,
     factDiff: result.factDiff,
+    evidence: result.evidence,
     modelId: result.modelId,
     promptVersion: result.promptVersion,
   });
@@ -193,5 +194,6 @@ export async function getRewrite(db: Db, id: string): Promise<SavedRewrite | nul
     voice: row.voice as Voice,
     length: row.length as RewriteLength,
     factDiff: row.factDiff as RewriteResult['factDiff'],
+    evidence: (row.evidence ?? null) as RewriteResult['evidence'],
   };
 }

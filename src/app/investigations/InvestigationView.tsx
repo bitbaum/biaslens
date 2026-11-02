@@ -139,6 +139,28 @@ export function InvestigationView({ investigation }: { investigation: Investigat
         </ul>
       </section>
 
+      <section className={styles.section} aria-labelledby="rewrite-heading">
+        <h2 id="rewrite-heading">Rewrite the article with this evidence</h2>
+        <p>
+          Open the article&apos;s reading, choose a voice in the rewrite studio (neutral, or a
+          labelled simulation such as The Economist, Financial Times or Reason) and paste this
+          investigation&apos;s link. The rewrite may cite the findings above, each marked [E1],
+          [E2]…, and lists what the original leaves out beside its fact check.
+        </p>
+        {article.reportId ? (
+          <a className="bb-button bb-button--secondary" href={'/r/' + article.reportId}>
+            Open the reading →
+          </a>
+        ) : article.url ? (
+          <a
+            className="bb-button bb-button--secondary"
+            href={'/analyze?url=' + encodeURIComponent(article.url)}
+          >
+            Examine the article first →
+          </a>
+        ) : null}
+      </section>
+
       <section className={styles.section} aria-labelledby="studies-heading">
         <h2 id="studies-heading">Studies</h2>
         <ul className={styles.list}>
