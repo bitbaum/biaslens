@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — map, timeline, images
+
+- Investigations show an animated epistemic map (claims in the middle, sources by side, one line per linked finding, coloured by stance; not a score).
+- A methodology timeline lists capture, claims, sources by design tier, links (reviewed vs candidate) and each version with its citation check.
+- Investigations can carry credited, openly licensed photos; AI images are labelled. The demo uses a CC BY 2.0 Wikimedia Commons photo.
+
 ## Unreleased — citation check
 
 - Each rewritten version now gets a second pass that flags cited sentences saying more than their source; flags are shown on the version, not silently fixed (prompt revise@1.1).

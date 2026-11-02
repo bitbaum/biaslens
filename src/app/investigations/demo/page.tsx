@@ -7,7 +7,10 @@ import '@bitbaum/chartkit/styles.css';
 import { detectGaps } from '@/lib/domain/gaps';
 
 import { EvidenceCharts } from '../EvidenceCharts';
+import { EpistemicMap } from '../EpistemicMap';
 import { GapDesk } from '../GapDesk';
+import { InvestigationImages } from '../InvestigationImages';
+import { MethodTimeline } from '../MethodTimeline';
 import { InvestigationEditor } from '../InvestigationEditor';
 import { VersionHistory } from '../VersionHistory';
 import { InvestigationView } from '../InvestigationView';
@@ -31,6 +34,8 @@ export default function HousingDemoPage() {
           prove it wrong. <Link href="/methodology">How the method works</Link>.
         </p>
       </header>
+      <InvestigationImages images={HOUSING_DEMO.images} />
+      <EpistemicMap investigation={HOUSING_DEMO} />
       <GapDesk
         id={null}
         revision={0}
@@ -38,6 +43,7 @@ export default function HousingDemoPage() {
         gaps={detectGaps(HOUSING_DEMO)}
       />
       <VersionHistory investigation={HOUSING_DEMO} />
+      <MethodTimeline investigation={HOUSING_DEMO} />
       <EvidenceCharts investigation={HOUSING_DEMO} />
       <InvestigationView investigation={HOUSING_DEMO} />
       <InvestigationEditor id={null} revision={0} investigation={HOUSING_DEMO} />
