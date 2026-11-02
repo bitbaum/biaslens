@@ -67,3 +67,28 @@ describe('sentences and list items', () => {
     ]);
   });
 });
+
+describe('flagged sentences', () => {
+  it('turns citation-check flags on the latest version into fix suggestions first', async () => {
+    const { detectGaps } = await import('./gaps');
+    const { HOUSING_DEMO } = await import('@/lib/investigations/housing-demo');
+    const draft = {
+      version: 2,
+      createdAt: '2026-11-02T18:00:00Z',
+      action: 'explain',
+      gapId: null,
+      title: 't',
+      text: 'x',
+      changeNote: '',
+      citations: [],
+      datasetId: null,
+      added: [],
+      removed: [],
+      promptVersion: 'revise@1.2',
+      modelId: null,
+      flags: [{ sentence: 'Rents doubled [E1].', reason: 'E1 gives no change over time.' }],
+    };
+    const gaps = detectGaps({ ...HOUSING_DEMO, drafts: [draft] });
+    expect(gaps[0]).toMatchObject({ id: 'flag:2:0', kind: 'flagged', actions: ['fix_flag'] });
+  });
+});

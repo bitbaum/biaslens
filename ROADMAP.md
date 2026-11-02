@@ -69,7 +69,15 @@ verification.
 - [x] Sources tagged by side, and candidate sources suggested from several sides (OpenAlex, Crossref)
 - [x] Evidence charts from published tables
 - [ ] Draft an investigation from a saved reading and attach studies from PDFs
-- [ ] Animated evidence graph and a methodology timeline
+- [x] Animated evidence map and a methodology timeline
+- [x] Evidence cards, reading mode, and a person marking a link reviewed or disputed
+- [x] Citation check on every version, with a one-tap fix for a flagged sentence
+- [x] Credited, openly licensed photos from Wikimedia Commons, ranked by caption match
+- [ ] AI images through `@bitbaum/ai-kit/images`, labelled, off until a model is configured
+- [ ] "Reviewed by" name and time on each review; filter cards by review state
+
+Open decisions: which image model to switch on (needs the server's `.env`, see
+docs/HANDOFF.md); whether version pages keep showing the model run id.
 
 ## Later
 

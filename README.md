@@ -43,6 +43,15 @@ not currently an independent fact-check.
 
 The downloadable report contains analysis, model and method versions, timestamp, and a digest of the analysed text. It is not stored server-side; a digest does **not** authenticate the original source or reproduce an unavailable model. The exact examined source text is included in the export; invented model quotations are suppressed before rendering.
 
+### Multi-source investigations
+
+`/investigations/demo` (and saved ones at `/investigations/<id>`): an article's
+claims linked to study findings from several sides, gap suggestions that
+rewrite the article one version at a time with [E#] citations and a citation
+check, an evidence map, evidence cards with human review, a methodology
+timeline, charts (`@bitbaum/chartkit`) and credited Commons photos. See
+`docs/HANDOFF.md`.
+
 ### Timed-transcript Debate Arena
 
 `/debates` now accepts a **user-supplied timestamped transcript** and computes

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — fix flagged sentences, better photo results
+
+- Sentences the citation check flags become "Fix this sentence" suggestions that rewrite only that sentence.
+- Commons photo results are ranked by caption match; maps, logos and diagrams go last.
+- docs/HANDOFF.md for whoever picks this up next.
+
 ## Unreleased — fix
 
 - Saving from the editor after another change on the page (a review, a new version) no longer fails with a stale-revision conflict.
