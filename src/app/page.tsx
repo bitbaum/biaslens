@@ -1,136 +1,212 @@
 import Link from 'next/link';
 import { HeroSection } from '@bitbaum/sitekit/react';
-import { QuestionLab } from './QuestionLab';
+
+import { zurichTime } from '@/lib/format-time';
+import {
+  claimsUnderScrutiny,
+  evidenceOfTheDay,
+  loadFeatured,
+  recentChanges,
+} from '@/lib/investigations/featured';
+
+import { SinceLastVisit } from './_components/SinceLastVisit';
 import { EvidenceVerifier } from './EvidenceVerifier';
-import styles from './home.module.css';
-const tools = [
+import { QuestionLab } from './QuestionLab';
+import styles from './today.module.css';
+
+export const dynamic = 'force-dynamic';
+
+const TOOLS = [
   {
-    number: '01',
-    title: 'Examine text',
-    description:
-      'Bring an article or a passage. Find the claims, supporting quotes and assumptions.',
     href: '/analyze',
-    input: 'URL or pasted text',
+    icon: '⌕',
+    title: 'Examine an article',
+    text: 'Claims, quotes and assumptions, passage by passage.',
   },
   {
-    number: '02',
-    title: 'Build an investigation',
-    description:
-      'Keep a question, its sources and competing explanations together in your notebook.',
-    href: '/explore',
-    input: 'Your question and sources',
+    href: '/investigations/demo',
+    icon: '⇄',
+    title: 'Investigate a question',
+    text: 'Link claims to studies from all sides.',
   },
   {
-    number: '03',
-    title: 'Analyse a conversation',
-    description: 'Measure speaking time and overlap in an interview, debate or earnings call.',
+    href: '/workspace',
+    icon: '✎',
+    title: 'Rewrite studio',
+    text: 'Neutral and labelled simulated voices, with a fact diff.',
+  },
+  {
     href: '/debates',
-    input: 'Timestamped transcript',
+    icon: '◷',
+    title: 'Analyse a conversation',
+    text: 'Speaking time and overlaps from a transcript.',
   },
 ];
-export default function Home() {
+
+export default async function Today() {
+  const featured = await loadFeatured();
+  const lead = featured[0]!;
+  const inv = lead.investigation;
+  const latest = inv.drafts?.at(-1);
+  const counts = ['supports', 'contradicts', 'context'].map(
+    (s) => inv.links.filter((l) => l.stance === s).length,
+  );
+  const total = Math.max(
+    1,
+    counts.reduce((a, b) => a + b, 0),
+  );
+  const claims = claimsUnderScrutiny(featured);
+  const evidence = evidenceOfTheDay(featured);
+  const changes = recentChanges(featured);
+  const today = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Zurich',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date());
+  const image = inv.images?.[0];
+
   return (
-    <main id="main-content">
-      <section className={`bb-frame ${styles.hero}`}>
-        <div className={styles.heroContent}>
-          <p className={styles.kicker}>
-            <span aria-hidden="true" />A clearer view of the world
+    <main id="main-content" className={`bb-frame ${styles.page}`}>
+      <header className={styles.masthead}>
+        <p className={styles.date}>{today}</p>
+        <HeroSection
+          appearance="application"
+          section={{
+            kind: 'hero',
+            statement: 'Today on BiasLens',
+            lead: [
+              'Stories taken apart claim by claim, with the evidence from every side in view.',
+            ],
+          }}
+        />
+      </header>
+
+      <div className={styles.grid}>
+        <article className={styles.lead}>
+          {image && (
+            <figure className={styles.leadFigure}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- remote, credited source image */}
+              <img src={image.src} alt={image.alt} />
+              {image.kind === 'ai' && <span className={styles.aiBadge}>AI-generated image</span>}
+              <figcaption className={styles.meta}>
+                {image.kind === 'ai' ? 'AI image' : 'Photo'}: {image.credit} · {image.license}
+              </figcaption>
+            </figure>
+          )}
+          <p className={styles.kicker}>Lead investigation</p>
+          <h2>
+            <Link href={lead.href}>{inv.question}</Link>
+          </h2>
+          <p className={styles.meta}>
+            From {inv.article.publication ?? 'an article'}: “{inv.article.title}”
           </p>
-          <HeroSection
-            appearance="application"
-            section={{
-              kind: 'hero',
-              statement: 'Look closer.\nThink further.',
-              lead: [
-                'Turn a source into a better question. Examine the claims, follow the evidence and see what could change your mind.',
-              ],
-              actions: [
-                { href: '/analyze', label: 'Examine an article' },
-                { href: '/workspace', label: 'Open workspace' },
-              ],
-            }}
-          />
-          <p className={styles.notice}>
-            No account needed to start. AI interpretations are provisional.
-          </p>
-          <div className={styles.subjects}>
-            <span>Science</span>
-            <span>Finance</span>
-            <span>Health</span>
-            <span>Public life</span>
-            <span>And your questions</span>
+          <div className={styles.stanceBar} aria-label="Linked findings by stance">
+            {counts.map((n, i) => (
+              <span
+                key={i}
+                className={styles['stance' + i]}
+                style={{ flexGrow: n }}
+                title={`${n} ${['supporting', 'contradicting', 'context'][i]}`}
+              />
+            ))}
           </div>
-        </div>
-        <QuestionLab />
-      </section>
-      <section className={`bb-frame ${styles.paths}`} aria-labelledby="tools-title">
-        <div className={styles.sectionHeading}>
-          <div>
-            <p className={styles.kicker}>THE WORKSPACE</p>
-            <h2 id="tools-title">Three ways to look closer.</h2>
-          </div>
-          <p>
-            Start with what you have.
-            <br />
-            Keep the reasoning open to challenge.
+          <p className={styles.stanceKey}>
+            <span className={styles.k0}>{counts[0]} support</span> ·{' '}
+            <span className={styles.k1}>{counts[1]} contradict</span> ·{' '}
+            <span className={styles.k2}>{counts[2]} context</span> · {inv.studies.length} sources ·{' '}
+            {Math.round((counts[1] / total) * 100)}% of findings cut against a claim
           </p>
-        </div>
-        <div className={styles.toolGrid}>
-          {tools.map((tool) => (
-            <Link href={tool.href} className={styles.toolCard} key={tool.href}>
-              <span className={styles.toolNumber}>
-                {tool.number}
-                <span aria-hidden="true">→</span>
-              </span>
-              <h3>{tool.title}</h3>
-              <p>{tool.description}</p>
-              <small>{tool.input}</small>
+          {latest && (
+            <p className={styles.meta}>
+              Latest version v{latest.version}, {zurichTime(latest.createdAt)}
+            </p>
+          )}
+          <div className={styles.actions}>
+            <Link
+              className="bb-button bb-button--primary"
+              href={lead.href + (latest ? '#versions' : '')}
+            >
+              {latest ? 'Read the rewritten article' : 'Open the investigation'}
             </Link>
-          ))}
-        </div>
-      </section>
-      <section className={`bb-frame ${styles.method}`} aria-labelledby="method-title">
-        <div>
-          <p className={styles.kicker}>A METHOD YOU CAN INSPECT</p>
-          <h2 id="method-title">The evidence stays in view.</h2>
-          <p>
-            See the passage behind a claim. Separate an observation from an interpretation. Ask what
-            a conclusion depends on.
+            <Link className="bb-button bb-button--secondary" href={lead.href + '#gaps-heading'}>
+              See what it doesn’t explain yet
+            </Link>
+          </div>
+        </article>
+
+        <aside className={styles.side}>
+          <SinceLastVisit changes={changes} />
+          {evidence && (
+            <section
+              className={`${styles.panel} ${styles.evidence}`}
+              aria-labelledby="eotd-heading"
+            >
+              <p className={styles.kicker}>Evidence of the day</p>
+              <h2 id="eotd-heading" className={styles.quote}>
+                “{evidence.statement}”
+              </h2>
+              <p className={styles.meta}>
+                <a href={evidence.studyUrl}>{evidence.study}</a> · {evidence.locator}
+              </p>
+              <p className={styles.meta}>
+                <span className={styles['pill_' + evidence.stance]}>{evidence.stance}</span> on:{' '}
+                {evidence.claim}
+              </p>
+              <Link href={evidence.href}>See all the evidence cards →</Link>
+            </section>
+          )}
+        </aside>
+      </div>
+
+      <section className={styles.section} aria-labelledby="claims-heading">
+        <div className={styles.sectionHead}>
+          <h2 id="claims-heading">Claims under the most scrutiny</h2>
+          <p className={styles.meta}>
+            Ranked by linked findings, contested first. Not a popularity count.
           </p>
-          <Link href="/methodology">Read our method →</Link>
         </div>
-        <ol>
-          {[
-            { title: 'Trace the source', text: 'Inspect the exact text behind an assessment.' },
-            { title: 'Test the explanation', text: 'Look for assumptions and alternative causes.' },
-            {
-              title: 'Keep uncertainty visible',
-              text: 'Distinguish what is supported from what still needs checking.',
-            },
-          ].map((item, index) => (
-            <li key={item.title}>
-              <span>0{index + 1}</span>
+        <ol className={styles.claims}>
+          {claims.map((c, i) => (
+            <li key={c.text}>
+              <span className={styles.rank}>{i + 1}</span>
               <div>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+                <Link href={c.href}>{c.text}</Link>
+                <p className={styles.meta}>
+                  {c.contested && <strong className={styles.contested}>Contested · </strong>}
+                  {c.supports} support · {c.contradicts} contradict · {c.context} context
+                </p>
               </div>
             </li>
           ))}
         </ol>
       </section>
-      <section className={`bb-frame ${styles.lab}`} aria-labelledby="lab-title">
-        <div>
-          <p className={styles.kicker}>A SMALL EXPERIMENT</p>
-          <h2 id="lab-title">Ten headlines. One source?</h2>
-          <p>Explore why repeated claims are not independent evidence.</p>
+
+      <section className={styles.section} aria-labelledby="tools-heading">
+        <div className={styles.sectionHead}>
+          <h2 id="tools-heading">Start your own</h2>
+          <p className={styles.meta}>
+            No account needed. AI interpretations are labelled and provisional.
+          </p>
         </div>
+        <div className={styles.tools}>
+          {TOOLS.map((t) => (
+            <Link key={t.href} href={t.href} className={styles.tool}>
+              <span className={styles.toolIcon} aria-hidden="true">
+                {t.icon}
+              </span>
+              <strong>{t.title}</strong>
+              <span className={styles.meta}>{t.text}</span>
+            </Link>
+          ))}
+        </div>
+        <QuestionLab />
         <details className={styles.labDetails}>
           <summary>
-            Try the evidence-counting demonstration <span aria-hidden="true">+</span>
+            Ten headlines, one source? Try the evidence-counting demonstration{' '}
+            <span aria-hidden="true">+</span>
           </summary>
-          <div className={styles.labContent}>
-            <EvidenceVerifier />
-          </div>
+          <EvidenceVerifier />
         </details>
       </section>
     </main>
