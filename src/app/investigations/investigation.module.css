@@ -259,3 +259,7 @@
     transition: none;
   }
 }
+.hero h1 {
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.15;
+}
