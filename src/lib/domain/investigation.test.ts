@@ -46,8 +46,12 @@ describe('compareClaims', () => {
 
   it('keeps supporting and contradicting evidence side by side, with no score', () => {
     const rc = byId('h-rentcontrol');
-    expect(rc.supports.map((r) => r.study.id)).toEqual(['s-kholodilin']);
-    expect(rc.contradicts.map((r) => r.study.id).sort()).toEqual(['s-argentina', 's-kholodilin']);
+    expect(rc.supports.map((r) => r.study.id).sort()).toEqual(['s-kholodilin', 's-sf', 's-urban']);
+    expect(rc.contradicts.map((r) => r.study.id).sort()).toEqual([
+      's-argentina',
+      's-kholodilin',
+      's-sf',
+    ]);
     expect(Object.keys(rc)).not.toContain('score');
   });
 

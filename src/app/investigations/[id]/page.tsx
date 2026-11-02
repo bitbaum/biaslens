@@ -4,7 +4,14 @@ import { db } from '@/lib/db/client';
 import { getInvestigation } from '@/lib/investigations/store';
 import { PUBLIC_ID } from '@/lib/reports/store';
 
+import '@bitbaum/chartkit/styles.css';
+
+import { detectGaps } from '@/lib/domain/gaps';
+
+import { EvidenceCharts } from '../EvidenceCharts';
+import { GapDesk } from '../GapDesk';
 import { InvestigationEditor } from '../InvestigationEditor';
+import { VersionHistory } from '../VersionHistory';
 import { InvestigationView } from '../InvestigationView';
 import styles from '../investigation.module.css';
 
@@ -27,6 +34,14 @@ export default async function SavedInvestigationPage({ params }: Props) {
         </p>
         <h1>{saved.investigation.question}</h1>
       </header>
+      <GapDesk
+        id={saved.id}
+        revision={saved.revision}
+        investigation={saved.investigation}
+        gaps={detectGaps(saved.investigation)}
+      />
+      <VersionHistory investigation={saved.investigation} />
+      <EvidenceCharts investigation={saved.investigation} />
       <InvestigationView investigation={saved.investigation} />
       <InvestigationEditor
         id={saved.id}

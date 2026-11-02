@@ -143,6 +143,15 @@
           "symbols": ["useAiForm"]
         }
       ]
+    },
+    "charts": {
+      "package": "@bitbaum/chartkit",
+      "bindings": [
+        {
+          "file": "src/app/investigations/EvidenceCharts.tsx",
+          "symbols": ["BarChart", "LineChart", "ShareBars"]
+        }
+      ]
     }
   },
   "productOwned": {

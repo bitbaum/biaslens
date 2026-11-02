@@ -20,7 +20,7 @@ import { stylePreset } from '@/lib/config/style-presets';
 import { forbiddenLabelsIn, stripForbiddenSentences } from '@/lib/config/vocabulary';
 import { rankFindings } from '@/lib/replies/findings';
 
-export const REWRITE_PROMPT_VERSION = 'rewrite@1.3' as const;
+export const REWRITE_PROMPT_VERSION = 'rewrite@1.4' as const;
 
 export interface FactDiff {
   total: number;
@@ -155,7 +155,8 @@ function writeMessages(
       ? 'FACTS: use the facts present in the article, plus ONLY the numbered EVIDENCE findings given below. Every sentence that uses an EVIDENCE finding must end with its citation in square brackets exactly as given, e.g. [E2]. State each finding with its design, place and horizon limits; never generalize a short-run or one-city result into a general law. Do not add any other numbers, events, names, sources or quotations. Where the voice would bring other outside facts, write what it would ask or doubt instead.'
       : 'FACTS: use only facts present in the article. You may change selection, order, emphasis, tone and wording. Do not add numbers, events, names, sources or quotations that the article does not contain. Where the voice would normally bring outside facts, write what it would ask or doubt instead.',
     input.evidence?.findings.length
-      ? 'FIRST PRINCIPLES: for economic claims, make explicit how far supply can respond (elasticity), which rule actually binds, whether an effect is short-run or long-run, how strong the identification behind each cited finding is, and who bears the cost.'
+      ? 'USE THE EVIDENCE: where the article states or implies causes, trends or policy options, bring in the relevant EVIDENCE findings (normally three to six, from more than one side of the debate) instead of only asking questions. ' +
+        'FIRST PRINCIPLES: for economic claims, make explicit how far supply can respond (elasticity), which rule actually binds, whether an effect is short-run or long-run, how strong the identification behind each cited finding is, and who bears the cost.'
       : '',
     'QUOTES: never attribute a quotation to a real person unless it appears word for word in the article.',
     'RESPECT: no insults, no claims about anyone’s private life, nothing defamatory about real people.',
