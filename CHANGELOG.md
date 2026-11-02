@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased — Today page
+
+- The home page is now Today: a dated masthead, the lead investigation with its stance balance, what changed since your last visit (with a visit streak kept on this device), evidence of the day, the claims under the most scrutiny, and the tools to start your own.
 ## Unreleased — fix flagged sentences, better photo results
 
 - Sentences the citation check flags become "Fix this sentence" suggestions that rewrite only that sentence.

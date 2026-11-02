@@ -23,6 +23,8 @@ Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
   (Economist / FT / Reason voices among presets), fact diff, "what the original
   omitted", optional evidence from an investigation.
 
+- Home is "Today" (`src/app/page.tsx`, `src/lib/investigations/featured.ts`): featured ids only (`FEATURED_IDS`), never every saved link. Visit streak, follows and edit links live in `src/lib/client/local.ts` (device only).
+
 ## Architecture and packages
 
 Next.js App Router, TypeScript strict, Drizzle/Postgres (PGlite in tests),
