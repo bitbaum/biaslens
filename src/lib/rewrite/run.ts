@@ -209,7 +209,7 @@ function writeMessages(
 /** Numbered evidence lines, the citation keys the model must use. */
 export function evidenceLines(input: Pick<RewriteInput, 'evidence'>): string[] {
   return (input.evidence?.findings ?? [])
-    .slice(0, 16)
+    .slice(0, 24)
     .map((line, index) => `[E${index + 1}] ${line}`);
 }
 
