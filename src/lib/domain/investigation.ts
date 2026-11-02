@@ -443,8 +443,11 @@ export function investigationProblems(input: unknown): string[] {
         const im = (raw ?? {}) as Record<string, unknown>;
         if (
           !oneOf(['photo', 'ai'] as const, im.kind) ||
-          !httpUrl(im.src) ||
-          !(im.src as string).startsWith('https://') ||
+          !(
+            (httpUrl(im.src) && (im.src as string).startsWith('https://')) ||
+            (im.kind === 'ai' &&
+              /^\/api\/images\/generated\/[A-Za-z0-9_-]{8,40}$/.test(String(im.src)))
+          ) ||
           !nonempty(im.alt) ||
           !isString(im.caption, 600) ||
           !nonempty(im.credit) ||

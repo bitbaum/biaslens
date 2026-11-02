@@ -73,7 +73,7 @@ verification.
 - [x] Evidence cards, reading mode, and a person marking a link reviewed or disputed
 - [x] Citation check on every version, with a one-tap fix for a flagged sentence
 - [x] Credited, openly licensed photos from Wikimedia Commons, ranked by caption match
-- [ ] AI images through `@bitbaum/ai-kit/images`, labelled, off until a model is configured
+- [x] AI illustrations through `@bitbaum/ai-kit/images`, labelled, off until the server names a model
 - [ ] "Reviewed by" name and time on each review; filter cards by review state
 
 Open decisions: which image model to switch on (needs the server's `.env`, see

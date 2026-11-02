@@ -6,6 +6,9 @@
 - `/investigations` lists featured investigations; each investigation can be followed.
 - `/desk`: your investigations, links waiting for review, flagged sentences, follows and a visit streak (kept on this device).
 - `/settings`: text size, reduced motion, and forgetting this device's edit links. Desk, Settings and Profile & security share one tab row.
+## Unreleased — AI illustrations (off by default)
+
+- Investigations can get an AI illustration, always badged "AI-generated", through the shared `@bitbaum/ai-kit/images` transport. Hidden until the server sets `IMAGE_GEN_API` and `IMAGE_GEN_MODEL`. Additive migration: new `GeneratedImage` table.
 
 ## Unreleased — Today page
 
