@@ -91,6 +91,11 @@ interruption, and a speaker label is not independently verified.
 
 ### Reasons to come back
 
+- [x] Today: lead investigation, changes since your last visit, evidence of the day, claims under the most scrutiny
+- [x] My desk with review queue, flagged sentences, follows and a visit streak (on this device)
+- [x] One navigation with a mobile tab bar; settings for text size and motion
+- [ ] Desk and follows kept in the account across devices
+
 - [ ] Several outlets' coverage of one story, compared side by side
 - [ ] A daily "spot the technique" round with a shareable result
 - [ ] Replies that continue as a conversation between the two people

@@ -124,3 +124,17 @@
   --radius-card: var(--radius-surface);
   --radius-btn: var(--radius-control);
 }
+
+/* Reader preferences from /settings (stored on the device). */
+:root[data-text-size='large'] {
+  font-size: 112.5%;
+}
+:root[data-text-size='x-large'] {
+  font-size: 125%;
+}
+:root[data-motion='reduce'] *,
+:root[data-motion='reduce'] *::before,
+:root[data-motion='reduce'] *::after {
+  animation: none !important;
+  transition: none !important;
+}

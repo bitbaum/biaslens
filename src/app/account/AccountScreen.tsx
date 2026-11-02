@@ -8,6 +8,7 @@ import { authStatus, getSession, mailConfigured } from '@/lib/auth';
 import { db } from '@/lib/db/client';
 import { AccountForms } from './AccountForms';
 import './account.css';
+import { AccountTabs } from '../_components/AccountTabs';
 
 export async function AccountScreen({
   mode,
@@ -59,6 +60,7 @@ export async function AccountScreen({
                   : 'Sign in to manage your profile and security.'}
           </p>
         </header>
+        {mode === 'account' && <AccountTabs current="/account" />}
         <div className="account-card">
           {status.ready ? (
             <AccountForms

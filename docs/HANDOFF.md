@@ -25,6 +25,10 @@ Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
 
 - Home is "Today" (`src/app/page.tsx`, `src/lib/investigations/featured.ts`): featured ids only (`FEATURED_IDS`), never every saved link. Visit streak, follows and edit links live in `src/lib/client/local.ts` (device only).
 
+- Navigation: `src/app/_components/Chrome.tsx` (one list → sitekit `SiteMasthead` + `SiteTabBar`). Pages `/investigations`, `/desk` (`MyDesk`, device-local), `/settings` (`SettingsForm`, `PreferencesApplier` sets `data-text-size`/`data-motion` on `<html>`), `AccountTabs` across desk/settings/account.
+
+- Shared packages extended for this work: `@bitbaum/ai-kit` 1.24 (`/images`, ai-kit PR #108) and `@bitbaum/sitekit` 0.5 (`SiteTabBar`, sitekit PR #41). BiasLens PRs #152–#165.
+
 ## Architecture and packages
 
 Next.js App Router, TypeScript strict, Drizzle/Postgres (PGlite in tests),
@@ -70,5 +74,6 @@ mode; the citation check's precision across many articles.
    confirm the AI-generated badge, screenshot desktop and mobile."
 2. "In bitbaum/orangecat, replace src/services/images/generate.ts with
    `@bitbaum/ai-kit/images` (same behaviour, BYOK unchanged); keep the tests."
-3. "In bitbaum/biaslens, record who reviewed a link and when, show it on the
+3. "In bitbaum/biaslens, keep the desk (edit links, follows, streak) in the signed-in account so it syncs across devices; additive migration only."
+4. "In bitbaum/biaslens, record who reviewed a link and when, show it on the
    evidence card, and add a filter by review state."
