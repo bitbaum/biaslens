@@ -29,6 +29,13 @@
       "when": 1793012537832,
       "tag": "0003_jittery_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793634126986,
+      "tag": "0004_third_sentinel",
+      "breakpoints": true
     }
   ]
 }
