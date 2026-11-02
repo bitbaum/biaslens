@@ -10,7 +10,7 @@ const packageJson = JSON.parse(read('package.json'));
 const shell = read('src/app/_components/Chrome.module.css');
 const globals = read('src/app/globals.css') + read('src/app/theme.css');
 const home = read('src/app/page.tsx');
-const homeCss = read('src/app/home.module.css');
+const homeCss = read('src/app/today.module.css');
 const method = read('src/app/methodology/page.tsx');
 const analyze = read('src/app/analyze/AnalyzeWorkspace.tsx');
 const analyzeCss = read('src/app/analyze/analyze.module.css');
@@ -100,7 +100,7 @@ test('choices and buttons share anatomy, while editorial character stays local',
   assert.match(analyze, /bb-choice-row/);
   assert.match(analyze, /bb-control/);
   assert.match(analyzeCss, /min-height:\s*52px/);
-  assert.match(home, /<HeroSection/);
+  assert.match(home, /<h1>Today on BiasLens<\/h1>/);
   assert.match(home, /Examine an article/);
   assert.match(homeCss, /@media \(max-width: 420px\)/);
   assert.match(homeCss, /grid-template-columns:\s*1fr/);
@@ -110,7 +110,7 @@ test('choices and buttons share anatomy, while editorial character stays local',
 test('demo controls are touch-safe and article primary CTA stays above the demonstration', () => {
   assert.match(demoCss, /width:\s*44px;\s*height:\s*44px/);
   assert.match(demoCss, /\.verifyBtn\s*\{\s*min-height:\s*44px/);
-  assert.ok(home.indexOf('<HeroSection') < home.indexOf('<EvidenceVerifier />'));
+  assert.ok(home.indexOf('<h1>') < home.indexOf('<EvidenceVerifier />'));
   assert.match(home, /<details className=\{styles\.labDetails\}>/);
   assert.match(analyzeCss, /\.submit\s*\{\s*min-height:\s*48px/);
   assert.match(analyzeCss, /\.exportBtn\s*\{\s*min-height:\s*44px/);
