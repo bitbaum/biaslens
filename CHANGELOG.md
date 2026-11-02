@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — AI illustrations (off by default)
+
+- Investigations can get an AI illustration, always badged "AI-generated", through the shared `@bitbaum/ai-kit/images` transport. Hidden until the server sets `IMAGE_GEN_API` and `IMAGE_GEN_MODEL`. Additive migration: new `GeneratedImage` table.
+
 ## Unreleased — fix flagged sentences, better photo results
 
 - Sentences the citation check flags become "Fix this sentence" suggestions that rewrite only that sentence.

@@ -1,3 +1,4 @@
+import { imageGenConfig } from '@/lib/investigations/ai-image';
 import { notFound } from 'next/navigation';
 
 import { db } from '@/lib/db/client';
@@ -54,6 +55,7 @@ export default async function SavedInvestigationPage({ params }: Props) {
       <EvidenceCharts investigation={saved.investigation} />
       <InvestigationView investigation={saved.investigation} />
       <InvestigationEditor
+        aiImages={imageGenConfig() !== null}
         key={saved.revision}
         id={saved.id}
         revision={saved.revision}

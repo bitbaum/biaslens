@@ -49,7 +49,7 @@ Screenshots: a Playwright helper outside the repo; any headless Chromium at
   numbers cited to an indicator *definition* finding; the fix is to cite the
   dataset).
 - Commons search can return off-topic files; ranking only reorders.
-- No AI image model is configured on the server yet (feature hidden).
+- AI illustrations are built (`@bitbaum/ai-kit/images`, `src/lib/investigations/ai-image.ts`, `POST /api/investigations/<id>/images`, bytes in the `GeneratedImage` table, served at `/api/images/generated/<id>`) but stay hidden until the server sets `IMAGE_GEN_API` and `IMAGE_GEN_MODEL`.
 - Version pages show the model run id; times are shown in Europe/Zurich.
 
 ## Unverified
@@ -59,10 +59,13 @@ mode; the citation check's precision across many articles.
 
 ## Next briefs (paste as-is)
 
-1. "In bitbaum/biaslens, switch on AI images: on the server set
-   `IMAGE_GEN_API` (`gemini` or `openrouter-chat`) and `IMAGE_GEN_MODEL` in
-   BiasLens's `.env` (keys already come from the fleet env), then generate one
-   labelled image on /investigations/3iqMy8Z5ro and screenshot it."
+1. "Switch on BiasLens AI illustrations: on the Hetzner box add to
+   `/opt/biaslens/shared/.env` the lines `IMAGE_GEN_API=gemini` (or
+   `openrouter-chat`) and `IMAGE_GEN_MODEL=<an image-output model that key can
+   use>`; the key itself (`GEMINI_API_KEY` / `OPENROUTER_API_KEY`) already comes
+   from `/opt/fleet/env`. Restart the app, open
+   /investigations/3iqMy8Z5ro with its edit link, generate one illustration,
+   confirm the AI-generated badge, screenshot desktop and mobile."
 2. "In bitbaum/orangecat, replace src/services/images/generate.ts with
    `@bitbaum/ai-kit/images` (same behaviour, BYOK unchanged); keep the tests."
 3. "In bitbaum/biaslens, record who reviewed a link and when, show it on the
