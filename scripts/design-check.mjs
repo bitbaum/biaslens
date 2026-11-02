@@ -100,7 +100,8 @@ test('choices and buttons share anatomy, while editorial character stays local',
   assert.match(analyze, /bb-choice-row/);
   assert.match(analyze, /bb-control/);
   assert.match(analyzeCss, /min-height:\s*52px/);
-  assert.match(home, /<h1>Today on BiasLens<\/h1>/);
+  assert.match(home, /<HeroSection/);
+  assert.match(home, /Today on BiasLens/);
   assert.match(home, /Examine an article/);
   assert.match(homeCss, /@media \(max-width: 420px\)/);
   assert.match(homeCss, /grid-template-columns:\s*1fr/);
@@ -110,7 +111,7 @@ test('choices and buttons share anatomy, while editorial character stays local',
 test('demo controls are touch-safe and article primary CTA stays above the demonstration', () => {
   assert.match(demoCss, /width:\s*44px;\s*height:\s*44px/);
   assert.match(demoCss, /\.verifyBtn\s*\{\s*min-height:\s*44px/);
-  assert.ok(home.indexOf('<h1>') < home.indexOf('<EvidenceVerifier />'));
+  assert.ok(home.indexOf('<HeroSection') < home.indexOf('<EvidenceVerifier />'));
   assert.match(home, /<details className=\{styles\.labDetails\}>/);
   assert.match(analyzeCss, /\.submit\s*\{\s*min-height:\s*48px/);
   assert.match(analyzeCss, /\.exportBtn\s*\{\s*min-height:\s*44px/);
