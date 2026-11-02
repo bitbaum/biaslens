@@ -47,8 +47,8 @@ export async function AccountScreen({
               : recovering
                 ? DEFAULT_AUTH_LABELS.recovery?.reset
                 : mode === 'sign-up'
-                  ? 'Create your account.'
-                  : 'Welcome back.'}
+                  ? DEFAULT_AUTH_LABELS.createAccount
+                  : DEFAULT_AUTH_LABELS.signIn}
           </h1>
           <p>
             {mode === 'account'

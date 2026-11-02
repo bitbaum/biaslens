@@ -44,7 +44,7 @@ if [[ "$ready" -ne 1 ]]; then
   exit 1
 fi
 
-for page in 'home|/|Today on BiasLens' 'workspace|/workspace|Your workspace.' 'analyze|/analyze|Examine text.' 'method|/methodology|How BiasLens works.' 'journal|/blog|The BiasLens journal.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage' 'arena|/debates|Conversation analysis.' 'explore|/explore|Research notebook.' 'whitepaper|/whitepaper|Open investigation, inspectable evidence' 'development|/development|Building BiasLens.' 'roadmap|/roadmap|Roadmap' 'changelog|/changelog|Changelog' 'signin|/sign-in|Welcome back.' 'signup|/sign-up|Create your account.'; do
+for page in 'home|/|Today on BiasLens' 'workspace|/workspace|Your workspace.' 'analyze|/analyze|Examine text.' 'method|/methodology|How BiasLens works.' 'journal|/blog|The BiasLens journal.' 'essay|/blog/why-we-dont-have-a-truth-meter|Why we refuse to give an article a truth percentage' 'arena|/debates|Conversation analysis.' 'explore|/explore|Research notebook.' 'whitepaper|/whitepaper|Open investigation, inspectable evidence' 'development|/development|Building BiasLens.' 'roadmap|/roadmap|Roadmap' 'changelog|/changelog|Changelog' 'signin|/sign-in|Sign in' 'signup|/sign-up|Create an account'; do
   IFS='|' read -r slug route expected <<< "$page"
   url="http://127.0.0.1:3000$route"
 

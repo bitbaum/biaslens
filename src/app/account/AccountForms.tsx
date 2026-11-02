@@ -1,6 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { SignInForm, SignUpForm, AccountPanel } from '@bitbaum/accountkit/auth/react';
+import {
+  DEFAULT_AUTH_LABELS,
+  SignInForm,
+  SignUpForm,
+  AccountPanel,
+} from '@bitbaum/accountkit/auth/react';
 import type { SignInMethods } from '@bitbaum/accountkit/auth';
 import type { AuthSession } from '@bitbaum/accountkit/auth/next';
 import { authClient } from '@/lib/auth-client';
@@ -36,7 +41,11 @@ export function AccountForms({
         methods={methods}
         next={next}
         signUpPath="/sign-up"
-        signInLink={<Link href={'/sign-in?next=' + encodeURIComponent(next)}>Sign in</Link>}
+        signInLink={
+          <Link href={'/sign-in?next=' + encodeURIComponent(next)}>
+            {DEFAULT_AUTH_LABELS.signIn}
+          </Link>
+        }
       />
     );
   return (
@@ -45,7 +54,11 @@ export function AccountForms({
       methods={methods}
       next={next}
       signInPath="/sign-in"
-      signUpLink={<Link href={'/sign-up?next=' + encodeURIComponent(next)}>Create an account</Link>}
+      signUpLink={
+        <Link href={'/sign-up?next=' + encodeURIComponent(next)}>
+          {DEFAULT_AUTH_LABELS.createAccount}
+        </Link>
+      }
     />
   );
 }
