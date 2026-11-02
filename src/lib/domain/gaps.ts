@@ -27,6 +27,11 @@ export const GAP_ACTIONS = {
     instruction:
       'Add the relevant figures from the article and EVIDENCE, each with its source and what it measures.',
   },
+  fix_flag: {
+    label: 'Fix this sentence',
+    instruction:
+      'The citation check flagged the sentence named in the GAP: it says more than its cited EVIDENCE. Rewrite only that sentence so it says exactly what the cited lines say (or cite the right line, or drop the claim). Change nothing else.',
+  },
   add_chart: {
     label: 'Add a chart',
     instruction:
@@ -38,7 +43,12 @@ export const isGapAction = (value: unknown): value is GapAction =>
   typeof value === 'string' && value in GAP_ACTIONS;
 
 export type GapKind =
-  'cause_unexplained' | 'reasons_missing' | 'no_counter_evidence' | 'no_numbers' | 'no_chart';
+  | 'cause_unexplained'
+  | 'reasons_missing'
+  | 'no_counter_evidence'
+  | 'no_numbers'
+  | 'no_chart'
+  | 'flagged';
 
 export interface Gap {
   id: string;
@@ -124,7 +134,18 @@ export function detectGaps(investigation: Investigation): Gap[] {
       actions: ['add_chart'],
     });
   }
-  return gaps.map((gap) =>
+  // Sentences the citation check flagged in the latest version come first.
+  const latest = investigation.drafts?.at(-1);
+  const flagged: Gap[] = (latest?.flags ?? []).map((flag, i) => ({
+    id: `flag:${latest!.version}:${i}`,
+    kind: 'flagged',
+    claimId: null,
+    datasetId: null,
+    title: `Flagged in v${latest!.version}: “${flag.sentence.slice(0, 120)}${flag.sentence.length > 120 ? '…' : ''}”`,
+    why: 'Citation check: ' + flag.reason,
+    actions: ['fix_flag'],
+  }));
+  return [...flagged, ...gaps].map((gap) =>
     done.has(gap.id) ? { ...gap, title: gap.title + ' · addressed' } : gap,
   );
 }

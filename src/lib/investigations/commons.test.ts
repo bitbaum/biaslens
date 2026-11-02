@@ -40,3 +40,29 @@ describe('searchCommons', () => {
     });
   });
 });
+
+describe('rankPhotos', () => {
+  it('puts the best caption match first and maps last', async () => {
+    const { rankPhotos } = await import('./commons');
+    const mk = (caption: string) => ({
+      kind: 'photo' as const,
+      src: 'https://x/' + caption,
+      alt: caption,
+      caption,
+      credit: 'c',
+      license: 'CC0',
+      licenseUrl: null,
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:' + caption,
+    });
+    const ranked = rankPhotos('Zurich apartment building', [
+      mk('Railway depot Zurich'),
+      mk('Map of Zurich apartment building zones'),
+      mk('Apartment building in Zurich Wiedikon'),
+    ]);
+    expect(ranked.map((r) => r.caption)).toEqual([
+      'Apartment building in Zurich Wiedikon',
+      'Railway depot Zurich',
+      'Map of Zurich apartment building zones',
+    ]);
+  });
+});

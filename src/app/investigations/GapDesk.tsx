@@ -16,6 +16,7 @@ const KIND_ICON: Record<Gap['kind'], string> = {
   no_counter_evidence: '⇄',
   no_numbers: '#',
   no_chart: '▮',
+  flagged: '⚑',
 };
 
 type Props = { id: string | null; revision: number; investigation: Investigation; gaps: Gap[] };
