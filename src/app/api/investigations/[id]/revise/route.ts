@@ -52,14 +52,14 @@ export async function POST(request: Request, { params }: Context) {
   const signal = AbortSignal.any([request.signal, AbortSignal.timeout(110_000)]);
   try {
     const next = await reviseInvestigation(saved.investigation, body.gapId, body.action, {
-      complete: async (messages) => {
+      complete: async (messages, pass) => {
         const response = await complete({
           chain,
           messages,
           signal,
           timeoutMs: 60_000,
-          maxTokens: 2_400,
-          temperature: 0.5,
+          maxTokens: pass === 'check' ? 1_200 : 2_400,
+          temperature: pass === 'check' ? 0.1 : 0.5,
           reasoning: 'light',
           extraBody: { response_format: { type: 'json_object' } },
         });

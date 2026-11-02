@@ -48,13 +48,35 @@ export function VersionHistory({ investigation }: { investigation: Investigation
             </summary>
             <article className={styles.reading}>
               <h3>{draft.title}</h3>
-              {draft.text.split(/\n{2,}/).map((p, i) => (
-                <p key={i}>
-                  <Cited text={p} />
-                </p>
-              ))}
+              {draft.text.split(/\n{2,}/).map((p, i) => {
+                const heading = p.match(/^(?:##\s+|\*\*)(.+?)(?:\*\*)?$/);
+                return heading && heading[1]!.length < 90 ? (
+                  <h4 key={i}>{heading[1]}</h4>
+                ) : (
+                  <p key={i}>
+                    <Cited text={p.replace(/\*\*(.+?)\*\*/g, '$1')} />
+                  </p>
+                );
+              })}
               {dataset && <DatasetChart dataset={dataset} />}
             </article>
+            {draft.flags && (
+              <div className={draft.flags.length ? styles.flagBox : styles.meta}>
+                <strong>Citation check:</strong>{' '}
+                {draft.flags.length
+                  ? `${draft.flags.length} sentence${draft.flags.length === 1 ? '' : 's'} may say more than the cited source.`
+                  : 'every cited sentence matched its source.'}
+                {draft.flags.length > 0 && (
+                  <ul className={styles.list}>
+                    {draft.flags.map((f) => (
+                      <li key={f.sentence}>
+                        “{f.sentence}” — {f.reason}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
             {draft.changeNote && (
               <p className={styles.meta}>
                 <strong>AI change note:</strong> {draft.changeNote}

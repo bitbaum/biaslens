@@ -219,6 +219,8 @@ export interface DraftVersion {
   removed: string[];
   promptVersion: string;
   modelId: string | null;
+  /** Cited sentences a second model pass found not supported by the cited finding. */
+  flags?: { sentence: string; reason: string }[];
 }
 
 export interface Study {
@@ -432,7 +434,8 @@ export function investigationProblems(input: unknown): string[] {
           !Array.isArray(d.citations) ||
           !Array.isArray(d.added) ||
           !Array.isArray(d.removed) ||
-          !isString(d.promptVersion, 40)
+          !isString(d.promptVersion, 40) ||
+          (d.flags !== undefined && (!Array.isArray(d.flags) || d.flags.length > 20))
         )
           problems.push('Draft ' + String(d?.version) + ' is malformed');
       }

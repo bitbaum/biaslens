@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — citation check
+
+- Each rewritten version now gets a second pass that flags cited sentences saying more than their source; flags are shown on the version, not silently fixed (prompt revise@1.1).
+- Version text renders headings and drops stray markdown asterisks.
+
 ## 2026-11-02 — Suggestions you can tap, sources from all sides, charts
 
 ### Added

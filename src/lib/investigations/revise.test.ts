@@ -13,7 +13,14 @@ const text =
 
 describe('reviseInvestigation', () => {
   it('writes version 1 with resolved citations and a diff, and stays a valid investigation', async () => {
-    const complete = vi.fn(async (messages: { role: string; content: string }[]) => {
+    const complete = vi.fn(async (messages: { role: string; content: string }[], pass?: string) => {
+      if (pass === 'check')
+        return {
+          text: JSON.stringify({
+            flags: [{ n: 2, reason: 'The finding gives no place beyond England.' }],
+          }),
+          modelId: 'm1',
+        };
       expect(messages[0]!.content).toContain('ACTION: Explain the mechanism');
       expect(messages[1]!.content).toContain('[E1] ');
       return {
@@ -32,10 +39,13 @@ describe('reviseInvestigation', () => {
     expect(draft.citations[0]).toMatch(/^\[E1\]/);
     expect(draft.added.length).toBeGreaterThan(0);
     expect(draft.removed).toEqual([]);
+    expect(draft.flags).toHaveLength(1);
+    expect(draft.flags![0]!.reason).toMatch(/England/);
     expect(investigationProblems(next)).toEqual([]);
 
     const second = await reviseInvestigation(next, 'chart:d-overburden', 'add_chart', {
-      complete: async (messages) => {
+      complete: async (messages, pass) => {
+        if (pass === 'check') return { text: '{"flags": []}', modelId: 'm1' };
         expect(messages[1]!.content).toContain('CURRENT DRAFT');
         expect(messages[1]!.content).toContain('Greece 26.4');
         return {
