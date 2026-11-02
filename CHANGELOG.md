@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — fix
+
+- Saving from the editor after another change on the page (a review, a new version) no longer fails with a stale-revision conflict.
+
 ## Unreleased — reading mode, evidence cards, photo search
 
 - Reading mode for the latest version: full-screen serif layout, progress bar, tap a source key to open its evidence in place.
