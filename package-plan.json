@@ -110,7 +110,8 @@
       "bindings": [
         {
           "file": "src/lib/auth.ts",
-          "symbols": ["sendMail"]
+          "symbols": ["createAuthMailer"],
+          "via": "@bitbaum/accountkit"
         }
       ]
     },
