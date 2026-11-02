@@ -20,7 +20,9 @@ export function RewriteResultView({
   original,
   language,
 }: {
-  rewrite: Pick<StudioRewrite, 'title' | 'text' | 'label' | 'simulated' | 'factDiff'>;
+  rewrite: Pick<StudioRewrite, 'title' | 'text' | 'label' | 'simulated' | 'factDiff'> & {
+    evidence?: StudioRewrite['evidence'];
+  };
   original: string | null;
   language: OutputLanguage;
 }) {
@@ -28,6 +30,7 @@ export function RewriteResultView({
   const [view, setView] = useState<'result' | 'original'>('result');
   const [copied, setCopied] = useState(false);
   const diff = rewrite.factDiff;
+  const evidence = rewrite.evidence ?? null;
 
   const body = (
     <div className={styles.result}>
@@ -83,6 +86,32 @@ export function RewriteResultView({
           </div>
         )}
       </div>
+      {evidence && (evidence.cited.length > 0 || evidence.omitted.length > 0) && (
+        <div className={styles.diff}>
+          {evidence.cited.length > 0 && (
+            <details>
+              <summary>{copy.evidence(evidence.cited.length)}</summary>
+              <ul>
+                {evidence.cited.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+          {evidence.omitted.length > 0 && (
+            <>
+              <p>
+                <strong>{copy.omitted}</strong>
+              </p>
+              <ul>
+                {evidence.omitted.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
       {diff && (
         <div className={styles.diff}>
           <p>

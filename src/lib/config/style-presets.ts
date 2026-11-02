@@ -111,6 +111,30 @@ export const STYLE_PRESETS = [
     format: 'daily newspaper',
     url: 'https://www.wsj.com',
   },
+  {
+    id: 'economist',
+    name: 'The Economist',
+    country: 'GB',
+    language: 'en',
+    format: 'weekly news magazine',
+    url: 'https://www.economist.com',
+  },
+  {
+    id: 'ft',
+    name: 'Financial Times',
+    country: 'GB',
+    language: 'en',
+    format: 'daily newspaper',
+    url: 'https://www.ft.com',
+  },
+  {
+    id: 'reason',
+    name: 'Reason',
+    country: 'US',
+    language: 'en',
+    format: 'monthly magazine',
+    url: 'https://reason.com',
+  },
 ] as const satisfies readonly StylePreset[];
 
 export type StylePresetId = (typeof STYLE_PRESETS)[number]['id'];

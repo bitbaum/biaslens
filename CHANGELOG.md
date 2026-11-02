@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-02 — Rewrites that cite the evidence
+
+### Added
+
+- **Rewrite with an investigation's evidence.** Paste a saved investigation's link in the rewrite studio and the rewrite may cite its linked study findings, each marked [E1], [E2]… with design, place and horizon. A cited finding is not counted as an added fact; any other new fact still is.
+- **What the original leaves out**, listed under every rewrite of the article.
+- **First-principles economics** in evidence-backed rewrites: elasticity, the binding rule, short vs long run, identification and who bears the cost.
+- **The Economist, Financial Times and Reason** as outlet voices, always labelled as simulations they did not write.
+
 ## 2026-11-02 — Multi-source investigations
 
 ### Added

@@ -42,6 +42,10 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
   const [error, setError] = useState<string | null>(null);
   const [rewrite, setRewrite] = useState<StudioRewrite | null>(null);
   const [sending, setSending] = useState(false);
+  const [investigation, setInvestigation] = useState('');
+  const investigationId =
+    investigation.match(/investigations\/([a-zA-Z0-9]{8,16})/)?.[1] ??
+    (/^[a-zA-Z0-9]{8,16}$/.test(investigation.trim()) ? investigation.trim() : null);
 
   const voice = (): Voice | null => {
     if (kind === 'perspective') return axes.length ? { kind, axes } : null;
@@ -66,7 +70,14 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
       const response = await fetch('/api/rewrite', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ reportId, form, voice: chosen, length, text: result.sourceText }),
+        body: JSON.stringify({
+          reportId,
+          form,
+          voice: chosen,
+          length,
+          text: result.sourceText,
+          investigationId,
+        }),
       });
       const payload = (await response.json()) as {
         ok?: boolean;
@@ -215,6 +226,19 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
               )}
             </div>
           )}
+
+          <div className={styles.field}>
+            <label htmlFor="studio-investigation">{copy.investigationLabel}</label>
+            <input
+              id="studio-investigation"
+              className="bb-control"
+              value={investigation}
+              maxLength={300}
+              placeholder="https://biaslens.orangecat.ch/investigations/…"
+              onChange={(event) => setInvestigation(event.target.value)}
+            />
+            <p className={styles.hint}>{copy.investigationHint}</p>
+          </div>
 
           <div className={styles.segmented} role="group" aria-label={copy.lengthLabel}>
             {REWRITE_LENGTHS.map((item) => (

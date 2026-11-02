@@ -30,6 +30,10 @@ export interface RewriteCopy {
   added: string;
   noAdded: string;
   pickPerson: string;
+  omitted: string;
+  evidence: (count: number) => string;
+  investigationLabel: string;
+  investigationHint: string;
   personErrors: Record<
     'not_found' | 'not_public_voice' | 'ambiguous' | 'lookup_failed' | 'opted_out',
     string
@@ -46,6 +50,12 @@ export interface RewriteCopy {
 }
 
 const en: RewriteCopy = {
+  investigationLabel: 'Evidence from an investigation (optional)',
+  investigationHint:
+    'Paste the link of a saved investigation. The rewrite may then cite its linked study findings, each marked [E1], [E2]…',
+  omitted: 'What the original leaves out',
+  evidence: (count) =>
+    `Cites ${count} finding${count === 1 ? '' : 's'} from linked studies; each is marked in the text.`,
   title: 'Rewrite studio',
   intro:
     'The same facts, told another way — or an answer to the article. Every result says who wrote it: AI, from this article’s facts.',
@@ -105,6 +115,12 @@ const en: RewriteCopy = {
 };
 
 const de: RewriteCopy = {
+  investigationLabel: 'Belege aus einer Untersuchung (optional)',
+  investigationHint:
+    'Link einer gespeicherten Untersuchung einfügen. Die Fassung darf dann deren verknüpfte Studienbefunde zitieren, jeweils markiert [E1], [E2]…',
+  omitted: 'Was das Original weglässt',
+  evidence: (count) =>
+    `Zitiert ${count} Befund${count === 1 ? '' : 'e'} aus verknüpften Studien; jeder ist im Text markiert.`,
   title: 'Umschreib-Studio',
   intro:
     'Dieselben Fakten, anders erzählt – oder eine Antwort auf den Artikel. Jedes Ergebnis sagt, wer es schrieb: KI, aus den Fakten dieses Artikels.',
@@ -165,6 +181,12 @@ const de: RewriteCopy = {
 };
 
 const fr: RewriteCopy = {
+  investigationLabel: 'Preuves d’une enquête (facultatif)',
+  investigationHint:
+    'Collez le lien d’une enquête enregistrée. La réécriture pourra citer ses résultats d’études liés, signalés [E1], [E2]…',
+  omitted: 'Ce que l’original omet',
+  evidence: (count) =>
+    `Cite ${count} résultat${count === 1 ? '' : 's'} d’études liées ; chacun est signalé dans le texte.`,
   title: 'Atelier de réécriture',
   intro:
     'Les mêmes faits, racontés autrement — ou une réponse à l’article. Chaque résultat dit qui l’a écrit : une IA, à partir des faits de cet article.',
