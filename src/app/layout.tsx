@@ -1,5 +1,6 @@
 import { SiteHeader } from './_components/Chrome';
 import { SiteFooter } from './_components/Footer';
+import { PreferencesApplier } from './_components/Preferences';
 import type { Metadata } from 'next';
 
 import { BRAND } from '@/lib/config/brand';
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SiteHeader />
         {children}
         <SiteFooter />
+        <PreferencesApplier />
       </body>
     </html>
   );

@@ -10,6 +10,7 @@ import { detectGaps } from '@/lib/domain/gaps';
 
 import { EvidenceCharts } from '../EvidenceCharts';
 import { EpistemicMap } from '../EpistemicMap';
+import { FollowButton } from '../FollowButton';
 import { EvidenceCards } from '../EvidenceCards';
 import { GapDesk } from '../GapDesk';
 import { ReadingMode } from '../ReadingMode';
@@ -38,6 +39,7 @@ export default async function SavedInvestigationPage({ params }: Props) {
           {saved.updatedAt.toISOString().slice(0, 10)}
         </p>
         <h1>{saved.investigation.question}</h1>
+        <FollowButton id={saved.id} />
       </header>
       <InvestigationImages images={saved.investigation.images} />
       <EpistemicMap investigation={saved.investigation} />

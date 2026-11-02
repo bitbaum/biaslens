@@ -17,10 +17,19 @@ export function SiteFooter() {
         {
           label: 'Tools',
           links: [
-            { href: ROUTES.workspace, label: 'Workspace' },
+            { href: '/investigations', label: 'Investigations' },
+            { href: ROUTES.workspace, label: 'Rewrite studio' },
             { href: ROUTES.analyze, label: 'Examine text' },
             { href: ROUTES.explore, label: 'Research notebook' },
             { href: ROUTES.arena, label: 'Conversations' },
+          ],
+        },
+        {
+          label: 'You',
+          links: [
+            { href: '/desk', label: 'My desk' },
+            { href: '/settings', label: 'Settings' },
+            { href: ROUTES.account, label: 'Profile & security' },
           ],
         },
         {

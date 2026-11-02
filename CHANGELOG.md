@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — navigation, desk, settings
+
+- One navigation: Today · Investigate · Examine · Rewrite · My desk, in the masthead on desktop and as a bottom tab bar on phones (`SiteTabBar` from `@bitbaum/sitekit` 0.5).
+- `/investigations` lists featured investigations; each investigation can be followed.
+- `/desk`: your investigations, links waiting for review, flagged sentences, follows and a visit streak (kept on this device).
+- `/settings`: text size, reduced motion, and forgetting this device's edit links. Desk, Settings and Profile & security share one tab row.
+
 ## Unreleased — Today page
 
 - The home page is now Today: a dated masthead, the lead investigation with its stance balance, what changed since your last visit (with a visit streak kept on this device), evidence of the day, the claims under the most scrutiny, and the tools to start your own.
