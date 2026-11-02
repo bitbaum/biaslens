@@ -8,7 +8,9 @@ import { detectGaps } from '@/lib/domain/gaps';
 
 import { EvidenceCharts } from '../EvidenceCharts';
 import { EpistemicMap } from '../EpistemicMap';
+import { EvidenceCards } from '../EvidenceCards';
 import { GapDesk } from '../GapDesk';
+import { ReadingMode } from '../ReadingMode';
 import { InvestigationImages } from '../InvestigationImages';
 import { MethodTimeline } from '../MethodTimeline';
 import { InvestigationEditor } from '../InvestigationEditor';
@@ -42,7 +44,9 @@ export default function HousingDemoPage() {
         investigation={HOUSING_DEMO}
         gaps={detectGaps(HOUSING_DEMO)}
       />
+      <ReadingMode draft={HOUSING_DEMO.drafts?.at(-1)} />
       <VersionHistory investigation={HOUSING_DEMO} />
+      <EvidenceCards id={null} revision={0} investigation={HOUSING_DEMO} />
       <MethodTimeline investigation={HOUSING_DEMO} />
       <EvidenceCharts investigation={HOUSING_DEMO} />
       <InvestigationView investigation={HOUSING_DEMO} />

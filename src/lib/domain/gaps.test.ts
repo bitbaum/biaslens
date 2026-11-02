@@ -51,3 +51,19 @@ describe('sentenceDiff', () => {
     });
   });
 });
+
+describe('sentences and list items', () => {
+  it('treats each list item as its own unit', async () => {
+    const { sentences } = await import('./gaps');
+    expect(
+      sentences(
+        'Intro line.\n* In Greece rents rose [E2]. * In Denmark it differs.\n3. Third point',
+      ),
+    ).toEqual([
+      'Intro line.',
+      'In Greece rents rose [E2].',
+      'In Denmark it differs.',
+      'Third point',
+    ]);
+  });
+});
