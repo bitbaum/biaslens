@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { HeroSection } from '@bitbaum/sitekit/react';
 
 import { zurichTime } from '@/lib/format-time';
 import {
@@ -69,10 +70,16 @@ export default async function Today() {
     <main id="main-content" className={`bb-frame ${styles.page}`}>
       <header className={styles.masthead}>
         <p className={styles.date}>{today}</p>
-        <h1>Today on BiasLens</h1>
-        <p className={styles.dek}>
-          Stories taken apart claim by claim, with the evidence from every side in view.
-        </p>
+        <HeroSection
+          appearance="application"
+          section={{
+            kind: 'hero',
+            statement: 'Today on BiasLens',
+            lead: [
+              'Stories taken apart claim by claim, with the evidence from every side in view.',
+            ],
+          }}
+        />
       </header>
 
       <div className={styles.grid}>
