@@ -9,7 +9,7 @@ describe('journal content: bip-kit is the single source reader', () => {
     expect(posts.map((p) => p.slug)).toContain('why-we-dont-have-a-truth-meter');
     expect(posts.map((p) => p.slug)).toContain('how-to-measure-a-political-debate');
     expect(posts.every((post) => post.title && post.summary && post.blocks.length)).toBe(true);
-    expect(posts.every((post) => post.date === '2026-10-22')).toBe(true);
+    expect(posts.map((p) => p.date)).toEqual([...posts.map((p) => p.date)].sort().reverse());
   });
 
   it('resolves safe slugs but rejects an unknown article or path traversal', () => {
