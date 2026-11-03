@@ -1,3 +1,4 @@
+import { ogFonts } from '@bitbaum/design-tokens/og';
 import { ImageResponse } from 'next/og';
 
 import { CARD_THEME as C } from '@/lib/replies/card-theme';
@@ -6,7 +7,7 @@ export const size = { width: 512, height: 512 };
 export const contentType = 'image/png';
 
 /** The app icon: two overlapping lenses, as in the site's mark. */
-export default function Icon() {
+export default async function Icon() {
   return new ImageResponse(
     <div
       style={{
@@ -39,6 +40,7 @@ export default function Icon() {
         }}
       />
     </div>,
-    size,
+    // No text, but the faces are given anyway: next/og's own default is never used.
+    { ...size, fonts: await ogFonts() },
   );
 }

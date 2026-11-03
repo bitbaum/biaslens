@@ -4,6 +4,7 @@
  * by next/og. Carries "AI reading · not a fact check" in the image itself, so
  * the label survives a screenshot.
  */
+import { ogFonts, ogText } from '@bitbaum/design-tokens/og';
 import { ImageResponse } from 'next/og';
 
 import { BRAND } from '@/lib/config/brand';
@@ -37,7 +38,31 @@ function clip(text: string, limit: number): string {
   return text.slice(0, limit - 1).replace(/\s+\S*$/, '') + '…';
 }
 
-export function renderCard(content: CardContent, format: CardFormat): ImageResponse {
+/**
+ * The faces the card is drawn with, from @bitbaum/design-tokens: Geist (what
+ * next/og drew with by default) and Inter for what Geist lacks, such as Greek.
+ * An article can be in any language; anything neither face has is left out by
+ * ogText rather than fetched from Google while the card is drawn.
+ */
+const FACES = ['geist', 'inter:400'];
+
+/** Every text of the card through ogText, so none can send the renderer to Google. */
+function drawable(content: CardContent): CardContent {
+  const t = (s: string) => ogText(s, ...FACES);
+  return {
+    kicker: t(content.kicker),
+    title: t(content.title),
+    source: content.source === null ? null : t(content.source),
+    finding: t(content.finding),
+    passage: content.passage === null ? null : t(content.passage),
+    more: content.more.map(t).filter(Boolean),
+    note: t(content.note),
+    url: t(content.url),
+  };
+}
+
+export async function renderCard(raw: CardContent, format: CardFormat): Promise<ImageResponse> {
+  const content = drawable(raw);
   const size = CARD_FORMATS[format];
   const tall = format !== 'og';
   const scale = format === 'og' ? 1 : 1.25;
@@ -137,6 +162,10 @@ export function renderCard(content: CardContent, format: CardFormat): ImageRespo
         <span style={{ color: C.ink }}>{content.url.replace(/^https?:\/\//, '')}</span>
       </div>
     </div>,
-    { ...size, headers: { 'cache-control': 'public, max-age=3600, s-maxage=86400' } },
+    {
+      ...size,
+      fonts: await ogFonts(...FACES),
+      headers: { 'cache-control': 'public, max-age=3600, s-maxage=86400' },
+    },
   );
 }
