@@ -2,6 +2,10 @@
 
 Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
 
+## New direction (read first)
+
+As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: collapse Examine/Investigate/Rewrite/notebook into one article page (Read · Talk · Check · Rewrite), add chat, a followed-sources feed and sitekit nav. Its last section is a ready-to-paste build brief for phase 1. The briefs further down are superseded where they conflict.
+
 ## Current state
 
 - Live: https://biaslens.orangecat.ch — demo investigation at
