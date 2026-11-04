@@ -13,6 +13,8 @@ See `docs/plans/2026-11-one-loop.md`. BiasLens becomes one simple loop: a feed f
 - [ ] Phase 1: one article page, global paste box, sitekit nav, retire duplicate doors
 - [ ] Phase 2: Talk (chatkit) with Explain / Dig deeper / What's missing chips
 - [ ] Phase 3: source registry, follow sources, Today feed, paywall headline mode
+  - [x] Today leads with headlines from a fixed set of public wires, each linked to Examine
+  - [ ] Followed sources replace that fixed set
 - [ ] Phase 4: chosen lens and tailored rewrites, always labelled
 - [ ] Phase 5: outlet track records and visible method changelog
 - [ ] Phase 6: profiles on Loki (fix stale "bias scores" text), OrangeCat and Solon

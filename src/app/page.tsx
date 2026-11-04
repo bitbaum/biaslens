@@ -8,6 +8,7 @@ import {
   loadFeatured,
   recentChanges,
 } from '@/lib/investigations/featured';
+import { loadWire } from '@/lib/wire/load';
 
 import { SinceLastVisit } from './_components/SinceLastVisit';
 import { EvidenceVerifier } from './EvidenceVerifier';
@@ -45,6 +46,7 @@ const TOOLS = [
 
 export default async function Today() {
   const featured = await loadFeatured();
+  const wire = await loadWire();
   const lead = featured[0]!;
   const inv = lead.investigation;
   const latest = inv.drafts?.at(-1);
@@ -75,12 +77,43 @@ export default async function Today() {
           section={{
             kind: 'hero',
             statement: 'Today on BiasLens',
-            lead: [
-              'Stories taken apart claim by claim, with the evidence from every side in view.',
-            ],
+            lead: ['The latest headlines first. Below them, stories taken apart claim by claim.'],
           }}
         />
       </header>
+
+      <section className={styles.wireSection} aria-labelledby="wire-heading">
+        <div className={styles.sectionHead}>
+          <h2 id="wire-heading">The latest</h2>
+          <p className={styles.meta}>
+            Headlines from public wires, newest first. Examine opens the article here. The original
+            stays at the publisher.
+          </p>
+        </div>
+        {wire.items.length === 0 ? (
+          <p className={styles.meta}>
+            The wires could not be read just now. The investigations below are unchanged.
+          </p>
+        ) : (
+          <ol className={styles.wire}>
+            {wire.items.map((item) => (
+              <li key={item.link}>
+                <div>
+                  <a href={item.link} rel="noreferrer">
+                    {item.title}
+                  </a>
+                  <p className={styles.meta}>
+                    {item.source}
+                    {item.published ? ` · ${zurichTime(item.published)}` : ''}
+                    {' · '}
+                    <Link href={`/analyze?u=${encodeURIComponent(item.link)}`}>Examine</Link>
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
 
       <div className={styles.grid}>
         <article className={styles.lead}>

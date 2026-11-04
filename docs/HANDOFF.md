@@ -27,7 +27,7 @@ As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: coll
   (Economist / FT / Reason voices among presets), fact diff, "what the original
   omitted", optional evidence from an investigation.
 
-- Home is "Today" (`src/app/page.tsx`, `src/lib/investigations/featured.ts`): featured ids only (`FEATURED_IDS`), never every saved link. Visit streak, follows and edit links live in `src/lib/client/local.ts` (device only).
+- Home is "Today" (`src/app/page.tsx`, `src/lib/investigations/featured.ts`): the page now opens on a public wire (`src/lib/wire/`), then the featured investigation. Featured ids only (`FEATURED_IDS`), never every saved link. Visit streak, follows and edit links live in `src/lib/client/local.ts` (device only).
 
 - Navigation: `src/app/_components/Chrome.tsx` (one list → sitekit `SiteMasthead` + `SiteTabBar`). Pages `/investigations`, `/desk` (`MyDesk`, device-local), `/settings` (`SettingsForm`, `PreferencesApplier` sets `data-text-size`/`data-motion` on `<html>`), `AccountTabs` across desk/settings/account.
 

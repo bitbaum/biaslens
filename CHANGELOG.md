@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — the latest on Today
+
+- Today opens on headlines from public wires (BBC, NPR, Al Jazeera, The Guardian, SRF, DW, The Hill), newest first. Each line links to the publisher and to Examine. A wire that cannot be read is left out; nothing is invented to fill the gap. The lead investigation stays below.
+
 ## Unreleased — navigation, desk, settings
 
 - One navigation: Today · Investigate · Examine · Rewrite · My desk, in the masthead on desktop and as a bottom tab bar on phones (`SiteTabBar` from `@bitbaum/sitekit` 0.5).
