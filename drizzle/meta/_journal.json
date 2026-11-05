@@ -50,6 +50,13 @@
       "when": 1793647694950,
       "tag": "0006_thin_vin_gonzales",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793878229816,
+      "tag": "0007_written_articles",
+      "breakpoints": true
     }
   ]
 }

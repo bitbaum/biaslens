@@ -29,6 +29,8 @@ export function AccountControl() {
         {
           id: 'account',
           items: [
+            { id: 'write', label: 'Write an article', href: '/write' },
+            { id: 'desk', label: 'Your articles & desk', href: '/desk' },
             { id: 'settings', label: 'Profile & security', href: '/account' },
             { id: 'research', label: 'Your notebook', href: '/explore' },
           ],

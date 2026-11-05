@@ -11,9 +11,10 @@ export const authSite = {
 // the same origin check, and whatever account mail AccountKit learns next.
 const authMail = createAuthMailer({ site: authSite });
 export const mailConfigured = () => authMail.configured;
-export const { GET, POST, getSession, requireUser, authStatus, getAuth } = createAuthRuntime({
-  site: authSite,
-  isDatabaseConfigured: (env) => Boolean(env.DATABASE_URL),
-  getDatabase: () => db,
-  mail: authMail,
-});
+export const { GET, POST, getSession, sessionFor, requireUser, authStatus, getAuth } =
+  createAuthRuntime({
+    site: authSite,
+    isDatabaseConfigured: (env) => Boolean(env.DATABASE_URL),
+    getDatabase: () => db,
+    mail: authMail,
+  });

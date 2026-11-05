@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 
 import { incomingSource } from '@/lib/analysis/incoming';
+import { PUBLIC_ID } from '@/lib/reports/store';
+import { loadWrittenArticle } from '@/lib/writing/load';
 
 import { AnalyzeWorkspace } from './AnalyzeWorkspace';
 
@@ -17,5 +19,17 @@ export default async function AnalyzePage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  return <AnalyzeWorkspace incoming={incomingSource(await searchParams)} />;
+  const params = await searchParams;
+  // /analyze?article=<id>: a piece written here, examined as pasted text.
+  const articleId = Array.isArray(params.article) ? params.article[0] : params.article;
+  const article =
+    articleId && PUBLIC_ID.test(articleId) ? await loadWrittenArticle(articleId) : null;
+  return (
+    <AnalyzeWorkspace
+      incoming={article ? null : incomingSource(params)}
+      incomingArticle={
+        article ? { id: article.id, title: article.title, text: article.body } : null
+      }
+    />
+  );
 }

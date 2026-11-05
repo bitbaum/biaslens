@@ -359,3 +359,23 @@
   background: var(--color-surface-muted);
   font: var(--type-meta);
 }
+
+.savedLink {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.savedLink a {
+  color: var(--color-brand);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}

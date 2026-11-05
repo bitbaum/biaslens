@@ -17,6 +17,7 @@ import { ReplyLauncher } from '@/app/_components/replies/ReplyLauncher';
 import { RewriteStudio } from '@/app/_components/rewrite/RewriteStudio';
 
 import { ArticleConversation } from './ArticleConversation';
+import { SavedLink } from './SavedLink';
 import { ReportView, type ReportResult } from './report/ReportView';
 import { useAnalysis } from './useAnalysis';
 import styles from './analyze.module.css';
@@ -34,10 +35,20 @@ const STAGE_TEXT = {
   checking: 'Matching every cited passage against the text…',
 } as const;
 
-export function AnalyzeWorkspace({ incoming }: { incoming: string | null }) {
-  const [mode, setMode] = useState<Mode>('url');
+export type IncomingArticle = { id: string; title: string; text: string };
+
+export function AnalyzeWorkspace({
+  incoming,
+  incomingArticle = null,
+}: {
+  incoming: string | null;
+  incomingArticle?: IncomingArticle | null;
+}) {
+  const [mode, setMode] = useState<Mode>(incomingArticle ? 'text' : 'url');
   const [url, setUrl] = useState(incoming ?? '');
-  const [text, setText] = useState('');
+  const [text, setText] = useState(
+    incomingArticle ? incomingArticle.title + '\n\n' + incomingArticle.text : '',
+  );
   const [chosenLanguage, setChosenLanguage] = useState<OutputLanguage | null>(null);
   // A Swiss reader gets a Swiss German report unless they choose otherwise.
   const browserLanguage = useSyncExternalStore(
@@ -55,12 +66,22 @@ export function AnalyzeWorkspace({ incoming }: { incoming: string | null }) {
   // /analyze?u=<link>, the address prefix and the phone's share menu all land
   // here: fill the form and start, exactly as if the reader had pressed Examine.
   useEffect(() => {
-    if (!incoming || startedRef.current) return;
+    if ((!incoming && !incomingArticle) || startedRef.current) return;
     startedRef.current = true;
-    void analysis.run({ url: incoming, outputLanguage: language }).then((result) => {
+    const request = incomingArticle
+      ? { text: incomingArticle.title + '\n\n' + incomingArticle.text, outputLanguage: language }
+      : { url: incoming ?? undefined, outputLanguage: language };
+    void analysis.run(request).then((result) => {
       if (result) reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // The author's own examination is remembered on the article page.
+      if (result?.saved && incomingArticle)
+        void fetch(`/api/writing/${incomingArticle.id}/report`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ reportId: result.saved.id }),
+        }).catch(() => undefined);
     });
-  }, [incoming, analysis, language]);
+  }, [incoming, incomingArticle, analysis, language]);
 
   const busy = analysis.busy || pdfBusy;
   const canSubmit =
@@ -361,7 +382,12 @@ function AnalysisResult({ result }: { result: ReportResult }) {
     <ReportView
       result={result}
       actions={
-        result.saved ? <ReplyLauncher reportId={result.saved.id} result={result} /> : undefined
+        result.saved ? (
+          <>
+            <SavedLink id={result.saved.id} cached={result.saved.cached} />
+            <ReplyLauncher reportId={result.saved.id} result={result} />
+          </>
+        ) : undefined
       }
       after={
         <>
