@@ -8,8 +8,11 @@ const browser = await chromium.launch({
   executablePath: process.env.BROWSER_EXECUTABLE ?? '/usr/bin/chromium',
   args: ['--no-sandbox'],
 });
+// Real sources and model output contain long URLs without convenient word breaks.
+const longReference = 'https://example.test/research/' + 'reference'.repeat(40);
 const source =
-  'Fictional browser test: Traffic on West Street fell by 30 percent after a cycle lane opened. The council described the change as proof that the lane reduced car use. A neighbouring junction was also closed for roadworks. Counts for comparison streets were not supplied. These conditions mean that the before-and-after comparison does not isolate the effect of the lane.';
+  'Fictional browser test: Traffic on West Street fell by 30 percent after a cycle lane opened. The council described the change as proof that the lane reduced car use. A neighbouring junction was also closed for roadworks. Counts for comparison streets were not supplied. These conditions mean that the before-and-after comparison does not isolate the effect of the lane. Source: ' +
+  longReference;
 const quote = 'Traffic on West Street fell by 30 percent after a cycle lane opened.';
 const at = (text) => {
   const start = source.indexOf(text);
@@ -119,7 +122,7 @@ const report = {
   saved: { id: 'fixtureRpt1', cached: false },
 };
 try {
-  for (const width of [390, 834, 1440]) {
+  for (const width of [320, 390, 834, 1440]) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
@@ -180,11 +183,14 @@ try {
           rewrite: {
             id: 'fixtureRew1',
             title: 'Traffic fell; the cause is open',
-            text: 'Traffic on West Street fell by 30 percent after a cycle lane opened.\n\nA nearby junction was closed at the same time.',
+            text:
+              'Traffic on West Street fell by 30 percent after a cycle lane opened.\n\nA nearby junction was closed at the same time.\n\n' +
+              longReference,
             label:
               'Simulation · not written by The Guardian. Written by AI from this article’s facts.',
             simulated: true,
             factDiff: { total: 2, kept: 2, changed: [], dropped: [], added: [] },
+            evidence: { investigationId: null, cited: [longReference], omitted: [longReference] },
             modelId: 'fixture',
             promptVersion: 'rewrite@1.2',
           },
@@ -245,6 +251,59 @@ try {
     await page.getByRole('button', { name: 'Write it', exact: true }).click();
     await page.getByText('Simulation · not written by The Guardian.', { exact: false }).waitFor();
     await page.getByText('2 of 2 facts from the original kept.').waitFor();
+    // Check the actual boxes, including the independently scrolling original.
+    // A body overflow backstop or clipped child must not make this pass.
+    const assertRewriteFits = async () => {
+      const overflow = await page.locator('#report-studio').evaluate((root) =>
+        [root, ...root.querySelectorAll('*')]
+          .filter((el) => el.getClientRects().length && el.clientWidth > 0)
+          .filter((el) => {
+            const box = el.getBoundingClientRect();
+            return (
+              box.left < -1 || box.right > innerWidth + 1 || el.scrollWidth > el.clientWidth + 1
+            );
+          })
+          .map((el) => `${el.tagName}.${el.className}`),
+      );
+      assert.deepEqual(overflow, [], 'rewrite content overflows at ' + width);
+    };
+    await assertRewriteFits();
+    await page.locator('#report-studio summary').click();
+    await assertRewriteFits();
+    if (width <= 720) {
+      await page
+        .locator('#report-studio')
+        .getByRole('button', { name: 'Original', exact: true })
+        .click();
+      await assertRewriteFits();
+      await page
+        .locator('#report-studio')
+        .getByRole('button', { name: 'Rewrite', exact: true })
+        .click();
+    }
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: base });
+    await page.getByRole('button', { name: 'Copy the text', exact: true }).click();
+    assert.equal(
+      await page.evaluate(() => navigator.clipboard.readText()),
+      'Simulation · not written by The Guardian. Written by AI from this article’s facts.\n\n' +
+        'Traffic fell; the cause is open\n\n' +
+        'Traffic on West Street fell by 30 percent after a cycle lane opened.\n\n' +
+        'A nearby junction was closed at the same time.\n\n' +
+        longReference,
+    );
+    if (output) {
+      mkdirSync(output, { recursive: true });
+      // Capture a real viewport. An element screenshot of a tall article can
+      // paint sticky chrome halfway through the stitched reading column.
+      await page.locator('#report-studio').evaluate((el) => {
+        document.activeElement?.blur();
+        window.scrollTo({
+          top: el.getBoundingClientRect().top + scrollY - 88,
+          behavior: 'instant',
+        });
+      });
+      await page.screenshot({ path: `${output}/rewrite-result-${width}.png` });
+    }
     assert.deepEqual(rewriteRequest.voice, { kind: 'outlet', outlet: 'guardian' });
     assert.equal(rewriteRequest.text, source);
     await page.getByRole('button', { name: 'Send a reply', exact: true }).click();

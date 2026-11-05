@@ -8,6 +8,23 @@ As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: coll
 
 ## Current state
 
+- Responsive rewrite repair: `rewrite.module.css` uses shrinkable grid tracks
+  and wraps imported/generated long text; `report.module.css` does the same for
+  the annotated source. `scripts/investigation-browser-check.mjs` includes
+  long URLs, both phone comparison views, open evidence notes and labelled copy
+  output. Run through `pnpm run browser:smoke` against a production build.
+  This repair does not complete the one-loop migration or navigation redesign.
+- Navigation inspection confirmed `Chrome.tsx` uses sitekit's masthead/tab bar.
+  Its current navigation API is a flat list. A grouped, descriptive menu should
+  extend sitekit upstream and arrive through a published dependency update,
+  not a product-local replacement.
+- Shared authoring follow-up: OrangeCat needs one generation/editing lifecycle;
+  Heidi adds source-to-language-learning adaptation through its existing
+  variety-pack boundary. Share draft identity, revision safety, cancellation,
+  proposals/Undo and comparison. Keep evidence policies, simulation labels,
+  capability tokens and server revision checks here. Preserve source and
+  provenance through adaptation and copy/export. No shared authoring package
+  or cross-product draft synchronization is implemented by this repair.
 - Live: https://biaslens.orangecat.ch — demo investigation at
   https://biaslens.orangecat.ch/investigations/demo; a saved test investigation
   with five model-written versions at

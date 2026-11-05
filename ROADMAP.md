@@ -26,6 +26,7 @@ See `docs/plans/2026-11-one-loop.md`. BiasLens becomes one simple loop: a feed f
 Every finding points to a passage in the article, and every voice is named with
 who they are and whether they support the main claim.
 
+- [x] Long URLs stay within original/rewrite reading columns, with phone comparison and labelled-copy browser coverage
 - [x] An evaluation harness and rubric that score reports before and after every method change
 - [ ] A test set of about twelve real Swiss and English articles in it
 - [x] A published catalogue of writing techniques, each with what counts and what does not

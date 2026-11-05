@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — readable rewrites on narrow screens
+
+- Original articles, rewrites and evidence notes keep long URLs inside their reading columns. Grid tracks can shrink without widening the page; the phone's Original/Rewrite switch and simulation labels remain intact.
+- Browser coverage includes long source and generated text, open evidence notes, both phone views and labelled copy output at 320, 390, 834 and 1440px.
+
 ## Unreleased — the latest on Today
 
 - Today opens on headlines from public wires (BBC, NPR, Al Jazeera, The Guardian, SRF, DW, The Hill), newest first. Each line links to the publisher and to Examine. A wire that cannot be read is left out; nothing is invented to fill the gap. The lead investigation stays below.

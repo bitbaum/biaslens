@@ -170,6 +170,8 @@
 
 .annotated {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 12px;
 }
 
@@ -212,7 +214,7 @@
   max-width: 72ch;
   white-space: pre-wrap;
   font: 400 16px/1.85 var(--font-sans);
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .mark {
