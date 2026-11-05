@@ -1,3 +1,26 @@
+.studio,
+.fieldset,
+.field,
+.candidates,
+.compare,
+.result,
+.original,
+.diff {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Imported articles, citations and generated text can contain unbroken URLs.
+   Wrap them within the reading column instead of enlarging a grid track. */
+.studio .compare :is(p, li, h4, summary),
+.originalText {
+  overflow-wrap: anywhere;
+}
+
+.columns > * {
+  min-width: 0;
+}
+
 .studio {
   display: grid;
   gap: 16px;
