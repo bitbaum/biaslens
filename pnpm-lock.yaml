@@ -33,8 +33,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       '@bitbaum/sitekit':
-        specifier: 0.5.1
-        version: 0.5.1(react@19.3.1)
+        specifier: 0.6.1
+        version: 0.6.1(react@19.3.1)
       '@fleet/ai-forms':
         specifier: npm:ai-forms@0.1.3
         version: ai-forms@0.1.3(react@19.3.1)
@@ -318,8 +318,8 @@ packages:
     resolution: {integrity: sha512-YkgMFRQ6HuzIB0q/Ao4FB4zb/YxVc0iKyVdRkFe2psJ4CQJvGxBfDlURomZMkgQfpBQox4QiT/iN9IGRz6SeTg==}
     engines: {node: '>=20'}
 
-  '@bitbaum/sitekit@0.5.1':
-    resolution: {integrity: sha512-BaXFT3C+TXEmBwbMmgaRVJ2bENn3YbCKXA3aE9HGaOXk7u6Yfs0wgGwy1upWimeEh/PFiXnVVvFr4M/uzOzwbw==}
+  '@bitbaum/sitekit@0.6.1':
+    resolution: {integrity: sha512-2Yjz69kn+mAZpSYdBTlpmr+MPBljBYSVOWW+gSyH3XuMonHoaDAi523QvVEKUAp3BUuItnslrIfg75xUpIPVig==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -3446,7 +3446,7 @@ snapshots:
 
   '@bitbaum/mail-kit@0.2.0': {}
 
-  '@bitbaum/sitekit@0.5.1(react@19.3.1)':
+  '@bitbaum/sitekit@0.6.1(react@19.3.1)':
     dependencies:
       react: 19.3.1
       zod: 4.6.7
