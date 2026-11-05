@@ -293,9 +293,16 @@ try {
     );
     if (output) {
       mkdirSync(output, { recursive: true });
-      await page
-        .locator('#report-studio')
-        .screenshot({ path: `${output}/rewrite-result-${width}.png` });
+      // Capture a real viewport. An element screenshot of a tall article can
+      // paint sticky chrome halfway through the stitched reading column.
+      await page.locator('#report-studio').evaluate((el) => {
+        document.activeElement?.blur();
+        window.scrollTo({
+          top: el.getBoundingClientRect().top + scrollY - 88,
+          behavior: 'instant',
+        });
+      });
+      await page.screenshot({ path: `${output}/rewrite-result-${width}.png` });
     }
     assert.deepEqual(rewriteRequest.voice, { kind: 'outlet', outlet: 'guardian' });
     assert.equal(rewriteRequest.text, source);
