@@ -10,8 +10,10 @@ import styles from './article.module.css';
 const ORANGECAT_COMPOSER = 'https://orangecat.ch/articles/new';
 
 /**
- * Everything a reader can do with the article, in one row: share it, examine
- * it, answer it, post it on OrangeCat; and, for the author, change or delete it.
+ * What a reader does with an article, in one shape: a primary action and a
+ * row of equal secondary ones (a two-column grid on a phone, one row on a
+ * desk). The author's own controls sit apart, as quiet links, so they never
+ * compete with the reader's row.
  */
 export function ArticleActions({
   id,
@@ -73,7 +75,7 @@ export function ArticleActions({
     }
   };
 
-  const importUrl = url ? `${url.replace('/articles/', '/api/writing/')}` : null;
+  const importUrl = url ? url.replace('/articles/', '/api/writing/') : null;
   const x = url
     ? `https://x.com/intent/post?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`
     : null;
@@ -81,18 +83,18 @@ export function ArticleActions({
   return (
     <div className={styles.toolbar}>
       {published && (
-        <>
+        <div className={styles.actionRow}>
           <button type="button" className="bb-button bb-button--primary" onClick={share}>
             {copied ? 'Link copied' : 'Share'}
           </button>
           <Link className="bb-button bb-button--secondary" href={`/write?respondTo=${id}`}>
-            Write a response
+            Respond
           </Link>
           <Link
             className="bb-button bb-button--secondary"
             href={reportId ? `/r/${reportId}` : `/analyze?article=${id}`}
           >
-            {reportId ? 'See the examination' : 'Examine it'}
+            {reportId ? 'Examination' : 'Examine'}
           </Link>
           {x && (
             <a className="bb-button bb-button--secondary" href={x} rel="noreferrer">
@@ -108,19 +110,14 @@ export function ArticleActions({
               Post on OrangeCat
             </a>
           )}
-        </>
+        </div>
       )}
       {owner && (
-        <>
-          <Link className="bb-button bb-button--secondary" href={`/articles/${id}/edit`}>
-            Edit
-          </Link>
+        <p className={styles.ownerRow}>
+          <span className={styles.meta}>Yours ·</span>
+          <Link href={`/articles/${id}/edit`}>Edit</Link>
           {!confirming ? (
-            <button
-              type="button"
-              className="bb-button bb-button--secondary"
-              onClick={() => setConfirming(true)}
-            >
+            <button type="button" className={styles.linkButton} onClick={() => setConfirming(true)}>
               Delete
             </button>
           ) : (
@@ -128,7 +125,7 @@ export function ArticleActions({
               <span>Delete this article? This cannot be undone.</span>
               <button
                 type="button"
-                className={`bb-button bb-button--secondary ${styles.danger}`}
+                className={`${styles.linkButton} ${styles.danger}`}
                 disabled={deleting}
                 onClick={remove}
               >
@@ -136,7 +133,7 @@ export function ArticleActions({
               </button>
               <button
                 type="button"
-                className="bb-button bb-button--secondary"
+                className={styles.linkButton}
                 disabled={deleting}
                 onClick={() => setConfirming(false)}
               >
@@ -144,7 +141,7 @@ export function ArticleActions({
               </button>
             </span>
           )}
-        </>
+        </p>
       )}
       {error && (
         <p role="alert" className={styles.error}>

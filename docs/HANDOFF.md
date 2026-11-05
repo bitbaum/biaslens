@@ -8,6 +8,13 @@ As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: coll
 
 ## Current state
 
+- Writing tools (`src/app/write/WritingTools.tsx`): Speak (chatkit `useDictation`, server leg
+  `/api/transcribe`) → `POST /api/writing/assist` (`src/lib/writing/assist.ts`, ai-kit free
+  chain) for draft/improve with Undo; Photo (Commons `PhotoSearch`, inserted as a bip-kit
+  figure); Chart (bip-kit `chart` fence); Preview (chatkit `Markdown`). Comments
+  (`src/lib/writing/comments.ts`, `Comment` table, migration 0008) under published articles,
+  posted through chatkit's `Composer`. Article actions are one shape (`article.module.css`
+  `.actionRow`). Browser-tested locally: toolbar, chart render, comments post/remove, phone.
 - Writing (`src/lib/writing/`, `src/app/write/`, `src/app/articles/`, `src/app/api/writing/`):
   account-backed written articles (`WrittenArticle`, migration 0007) with drafts, responses
   (`respondToId`), the headline a piece is about (`sourceUrl`/`sourceTitle`) and the author's
@@ -86,8 +93,10 @@ Screenshots: a Playwright helper outside the repo; any headless Chromium at
   (`morulia.orangecat.ch/api/providers`) has no provider switched on yet, so the button dead-ends.
   The fix belongs in `@bitbaum/accountkit` (hide the button when the issuer publishes no
   providers) and in Morulia (paste one provider's keys).
-- Written articles have no comments yet — responses are whole articles. `threadkit` is the
-  intended comment layer.
+- Writing help answers 503 until the server has an ai-kit key (`GROQ_API_KEY` /
+  `OPENROUTER_API_KEY` via `/opt/fleet/env`); the composer says so in words.
+- Tab icons are still unicode glyphs; `@bitbaum/sitekit` 0.6 (PR #45) adds `SiteIcon` and the
+  masthead `tabBar` prop. Switch `Chrome.tsx` to them when the floor-raise lands.
 
 - The citation check is a model pass: it can miss or over-flag (it flags
   numbers cited to an indicator *definition* finding; the fix is to cite the

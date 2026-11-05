@@ -9,9 +9,12 @@ import { BRAND } from '@/lib/config/brand';
 import { zurichTime } from '@/lib/format-time';
 import { PUBLIC_ID } from '@/lib/reports/store';
 import { readingMinutes } from '@/lib/writing/input';
+import { listComments } from '@/lib/writing/comments';
+import { db } from '@/lib/db/client';
 import { loadResponses, loadWrittenArticle } from '@/lib/writing/load';
 
 import { ArticleActions } from './ArticleActions';
+import { Comments } from './Comments';
 import styles from './article.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -57,7 +60,10 @@ export default async function WrittenArticlePage({ params }: Props) {
     getSession(),
   ]);
   if (!article) notFound();
-  const parent = article.respondToId ? await loadWrittenArticle(article.respondToId) : null;
+  const [parent, comments] = await Promise.all([
+    article.respondToId ? loadWrittenArticle(article.respondToId) : null,
+    article.status === 'published' && process.env.DATABASE_URL ? listComments(db, article.id) : [],
+  ]);
   const blocks = parseContentBlocks(article.body);
   const owner = session?.user.id === article.authorId;
   const url = BRAND.siteOrigin ? `${BRAND.siteOrigin}/articles/${article.id}` : null;
@@ -148,15 +154,17 @@ export default async function WrittenArticlePage({ params }: Props) {
               >
                 Write a response
               </Link>
-              <Link
-                className="bb-button bb-button--secondary"
-                href={`/analyze?article=${article.id}`}
-              >
-                Examine this article
-              </Link>
             </div>
           )}
         </section>
+        {article.status === 'published' && (
+          <Comments
+            articleId={article.id}
+            articleAuthorId={article.authorId}
+            viewer={session ? { id: session.user.id, name: session.user.name } : null}
+            initial={comments.map((c) => ({ ...c, createdAt: c.createdAt.toISOString() }))}
+          />
+        )}
       </main>
     </>
   );

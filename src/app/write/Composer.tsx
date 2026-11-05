@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { Markdown } from '@bitbaum/chatkit/react';
 
 import { authClient } from '@/lib/auth-client';
 import type { WireItem } from '@/lib/wire/parse';
@@ -10,6 +11,15 @@ import { readingMinutes, WRITING_LIMITS, type WritingStatus } from '@/lib/writin
 import type { Topic } from '@/lib/writing/trending';
 import { zurichTime } from '@/lib/format-time';
 
+import {
+  ChartPanel,
+  ImprovePanel,
+  insertAt,
+  PhotoPanel,
+  SpeakPanel,
+  wrapSelection,
+  type Panel,
+} from './WritingTools';
 import styles from './write.module.css';
 
 export interface Source {
@@ -90,6 +100,10 @@ export function Composer({
   const [busy, setBusy] = useState<WritingStatus | null>(null);
   const [problems, setProblems] = useState<string[]>([]);
   const [savedNote, setSavedNote] = useState<string | null>(null);
+  const [panel, setPanel] = useState<Panel>(null);
+  const [tab, setTab] = useState<'write' | 'preview'>('write');
+  const [assisting, setAssisting] = useState(false);
+  const [undo, setUndo] = useState<{ title: string; body: string } | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   // A draft from an earlier visit comes back — including one typed before
@@ -163,6 +177,50 @@ export function Composer({
     const found = topics.find((t) => t.label === topic);
     return found ? found.items : wire;
   }, [wire, topics, topic]);
+
+  /** Writing help: a brief becomes a draft; an instruction revises the text. */
+  const assist = async (mode: 'draft' | 'improve', instruction: string) => {
+    if (!user) {
+      router.push('/sign-in?next=' + encodeURIComponent('/write'));
+      return;
+    }
+    setAssisting(true);
+    setProblems([]);
+    try {
+      const response = await fetch('/api/writing/assist', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ mode, instruction, title, body, language: 'English' }),
+      });
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        title?: string;
+        body?: string;
+        error?: { message?: string };
+      };
+      if (!payload.ok || !payload.body) {
+        setProblems([payload.error?.message ?? 'Writing help could not answer. Try again.']);
+        return;
+      }
+      setUndo({ title, body });
+      if (payload.title && (mode === 'draft' || !title.trim() || payload.title !== title))
+        setTitle(payload.title);
+      setBody(payload.body);
+      setTab('write');
+      setPanel(null);
+    } catch {
+      setProblems(['Writing help could not be reached. Check your connection and try again.']);
+    } finally {
+      setAssisting(false);
+    }
+  };
+
+  const toggle = (next: Panel) => setPanel((current) => (current === next ? null : next));
+  const insert = (snippet: string) => {
+    setTab('write');
+    insertAt(bodyRef, body, snippet, setBody);
+    setPanel(null);
+  };
 
   const save = async (status: WritingStatus) => {
     if (!ready) return;
@@ -332,19 +390,166 @@ export function Composer({
           autoComplete="off"
           disabled={!!busy}
         />
-        <label className={styles.label} htmlFor="write-body">
-          Article
-        </label>
-        <textarea
-          id="write-body"
-          ref={bodyRef}
-          className={`${styles.body} bb-control`}
-          value={body}
-          onChange={(event) => setBody(event.target.value)}
-          maxLength={WRITING_LIMITS.body}
-          placeholder="Write here. Paragraphs are enough; Markdown works for headings, lists, links and quotes."
-          disabled={!!busy}
-        />
+        <div className={styles.editorHead}>
+          <div className={styles.tabs} role="tablist" aria-label="Write or preview">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'write'}
+              className={styles.tab}
+              onClick={() => setTab('write')}
+            >
+              Write
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'preview'}
+              className={styles.tab}
+              onClick={() => setTab('preview')}
+            >
+              Preview
+            </button>
+          </div>
+          <div className={styles.toolbar} role="toolbar" aria-label="Writing tools">
+            <button
+              type="button"
+              className={styles.tool}
+              aria-pressed={panel === 'speak'}
+              onClick={() => toggle('speak')}
+            >
+              Speak
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              aria-pressed={panel === 'improve'}
+              onClick={() => toggle('improve')}
+              disabled={!body.trim()}
+            >
+              Improve
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              aria-pressed={panel === 'photo'}
+              onClick={() => toggle('photo')}
+            >
+              Photo
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              aria-pressed={panel === 'chart'}
+              onClick={() => toggle('chart')}
+            >
+              Chart
+            </button>
+            <span className={styles.toolGap} aria-hidden="true" />
+            <button
+              type="button"
+              className={styles.tool}
+              onClick={() => wrapSelection(bodyRef, body, '## ', '', 'Heading', setBody)}
+              title="Heading"
+            >
+              H
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              onClick={() => wrapSelection(bodyRef, body, '**', '**', 'bold', setBody)}
+              title="Bold"
+            >
+              B
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              onClick={() => wrapSelection(bodyRef, body, '> ', '', 'A quotation', setBody)}
+              title="Quote"
+            >
+              “
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              onClick={() => wrapSelection(bodyRef, body, '- ', '', 'First point', setBody)}
+              title="List"
+            >
+              •
+            </button>
+            <button
+              type="button"
+              className={styles.tool}
+              onClick={() => wrapSelection(bodyRef, body, '[', '](https://)', 'link text', setBody)}
+              title="Link"
+            >
+              Link
+            </button>
+          </div>
+        </div>
+
+        {panel === 'speak' && (
+          <SpeakPanel
+            busy={assisting}
+            canDraft={!!user}
+            onBrief={(brief) => void assist('draft', brief)}
+            onDictate={(text) => insert(text)}
+          />
+        )}
+        {panel === 'improve' && (
+          <ImprovePanel
+            busy={assisting}
+            canUndo={!!undo}
+            onUndo={() => {
+              if (!undo) return;
+              setTitle(undo.title);
+              setBody(undo.body);
+              setUndo(null);
+            }}
+            onImprove={(instruction) => void assist('improve', instruction)}
+          />
+        )}
+        {panel === 'photo' && <PhotoPanel onPick={insert} />}
+        {panel === 'chart' && <ChartPanel onInsert={insert} />}
+
+        {tab === 'write' ? (
+          <textarea
+            id="write-body"
+            ref={bodyRef}
+            aria-label="Article"
+            className={`${styles.body} bb-control`}
+            value={body}
+            onChange={(event) => setBody(event.target.value)}
+            maxLength={WRITING_LIMITS.body}
+            placeholder="Write here — or press Speak and say what you want written. Paragraphs are enough; Markdown works for headings, lists, links and quotes."
+            disabled={!!busy || assisting}
+          />
+        ) : (
+          <div className={`${styles.preview} journalTheme`} aria-label="Preview">
+            {body.trim() ? (
+              <Markdown text={body} />
+            ) : (
+              <p className={styles.meta}>Nothing to preview yet.</p>
+            )}
+          </div>
+        )}
+        {undo && (
+          <p className={styles.meta}>
+            The text was changed by writing help.{' '}
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={() => {
+                setTitle(undo.title);
+                setBody(undo.body);
+                setUndo(null);
+              }}
+            >
+              Undo
+            </button>
+          </p>
+        )}
         {needsName && (
           <>
             <label className={styles.label} htmlFor="write-byline">
