@@ -57,6 +57,13 @@
       "when": 1793878229816,
       "tag": "0007_written_articles",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793920715996,
+      "tag": "0008_comments",
+      "breakpoints": true
     }
   ]
 }

@@ -28,7 +28,11 @@ BiasLens is also where you write, not only where you check: the wires suggest wh
 - [x] Article pages with responses threaded underneath; `/articles`; Your articles on the desk
 - [x] Examine your own article; the examination is remembered on its page
 - [x] Post on OrangeCat (its composer imports the piece with attribution)
-- [ ] Comments under an article through `threadkit`, with the author notified
+- [x] Comments under an article (chatkit composer with the microphone); author notification is next
+- [x] Speak to write: a spoken brief becomes a draft; dictate into the text; improve with an instruction, with Undo
+- [x] Photos (Commons, credited) and charts (bip-kit) from the composer; preview tab
+- [ ] AI illustrations in the composer once the server sets IMAGE_GEN_API / IMAGE_GEN_MODEL
+- [ ] Notify the author of a comment or a response (mail-kit)
 - [ ] Several bylines under one account (Morulia "lives"), so a person can write under more than one name
 - [ ] Followed sources feeding the topic suggestions; a daily "write about this" prompt
 - [ ] Reactions and reader counts shown honestly (per link, never a popularity score)

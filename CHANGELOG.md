@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — say it, show it, talk about it
+
+- **Speak**: one microphone in the composer (chatkit's dictation, server leg `/api/transcribe`). Say what to write and how, and writing help turns it into a titled article in your voice; or dictate straight into the text. What was heard is shown and editable before anything happens.
+- **Improve**: an instruction, typed or spoken ("make it tighter", "fix the grammar", "add the other side"), revises the text and keeps your points; Undo brings the previous text back. Both run through `POST /api/writing/assist` (ai-kit free chain; nothing stored). The prompts forbid invented facts and treat the writer's text as material, never as instructions.
+- **Photo** and **Chart** in the composer: an openly licensed Wikimedia Commons photo lands as a figure with its credit and licence; a chart block (bar, line, area) is drawn by bip-kit from numbers you type. Heading, bold, quote, list and link buttons; a Preview tab.
+- **Comments** under every published article: chatkit's composer with the microphone, oldest first, removable by their author or the article's. `Comment` table (migration 0008), `GET/POST/DELETE /api/writing/<id>/comments`. Not threadkit: a public article's comments are not participation-gated, the page is the room.
+- **One shape for an article's actions**: Share as the primary, then equal secondary actions (two columns on a phone, one row on a desk); the author's Edit and Delete sit apart as quiet links. Responses and comments share one section shape.
+
 ## Unreleased — write your own article
 
 - **Write** (`/write`): anyone signed in writes an article from scratch, about a headline from the wires, or in answer to another article written here. Markdown body, drafts kept on the device (they survive signing in), publish or save as draft, Ctrl/⌘+Enter publishes. A nameless account chooses its byline — a real name or a pen name — on the first piece.

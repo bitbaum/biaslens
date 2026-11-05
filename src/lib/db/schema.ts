@@ -408,3 +408,30 @@ export const writtenArticles = pgTable(
 );
 
 export type WrittenArticleRow = typeof writtenArticles.$inferSelect;
+
+/// A comment under a written article: one signed-in person's short say.
+/// Public with the article; the author may delete their own. Not a
+/// participation-gated thread (threadkit's model), because everyone can read
+/// a public article's comments — the article page is the room.
+export const comments = pgTable(
+  'Comment',
+  {
+    id: text('id').primaryKey(),
+    articleId: text('articleId').notNull(),
+    authorId: text('authorId').notNull(),
+    body: text('body').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    index('Comment_articleId_createdAt_idx').on(table.articleId, table.createdAt),
+    foreignKey({
+      columns: [table.articleId],
+      foreignColumns: [writtenArticles.id],
+      name: 'Comment_articleId_fkey',
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+);
+
+export type CommentRow = typeof comments.$inferSelect;
