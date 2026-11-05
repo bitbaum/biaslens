@@ -372,3 +372,39 @@ export const generatedImages = pgTable('GeneratedImage', {
   prompt: text('prompt').notNull(),
   createdAt: createdAt(),
 });
+
+/// An article a signed-in person wrote here, from scratch or in response to a
+/// headline or to another written article. Public once published; the
+/// author alone can change or delete it. The body is markdown rendered through
+/// bip-kit's typed blocks, so no HTML ever passes through.
+export const writtenArticles = pgTable(
+  'WrittenArticle',
+  {
+    id: text('id').primaryKey(),
+    /** accountkit user id (no FK: the account tables are the package's). */
+    authorId: text('authorId').notNull(),
+    title: text('title').notNull(),
+    body: text('body').notNull(),
+    /** First sentences of the body, for lists and previews. */
+    excerpt: text('excerpt').notNull(),
+    /** draft | published — SSOT in `lib/writing/store.ts`. */
+    status: text('status').notNull(),
+    /** The written article this one answers, or null. */
+    respondToId: text('respondToId'),
+    /** The headline (from the wire or elsewhere) the piece is about, or null. */
+    sourceUrl: text('sourceUrl'),
+    sourceTitle: text('sourceTitle'),
+    /** The saved examination of this text, once the author ran one. */
+    reportId: text('reportId'),
+    createdAt: createdAt(),
+    updatedAt: timestamp('updatedAt', { precision: 3, mode: 'date' }).notNull().defaultNow(),
+    publishedAt: timestamp('publishedAt', { precision: 3, mode: 'date' }),
+  },
+  (table) => [
+    index('WrittenArticle_authorId_idx').on(table.authorId),
+    index('WrittenArticle_respondToId_idx').on(table.respondToId),
+    index('WrittenArticle_status_publishedAt_idx').on(table.status, table.publishedAt),
+  ],
+);
+
+export type WrittenArticleRow = typeof writtenArticles.$inferSelect;

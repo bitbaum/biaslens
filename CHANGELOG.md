@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — write your own article
+
+- **Write** (`/write`): anyone signed in writes an article from scratch, about a headline from the wires, or in answer to another article written here. Markdown body, drafts kept on the device (they survive signing in), publish or save as draft, Ctrl/⌘+Enter publishes. A nameless account chooses its byline — a real name or a pen name — on the first piece.
+- Topics: the composer and Today show what more than one wire is reporting (`trendingTopics`: words shared across sources, each listing its headlines — no model, no popularity count). Every headline on Today has **Write about it** next to Examine.
+- Article pages (`/articles/<id>`): author, date, reading time, the headline or article it answers, and one row of actions — Share (copy or share sheet), Write a response, Examine it (the examination is remembered on the page), Post on X, **Post on OrangeCat** (opens OrangeCat's composer with the text and a first-published-on link), and Edit / Delete for the author. Responses thread underneath. `/articles` lists everything published.
+- My desk gains **Your articles** (account-backed; drafts and published, with Edit and Examine). The account menu links Write and the desk. Navigation: Today · Write · Examine · Investigate · My desk; the rewrite studio stays reachable from every report and the footer.
+- Examine: every reading has had a permanent address since replies shipped, but the page never said so. It now shows the link with **Copy link** right above the report. `/analyze?article=<id>` examines a piece written here.
+- API: `POST/GET /api/writing`, `GET/PUT/DELETE /api/writing/<id>` (GET is public JSON for a published piece, readable cross-origin for sister products), `POST /api/writing/<id>/report`. Additive migration 0007 (`WrittenArticle`).
+
 ## Unreleased — readable rewrites on narrow screens
 
 - Original articles, rewrites and evidence notes keep long URLs inside their reading columns. Grid tracks can shrink without widening the page; the phone's Original/Rewrite switch and simulation labels remain intact.

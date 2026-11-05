@@ -19,6 +19,20 @@ See `docs/plans/2026-11-one-loop.md`. BiasLens becomes one simple loop: a feed f
 - [ ] Phase 5: outlet track records and visible method changelog
 - [ ] Phase 6: profiles on Loki (fix stale "bias scores" text), OrangeCat and Solon
 
+## Writing (Nov 2026)
+
+BiasLens is also where you write, not only where you check: the wires suggest what is happening, you say what you think, the evidence checks it, others answer.
+
+- [x] Write an article from scratch, about a headline, or in response to another; publish, share, edit, delete
+- [x] Topics across the wires on Today and in the composer; "Write about it" on every headline
+- [x] Article pages with responses threaded underneath; `/articles`; Your articles on the desk
+- [x] Examine your own article; the examination is remembered on its page
+- [x] Post on OrangeCat (its composer imports the piece with attribution)
+- [ ] Comments under an article through `threadkit`, with the author notified
+- [ ] Several bylines under one account (Morulia "lives"), so a person can write under more than one name
+- [ ] Followed sources feeding the topic suggestions; a daily "write about this" prompt
+- [ ] Reactions and reader counts shown honestly (per link, never a popularity score)
+
 ## Now
 
 ### A report worth reading

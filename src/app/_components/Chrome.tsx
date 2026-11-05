@@ -17,9 +17,9 @@ const chrome = {
 /** One list drives the desktop masthead and the mobile tab bar. */
 const navigation = [
   { path: '', label: 'Today', icon: '◎' },
-  { path: 'investigations', label: 'Investigate', icon: '⇄' },
+  { path: 'write', label: 'Write', icon: '✎' },
   { path: 'analyze', label: 'Examine', icon: '⌕' },
-  { path: 'workspace', label: 'Rewrite', icon: '✎' },
+  { path: 'investigations', label: 'Investigate', icon: '⇄' },
   { path: 'desk', label: 'My desk', icon: '★' },
 ] as const;
 

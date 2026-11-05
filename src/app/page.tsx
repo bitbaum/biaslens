@@ -9,6 +9,7 @@ import {
   recentChanges,
 } from '@/lib/investigations/featured';
 import { loadWire } from '@/lib/wire/load';
+import { trendingTopics } from '@/lib/writing/trending';
 
 import { SinceLastVisit } from './_components/SinceLastVisit';
 import { EvidenceVerifier } from './EvidenceVerifier';
@@ -18,6 +19,12 @@ import styles from './today.module.css';
 export const dynamic = 'force-dynamic';
 
 const TOOLS = [
+  {
+    href: '/write',
+    icon: '✎',
+    title: 'Write an article',
+    text: 'Your own piece: from scratch, about a headline, or in answer to another.',
+  },
   {
     href: '/analyze',
     icon: '⌕',
@@ -67,6 +74,9 @@ export default async function Today() {
     month: 'long',
   }).format(new Date());
   const image = inv.images?.[0];
+  const topics = trendingTopics(wire.items, 5);
+  const writeAbout = (item: { link: string; title: string; source: string }) =>
+    `/write?about=${encodeURIComponent(item.link)}&title=${encodeURIComponent(item.title)}&source=${encodeURIComponent(item.source)}`;
 
   return (
     <main id="main-content" className={`bb-frame ${styles.page}`}>
@@ -86,10 +96,21 @@ export default async function Today() {
         <div className={styles.sectionHead}>
           <h2 id="wire-heading">The latest</h2>
           <p className={styles.meta}>
-            Headlines from public wires, newest first. Examine opens the article here. The original
-            stays at the publisher.
+            Headlines from public wires, newest first. Examine opens the article here; Write starts
+            your own piece about it. The original stays at the publisher.
           </p>
         </div>
+        {topics.length > 0 && (
+          <p className={styles.trending}>
+            <span className={styles.kicker}>On more than one wire</span>
+            {topics.map((t) => (
+              <Link key={t.label} href={`/write?topic=${encodeURIComponent(t.label)}`}>
+                {t.label}
+                <span className={styles.meta}> · {t.sources}</span>
+              </Link>
+            ))}
+          </p>
+        )}
         {wire.items.length === 0 ? (
           <p className={styles.meta}>
             The wires could not be read just now. The investigations below are unchanged.
@@ -107,6 +128,8 @@ export default async function Today() {
                     {item.published ? ` · ${zurichTime(item.published)}` : ''}
                     {' · '}
                     <Link href={`/analyze?u=${encodeURIComponent(item.link)}`}>Examine</Link>
+                    {' · '}
+                    <Link href={writeAbout(item)}>Write about it</Link>
                   </p>
                 </div>
               </li>
@@ -219,7 +242,8 @@ export default async function Today() {
         <div className={styles.sectionHead}>
           <h2 id="tools-heading">Start your own</h2>
           <p className={styles.meta}>
-            No account needed. AI interpretations are labelled and provisional.
+            Writing needs an account; examining does not. AI interpretations are labelled and
+            provisional.
           </p>
         </div>
         <div className={styles.tools}>

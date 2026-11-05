@@ -17,6 +17,8 @@ export function SiteFooter() {
         {
           label: 'Tools',
           links: [
+            { href: ROUTES.write, label: 'Write an article' },
+            { href: ROUTES.articles, label: 'Articles' },
             { href: '/investigations', label: 'Investigations' },
             { href: ROUTES.workspace, label: 'Rewrite studio' },
             { href: ROUTES.analyze, label: 'Examine text' },

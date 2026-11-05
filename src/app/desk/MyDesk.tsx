@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { follows, myInvestigationIds, recordVisit } from '@/lib/client/local';
 import type { Investigation } from '@/lib/domain/investigation';
 import { zurichTime } from '@/lib/format-time';
+import type { WrittenArticleSummary } from '@/lib/writing/store';
 
 import styles from './desk.module.css';
 
@@ -38,11 +39,26 @@ const summarise = (
   };
 };
 
-/** Your desk, from what this browser holds: edit links, follows, visit days. */
+type Written = Omit<WrittenArticleSummary, 'createdAt' | 'updatedAt' | 'publishedAt'> & {
+  updatedAt: string;
+  publishedAt: string | null;
+};
+type WrittenState = { kind: 'loading' } | { kind: 'signed-out' } | { kind: 'ok'; list: Written[] };
+
+/** Your desk: what you wrote (your account), and what this browser holds — edit links, follows, visit days. */
 export function MyDesk() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [visit, setVisit] = useState({ streak: 0, days: 0 });
+  const [written, setWritten] = useState<WrittenState>({ kind: 'loading' });
   useEffect(() => {
+    queueMicrotask(async () => {
+      const r = await fetch('/api/writing').catch(() => null);
+      if (r?.status === 401 || r?.status === 503 || !r) setWritten({ kind: 'signed-out' });
+      else {
+        const body = (await r.json().catch(() => null)) as { articles?: Written[] } | null;
+        setWritten({ kind: 'ok', list: body?.articles ?? [] });
+      }
+    });
     queueMicrotask(async () => {
       const v = recordVisit();
       setVisit({ streak: v.streak, days: v.days });
@@ -102,6 +118,56 @@ export function MyDesk() {
           </p>
         </div>
       )}
+      <section className={styles.section} aria-labelledby="written-heading">
+        <h2 id="written-heading">Your articles</h2>
+        {written.kind === 'loading' ? (
+          <p className={styles.meta}>Loading what you wrote…</p>
+        ) : written.kind === 'signed-out' ? (
+          <div className={styles.empty}>
+            <p>Sign in to see what you wrote here and to write more.</p>
+            <Link className="bb-button bb-button--primary" href="/sign-in?next=%2Fdesk">
+              Sign in
+            </Link>
+          </div>
+        ) : written.list.length ? (
+          <>
+            <ul className={styles.list}>
+              {written.list.map((a) => (
+                <li key={a.id} className={styles.item}>
+                  <Link href={'/articles/' + a.id}>{a.title}</Link>
+                  <p className={styles.meta}>
+                    {a.status === 'draft' ? 'Draft' : 'Published'} · updated{' '}
+                    {zurichTime(a.updatedAt)}
+                    {a.respondToId ? ' · a response' : ''}
+                  </p>
+                  <div className={styles.chips}>
+                    <Link className={styles.chip} href={'/articles/' + a.id + '/edit'}>
+                      Edit
+                    </Link>
+                    {a.status === 'published' && (
+                      <Link className={styles.chip} href={'/analyze?article=' + a.id}>
+                        Examine it
+                      </Link>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.chips}>
+              <Link className="bb-button bb-button--primary" href="/write">
+                Write another
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className={styles.empty}>
+            <p>Nothing written yet. Say something; the evidence can check it afterwards.</p>
+            <Link className="bb-button bb-button--primary" href="/write">
+              Write an article
+            </Link>
+          </div>
+        )}
+      </section>
       <section className={styles.section} aria-labelledby="mine-heading">
         <h2 id="mine-heading">Your investigations</h2>
         {rows === null ? (
@@ -166,7 +232,8 @@ export function MyDesk() {
         )}
       </section>
       <p className={styles.meta}>
-        Your desk is kept in this browser. Keeping it across devices with your account is next.
+        Your articles follow your account. Investigations, follows and the streak are kept in this
+        browser; keeping them across devices is next.
       </p>
     </>
   );

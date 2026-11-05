@@ -8,6 +8,16 @@ As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: coll
 
 ## Current state
 
+- Writing (`src/lib/writing/`, `src/app/write/`, `src/app/articles/`, `src/app/api/writing/`):
+  account-backed written articles (`WrittenArticle`, migration 0007) with drafts, responses
+  (`respondToId`), the headline a piece is about (`sourceUrl`/`sourceTitle`) and the author's
+  examination (`reportId`). `trendingTopics` (`src/lib/writing/trending.ts`) finds subjects
+  shared across wires for Today and the composer. A nameless account sets its byline in the
+  composer (`authClient.updateUser`). "Post on OrangeCat" opens
+  `orangecat.ch/articles/new?import=<this article's JSON url>`; OrangeCat's composer reads it
+  through its own server proxy. Tested end to end in a browser against a local Postgres
+  (sign-up → write → publish → share → respond → edit → draft → delete, phone and desktop).
+
 - Responsive rewrite repair: `rewrite.module.css` uses shrinkable grid tracks
   and wraps imported/generated long text; `report.module.css` does the same for
   the annotated source. `scripts/investigation-browser-check.mjs` includes
@@ -71,6 +81,13 @@ Screenshots: a Playwright helper outside the repo; any headless Chromium at
 (`gh workflow run auto-merge.yml` if it stalls); deploy follows on main.
 
 ## Known issues
+
+- The sign-in page shows "Continue with OrangeCat" whenever `SIGNIN_*` is set, but Morulia
+  (`morulia.orangecat.ch/api/providers`) has no provider switched on yet, so the button dead-ends.
+  The fix belongs in `@bitbaum/accountkit` (hide the button when the issuer publishes no
+  providers) and in Morulia (paste one provider's keys).
+- Written articles have no comments yet — responses are whole articles. `threadkit` is the
+  intended comment layer.
 
 - The citation check is a model pass: it can miss or over-flag (it flags
   numbers cited to an indicator *definition* finding; the fix is to cite the
