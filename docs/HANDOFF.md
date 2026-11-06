@@ -14,10 +14,10 @@ Current candidate uses published SiteKit 0.7.0, tagged at
 [exact-commit CI](https://github.com/bitbaum/sitekit/actions/runs/42132997173)
 and [npm publication](https://github.com/bitbaum/sitekit/actions/runs/42132997593)
 passed. The exact-version npm metadata matched that commit and the locked
-integrity. Local online installation hit upstream proxy transport errors for
-registry metadata; offline installation correctly failed for missing cached
-metadata. Candidate CI must complete the normal online install and all gates.
-Do not infer final verification from the downloaded archive alone.
+integrity. Local online installation hit upstream proxy transport errors and
+offline installation failed for missing cached metadata. The candidate's normal
+online CI installation and full verification passed; its source tree matched the
+locally built and browser-tested implementation.
 
 BiasLens supplies descriptive groups; SiteKit owns the disclosure, layout,
 keyboard/focus behavior and dismissal. The phone shortcuts use SiteKit SVG
@@ -38,10 +38,19 @@ page list, dimensions and PNG checks after the Chromium CLI capture timed out.
 The harness owns its Next process directly so cleanup stops the server.
 Generated browser evidence stays out of source formatting and Git.
 
-Source includes the newer writing-tools/comments work from #189 and dependency
-update #190. Earlier browser/verify results on the old base are not final-source
-evidence. Next: run the full consumer verify/build/browser gates, inspect the
-corrected screenshots, then normal PR/rollout/deployment and receipt checks.
+Source preserves the writing-tools/comments work from #189 and the published
+package floors from #190/#191. [PR #192](https://github.com/bitbaum/biaslens/pull/192)
+is the authority for current candidate, merge and deployment evidence.
+[Candidate CI](https://github.com/bitbaum/biaslens/actions/runs/42134378213)
+passed online frozen install, full verify (211 unit tests in 42 files plus nine
+design checks) and production build.
+[Browser CI](https://github.com/bitbaum/biaslens/actions/runs/42134378714)
+passed both screenshots/user flows and the database-backed account lifecycle.
+Corrected desktop, phone and 320px account-menu screenshots were inspected;
+local production-build browser checks also passed. Later documentation-only
+commits retain normal required checks. A source commit or PR merge alone does
+not establish deployment: check the PR's served receipt and current-artifact
+journey before treating the canary as deployed.
 The wider one-loop/WritingKit adoption remains open; follow
 [Fleet's content plan](https://github.com/bitbaum/fleet/blob/main/docs/content-workflow-plan-2026-11-05.md)
 for Heidi, Loki and cross-product ownership. Private drafts do not synchronize.

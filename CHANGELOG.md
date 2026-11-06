@@ -9,7 +9,7 @@
 - **One shape for an article's actions**: Share as the primary, then equal secondary actions (two columns on a phone, one row on a desk); the author's Edit and Delete sit apart as quiet links. Responses and comments share one section shape.
 ## Unreleased — grouped navigation
 
-- The shared SiteKit menu groups existing destinations by reading, article work and personal work/method. Descriptions explain each screen; the phone task bar remains available.
+- The shared SiteKit menu groups existing destinations by reading, article work and personal work/method. Descriptions explain each screen; the phone task bar remains available with shared SVG icons. Desktop panels align with their header frame and narrow account popups keep every row visible.
 - The footer calls `/workspace` “Workspace tools”, matching its destination. Rewrite actions remain on examined articles.
 
 ## Unreleased — write your own article
