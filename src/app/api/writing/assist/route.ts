@@ -3,7 +3,7 @@ import { clientIp, slidingWindow, toHeaders } from 'limitkit';
 
 import { BodyTooLarge, originAllowed, readBoundedJson } from '@/lib/api/guard';
 import { requireUser } from '@/lib/auth';
-import { assistMessages, parseAssistAnswer, parseAssistInput } from '@bitbaum/writingkit';
+import { assistMessages, parseAssistAnswer, parseAssistInput } from '@/lib/writing/assist';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

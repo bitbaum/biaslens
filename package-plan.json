@@ -183,15 +183,11 @@
       "package": "@bitbaum/writingkit",
       "bindings": [
         {
-          "file": "src/app/write/Composer.tsx",
-          "symbols": ["ArticleComposer"]
-        },
-        {
-          "file": "src/app/api/writing/assist/route.ts",
-          "symbols": ["assistMessages", "parseAssistAnswer", "parseAssistInput"]
+          "file": "src/app/_components/writing/useWritingOperation.ts",
+          "symbols": ["WritingSession"]
         }
       ],
-      "notes": "The composer, its tools and the writing-help prompts are the package's; this app supplies the wire/response context, the byline, the two routes and the model chain."
+      "notes": "WritingKit owns operation reservation, cancellation and identity/revision safety for the existing composer assistance and source rewrite workspace. BiasLens owns editor fields, safe Undo, device/account drafts, transport, publishing and evidence/simulation labels. Versioned investigation writes retain their server capability and optimistic revision checks."
     }
   },
   "productOwned": {

@@ -6,6 +6,42 @@ Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
 
 As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: collapse Examine/Investigate/Rewrite/notebook into one article page (Read · Talk · Check · Rewrite), add chat, a followed-sources feed and sitekit nav. Its last section is a ready-to-paste build brief for phase 1. The briefs further down are superseded where they conflict.
 
+## WritingKit composer and source rewrite adoption
+
+Implementation branch: `feat/writingkit-biaslens`, starting from navigation release
+`91a3819f3dc7799136884ce0809c9c8cfd48a282`. Scope: adopt the verified WritingKit
+release in existing composer assistance and source RewriteStudio. Preserve the
+current editor/tools, original sources, simulation labels and copied output.
+Keep Undo and storage in the composer. Investigation revision writes are a
+separate adapter scope: retain their server capability/revision checks and
+history; stopping a browser request does not roll back a committed server write.
+
+Acceptance: synchronous overlap prevention, Strict Mode lifecycle, late answers
+after manual edit/revert, account/draft/report switches, cancellation followed
+by new work, safe Undo after editing and source rewrite option changes. Run the
+normal full verify/build/browser gates and existing server conflict/capability
+checks, then fleet sweep, deployed receipt and current-artifact journey.
+Host adapters are implemented using the verified Git artifact; its compiled
+entry matched the tagged source. Full verify passed (211 tests in 42 files plus nine design checks), the
+production build passed, and the controlled browser lifecycle suite passed at 320/390/834/1440px, including an abort-ignoring
+provider, Strict Mode, edit/revert, safe Undo, account/draft/report switches,
+latest anonymous-draft handoff and labelled source-copy preservation. Friendly
+network-error/retry and instruction-edit coverage also passed. The screenshot
+fixture exposed the existing client-input import of a server store; PUBLIC_ID
+now has one client-safe producer and the store preserves its public export.
+Full local browser smoke passed: 42 page captures, shared shell, existing
+investigation journeys and the four-width WritingKit suite. The fixture uses the
+complete product stylesheet stack with controlled auth/model/publishing boundaries.
+[PR #194](https://github.com/bitbaum/biaslens/pull/194) owns exact candidate CI,
+fleet-sweep merge, deployment and served-receipt/journey evidence; inspect it before
+resuming. Concurrent ChatKit 0.23.0 (#193) and generated fleet rules (#195)
+were reconciled into this candidate; retain both when refreshing it. Local
+checks alone do not establish those later stages. Next after this
+bounded adoption: the one-loop workspace and a versioned investigation adapter
+that reconciles server writes rather than pretending browser abort rolls them
+back. Wider one-loop consolidation, Heidi/Loki and physical keyboard/production
+publication acceptance remain open.
+
 ## Grouped navigation canary
 
 Current candidate uses published SiteKit 0.7.0, tagged at

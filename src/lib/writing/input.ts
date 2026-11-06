@@ -2,7 +2,7 @@
  * What a person may send when writing. Validated as untrusted input on every
  * write, and the limits are stated once, here.
  */
-import { PUBLIC_ID } from '@/lib/reports/store';
+import { PUBLIC_ID } from '@/lib/reports/public-id';
 
 export const WRITING_LIMITS = {
   title: 160,

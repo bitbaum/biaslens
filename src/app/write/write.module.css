@@ -113,11 +113,23 @@
   cursor: pointer;
   white-space: nowrap;
 }
+.form {
+  display: grid;
+  gap: 6px;
+}
 .label {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-muted);
   margin-top: 10px;
+}
+.title {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  padding: 10px 14px;
+  width: 100%;
 }
 .byline {
   font-size: 16px;
@@ -127,4 +139,179 @@
 .byline:focus {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
+}
+.body {
+  font-size: 17px;
+  line-height: 1.7;
+  padding: 14px;
+  min-height: 240px;
+  width: 100%;
+  resize: vertical;
+  overflow: hidden;
+}
+.title:focus,
+.body:focus {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.problems {
+  border: 1px solid var(--color-stance-contradicts);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--color-stance-contradicts);
+}
+.problems ul {
+  margin: 0;
+  padding-left: 18px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.primary {
+  min-height: 48px;
+}
+.actions :global(.bb-button--primary) {
+  color: var(--bb-action-fg);
+}
+
+/* The editor's head: Write | Preview on the left, the tools on the right. */
+.editorHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+.tabs {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.tab {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 14px;
+  min-height: 36px;
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.tab[aria-selected='true'] {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tool {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.tool[aria-pressed='true'] {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+.tool:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.toolGap {
+  width: 8px;
+}
+.panel {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  padding: 14px 16px;
+  display: grid;
+  gap: 10px;
+}
+.panelHead h2 {
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+.panelHead p {
+  margin: 0;
+}
+.panelActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.panelActions :global(.bb-button--primary) {
+  color: var(--bb-action-fg);
+}
+.live {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-brand);
+  background: var(--color-surface-muted);
+  min-height: 44px;
+  line-height: 1.5;
+}
+.heard {
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 10px 12px;
+  resize: vertical;
+}
+.problemLine {
+  margin: 0;
+  color: var(--color-stance-contradicts);
+  font-size: 14px;
+}
+.improveRow {
+  display: flex;
+  gap: 8px;
+}
+.instruction {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  padding: 10px 12px;
+}
+.code {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--color-surface-muted);
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.preview {
+  min-height: 240px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  font-size: 17px;
+  line-height: 1.7;
+}
+.preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
