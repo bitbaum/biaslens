@@ -34,7 +34,9 @@ investigation journeys and the four-width WritingKit suite. The fixture uses the
 complete product stylesheet stack with controlled auth/model/publishing boundaries.
 [PR #194](https://github.com/bitbaum/biaslens/pull/194) owns exact candidate CI,
 fleet-sweep merge, deployment and served-receipt/journey evidence; inspect it before
-resuming. Local checks alone do not establish those later stages. Next after this
+resuming. Concurrent ChatKit 0.23.0 (#193) and generated fleet rules (#195)
+were reconciled into this candidate; retain both when refreshing it. Local
+checks alone do not establish those later stages. Next after this
 bounded adoption: the one-loop workspace and a versioned investigation adapter
 that reconciles server writes rather than pretending browser abort rolls them
 back. Wider one-loop consolidation, Heidi/Loki and physical keyboard/production
