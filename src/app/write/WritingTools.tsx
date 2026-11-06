@@ -73,17 +73,22 @@ const PROBLEM_TEXT = {
 export function SpeakPanel({
   onBrief,
   onDictate,
+  onEdit,
   busy,
   canDraft,
 }: {
   onBrief: (brief: string) => void;
   onDictate: (text: string) => void;
+  onEdit: () => void;
   busy: boolean;
   canDraft: boolean;
 }) {
   const [heard, setHeard] = useState('');
   const dictation = useDictation({
-    onText: (text) => setHeard((current) => (current ? current + ' ' + text : text).trim()),
+    onText: (text) => {
+      onEdit();
+      setHeard((current) => (current ? current + ' ' + text : text).trim());
+    },
     transcribeUrl: '/api/transcribe',
     rememberKey: 'biaslens:dictation',
     maxRecordingMs: 180_000,
@@ -157,7 +162,10 @@ export function SpeakPanel({
         id="write-heard"
         className={`${styles.heard} bb-control`}
         value={heard}
-        onChange={(event) => setHeard(event.target.value)}
+        onChange={(event) => {
+          onEdit();
+          setHeard(event.target.value);
+        }}
         placeholder="Your words appear here…"
         rows={4}
       />
@@ -194,18 +202,23 @@ export function SpeakPanel({
 /** "Make it tighter", "fix the grammar", "add the other side": one instruction, spoken or typed. */
 export function ImprovePanel({
   onImprove,
+  onEdit,
   busy,
   canUndo,
   onUndo,
 }: {
   onImprove: (instruction: string) => void;
+  onEdit: () => void;
   busy: boolean;
   canUndo: boolean;
   onUndo: () => void;
 }) {
   const [instruction, setInstruction] = useState('');
   const dictation = useDictation({
-    onText: (text) => setInstruction((current) => (current ? current + ' ' + text : text).trim()),
+    onText: (text) => {
+      onEdit();
+      setInstruction((current) => (current ? current + ' ' + text : text).trim());
+    },
     transcribeUrl: '/api/transcribe',
     rememberKey: 'biaslens:dictation',
     maxRecordingMs: 60_000,
@@ -227,7 +240,15 @@ export function ImprovePanel({
       </div>
       <div className={styles.chips}>
         {suggestions.map((s) => (
-          <button key={s} type="button" className={styles.chip} onClick={() => setInstruction(s)}>
+          <button
+            key={s}
+            type="button"
+            className={styles.chip}
+            onClick={() => {
+              onEdit();
+              setInstruction(s);
+            }}
+          >
             {s}
           </button>
         ))}
@@ -237,7 +258,10 @@ export function ImprovePanel({
           className={`${styles.instruction} bb-control`}
           aria-label="What to change"
           value={instruction}
-          onChange={(event) => setInstruction(event.target.value)}
+          onChange={(event) => {
+            onEdit();
+            setInstruction(event.target.value);
+          }}
           placeholder="What should change?"
           maxLength={1000}
         />

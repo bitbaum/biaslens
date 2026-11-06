@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { useWritingOperation } from '@/app/_components/writing/useWritingOperation';
 import { ReplyComposer } from '@/app/_components/replies/ReplyComposer';
 import type { ReportResult } from '@/lib/analysis/run';
 import { localized, PERSPECTIVES, type PerspectiveId } from '@/lib/config/perspectives';
@@ -26,7 +27,11 @@ type Candidate = { qid: string; label: string; description: string | null };
  * carries a label written by code, and a rewrite of the article comes with a
  * check of which facts it kept, changed, dropped or added.
  */
-export function RewriteStudio({ reportId, result }: { reportId: string; result: ReportResult }) {
+type Props = { reportId: string; result: ReportResult };
+export function RewriteStudio(props: Props) {
+  return <RewriteWorkspace key={props.reportId} {...props} />;
+}
+function RewriteWorkspace({ reportId, result }: Props) {
   const copy = rewriteCopy(result.language);
   const [form, setForm] = useState<RewriteForm>(
     result.sourceText || result.origin.url ? 'rewrite' : 'response',
@@ -38,7 +43,6 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
   const [personQid, setPersonQid] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [length, setLength] = useState<RewriteLength>('short');
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rewrite, setRewrite] = useState<StudioRewrite | null>(null);
   const [sending, setSending] = useState(false);
@@ -46,6 +50,24 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
   const investigationId =
     investigation.match(/investigations\/([a-zA-Z0-9]{8,16})/)?.[1] ??
     (/^[a-zA-Z0-9]{8,16}$/.test(investigation.trim()) ? investigation.trim() : null);
+
+  const writing = useWritingOperation(
+    reportId,
+    JSON.stringify([
+      result.sourceText,
+      result.origin.textSha256,
+      result.language,
+      form,
+      kind,
+      axes,
+      outlet,
+      person,
+      personQid,
+      length,
+      investigation,
+    ]),
+  );
+  const busy = writing.busy;
 
   const voice = (): Voice | null => {
     if (kind === 'perspective') return axes.length ? { kind, axes } : null;
@@ -62,49 +84,54 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
 
   const write = async () => {
     const chosen = voice();
-    if (!chosen) return;
-    setBusy(true);
+    if (!chosen || writing.isBusy()) return;
     setError(null);
     setCandidates([]);
-    try {
-      const response = await fetch('/api/rewrite', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          reportId,
-          form,
-          voice: chosen,
-          length,
-          text: result.sourceText,
-          investigationId,
-        }),
-      });
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        rewrite?: StudioRewrite;
-        error?: {
-          message?: string;
-          reason?: keyof typeof copy.personErrors;
-          candidates?: Candidate[];
+    await writing.run(
+      async ({ signal }) => {
+        const payload = (await fetch('/api/rewrite', {
+          signal,
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            reportId,
+            form,
+            voice: chosen,
+            length,
+            text: result.sourceText,
+            investigationId,
+          }),
+        })
+          .then((response) => response.json())
+          .catch(() => {
+            throw new Error(copy.requestFailed);
+          })) as {
+          ok?: boolean;
+          rewrite?: StudioRewrite;
+          error?: {
+            message?: string;
+            reason?: keyof typeof copy.personErrors;
+            candidates?: Candidate[];
+          };
         };
-      };
-      if (!payload.ok || !payload.rewrite) {
-        const reason = payload.error?.reason;
-        if (reason === 'ambiguous') setCandidates(payload.error?.candidates ?? []);
-        setError(
-          reason
-            ? copy.personErrors[reason]
-            : (payload.error?.message ?? copy.personErrors.lookup_failed),
-        );
-        return;
-      }
-      setRewrite(payload.rewrite);
-      setSending(false);
-    } catch {
-      setError('The rewrite could not be written. Check your connection and try again.');
-    } finally {
-      setBusy(false);
-    }
+        return payload;
+      },
+      (payload) => {
+        if (!payload.ok || !payload.rewrite) {
+          const reason = payload.error?.reason;
+          if (reason === 'ambiguous') setCandidates(payload.error?.candidates ?? []);
+          setError(
+            reason
+              ? copy.personErrors[reason]
+              : (payload.error?.message ?? copy.personErrors.lookup_failed),
+          );
+          return;
+        }
+        setRewrite(payload.rewrite);
+        setSending(false);
+      },
+      copy.optionsChanged,
+    );
   };
 
   return (
@@ -253,10 +280,25 @@ export function RewriteStudio({ reportId, result }: { reportId: string; result: 
             ))}
           </div>
 
-          {error && (
+          {(error || writing.error) && (
             <p role="alert" className={styles.error}>
-              {error}
+              {error || writing.error}
             </p>
+          )}
+          {busy && (
+            <div>
+              <button
+                type="button"
+                className="bb-button bb-button--secondary"
+                onClick={() => {
+                  writing.cancel();
+                  setError(null);
+                }}
+              >
+                {copy.stopWaiting}
+              </button>
+              <p className={styles.hint}>{copy.stoppingHint}</p>
+            </div>
           )}
           <button
             type="button"

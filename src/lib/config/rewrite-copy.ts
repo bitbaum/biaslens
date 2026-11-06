@@ -18,6 +18,10 @@ export interface RewriteCopy {
   personHint: string;
   write: string;
   writing: string;
+  requestFailed: string;
+  stopWaiting: string;
+  stoppingHint: string;
+  optionsChanged: string;
   original: string;
   result: string;
   copy: string;
@@ -50,6 +54,11 @@ export interface RewriteCopy {
 }
 
 const en: RewriteCopy = {
+  requestFailed: 'The rewrite could not be written. Check your connection and try again.',
+  stopWaiting: 'Stop waiting',
+  stoppingHint: 'Stopping the wait does not undo a rewrite already saved by the server.',
+  optionsChanged: 'The source or options changed while writing. Your choices were kept. Try again.',
+
   investigationLabel: 'Evidence from an investigation (optional)',
   investigationHint:
     'Paste the link of a saved investigation. The rewrite may then cite its linked study findings, each marked [E1], [E2]…',
@@ -115,6 +124,14 @@ const en: RewriteCopy = {
 };
 
 const de: RewriteCopy = {
+  requestFailed:
+    'Die Neufassung konnte nicht geschrieben werden. Prüfe deine Verbindung und versuche es erneut.',
+  stopWaiting: 'Nicht weiter warten',
+  stoppingHint:
+    'Das Beenden des Wartens macht eine bereits auf dem Server gespeicherte Neufassung nicht rückgängig.',
+  optionsChanged:
+    'Quelle oder Optionen haben sich während des Schreibens geändert. Deine Auswahl bleibt erhalten. Versuche es erneut.',
+
   investigationLabel: 'Belege aus einer Untersuchung (optional)',
   investigationHint:
     'Link einer gespeicherten Untersuchung einfügen. Die Fassung darf dann deren verknüpfte Studienbefunde zitieren, jeweils markiert [E1], [E2]…',
@@ -181,6 +198,12 @@ const de: RewriteCopy = {
 };
 
 const fr: RewriteCopy = {
+  requestFailed: 'La réécriture n’a pas pu être rédigée. Vérifiez votre connexion et réessayez.',
+  stopWaiting: 'Arrêter d’attendre',
+  stoppingHint: 'Arrêter d’attendre n’annule pas une réécriture déjà enregistrée sur le serveur.',
+  optionsChanged:
+    'La source ou les options ont changé pendant la rédaction. Vos choix sont conservés. Réessayez.',
+
   investigationLabel: 'Preuves d’une enquête (facultatif)',
   investigationHint:
     'Collez le lien d’une enquête enregistrée. La réécriture pourra citer ses résultats d’études liés, signalés [E1], [E2]…',

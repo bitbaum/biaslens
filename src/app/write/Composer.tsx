@@ -2,9 +2,18 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type SetStateAction,
+} from 'react';
 import { Markdown } from '@bitbaum/chatkit/react';
 
+import { useWritingOperation } from '@/app/_components/writing/useWritingOperation';
 import { authClient } from '@/lib/auth-client';
 import type { WireItem } from '@/lib/wire/parse';
 import { readingMinutes, WRITING_LIMITS, type WritingStatus } from '@/lib/writing/input';
@@ -45,6 +54,8 @@ const DRAFT_PREFIX = 'biaslens:draft:';
 const draftKey = (userId: string | null, editingId: string | null) =>
   DRAFT_PREFIX + (editingId ?? 'new') + ':' + (userId ?? 'anon');
 
+type Fields = { title: string; body: string };
+
 interface Draft {
   title: string;
   body: string;
@@ -67,15 +78,7 @@ const readDraft = (key: string): Draft | null => {
  * headline or article you are answering. Drafts stay on this device until
  * you publish; signing in never loses them.
  */
-export function Composer({
-  user,
-  wire,
-  topics,
-  initialTopic,
-  initialSource,
-  respondTo,
-  initial,
-}: {
+type ComposerProps = {
   user: { id: string; name: string } | null;
   wire: WireItem[];
   topics: Topic[];
@@ -83,13 +86,32 @@ export function Composer({
   initialSource: Source | null;
   respondTo: RespondTo | null;
   initial?: Initial;
-}) {
+};
+
+export function Composer(props: ComposerProps) {
+  return (
+    <ComposerEditor
+      key={JSON.stringify([props.user?.id ?? null, props.initial?.id ?? null])}
+      {...props}
+    />
+  );
+}
+
+function ComposerEditor({
+  user,
+  wire,
+  topics,
+  initialTopic,
+  initialSource,
+  respondTo,
+  initial,
+}: ComposerProps) {
   const router = useRouter();
   const editingId = initial?.id ?? null;
   const key = draftKey(user?.id ?? null, editingId);
-  const [title, setTitle] = useState(initial?.title ?? '');
-  const [body, setBody] = useState(initial?.body ?? '');
-  const [source, setSource] = useState<Source | null>(initial?.source ?? initialSource);
+  const [title, setTitleState] = useState(initial?.title ?? '');
+  const [body, setBodyState] = useState(initial?.body ?? '');
+  const [source, setSourceState] = useState<Source | null>(initial?.source ?? initialSource);
   const answering = initial?.respondTo ?? respondTo;
   const [topic, setTopic] = useState<string | null>(initialTopic);
   const [restored, setRestored] = useState<string | null>(null);
@@ -102,15 +124,84 @@ export function Composer({
   const [savedNote, setSavedNote] = useState<string | null>(null);
   const [panel, setPanel] = useState<Panel>(null);
   const [tab, setTab] = useState<'write' | 'preview'>('write');
-  const [assisting, setAssisting] = useState(false);
-  const [undo, setUndo] = useState<{ title: string; body: string } | null>(null);
+  const [undo, setUndo] = useState<{ before: Fields; after: Fields; context: string } | null>(null);
+  const undoRef = useRef<typeof undo>(null);
+  const fields = useRef({ title, body });
+  const published = useRef(false);
+  const writing = useWritingOperation(key, JSON.stringify([title, body, source, answering]));
+  const assisting = writing.busy;
+  const context = JSON.stringify([source, answering]);
+  const canUndo =
+    !!undo &&
+    undo.context === context &&
+    undo.after.title === title &&
+    undo.after.body === body &&
+    !assisting &&
+    !busy;
+  const latestDraft = useRef<Draft | null>(null);
+  useLayoutEffect(() => {
+    latestDraft.current = {
+      title,
+      body,
+      source,
+      respondToId: answering?.id ?? null,
+      savedAt: new Date().toISOString(),
+    };
+  }, [title, body, source, answering]);
+  useLayoutEffect(
+    () => () => {
+      const draft = latestDraft.current;
+      if (published.current || !draft || (!draft.title && !draft.body)) return;
+      try {
+        localStorage.setItem(key, JSON.stringify({ ...draft, ...fields.current }));
+      } catch {
+        /* Device storage can be blocked. */
+      }
+    },
+    [key],
+  );
+
+  function edit(patch: Partial<Fields>) {
+    published.current = false;
+    writing.invalidate();
+    undoRef.current = null;
+    setUndo(null);
+    fields.current = { ...fields.current, ...patch };
+    if (patch.title !== undefined) setTitleState(patch.title);
+    if (patch.body !== undefined) setBodyState(patch.body);
+  }
+  const setTitle = (next: SetStateAction<string>) =>
+    edit({ title: typeof next === 'function' ? next(fields.current.title) : next });
+  const setBody = (next: SetStateAction<string>) =>
+    edit({ body: typeof next === 'function' ? next(fields.current.body) : next });
+  const setSource = (next: SetStateAction<Source | null>) => {
+    published.current = false;
+    writing.invalidate();
+    undoRef.current = null;
+    setUndo(null);
+    setSourceState(next);
+  };
+  function undoChange() {
+    const change = undoRef.current;
+    if (
+      !change ||
+      change.context !== context ||
+      writing.isBusy() ||
+      busy ||
+      fields.current.title !== change.after.title ||
+      fields.current.body !== change.after.body
+    )
+      return;
+    edit(change.before);
+  }
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   // A draft from an earlier visit comes back — including one typed before
   // signing in, which moves from the anonymous key to this account's.
   useEffect(() => {
+    let active = true;
     queueMicrotask(() => {
-      if (initial) return;
+      if (!active || initial) return;
       const anonKey = draftKey(null, editingId);
       let draft = readDraft(key);
       if (!draft && user && anonKey !== key) {
@@ -131,7 +222,10 @@ export function Composer({
       if (found.source) setSource((current) => current ?? found.source);
       setRestored(found.savedAt);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, on mount
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once per keyed editor, on mount
   }, []);
 
   // Keep the draft on this device as it is written.
@@ -184,35 +278,44 @@ export function Composer({
       router.push('/sign-in?next=' + encodeURIComponent('/write'));
       return;
     }
-    setAssisting(true);
+    if (busy || writing.isBusy()) return;
     setProblems([]);
-    try {
-      const response = await fetch('/api/writing/assist', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ mode, instruction, title, body, language: 'English' }),
-      });
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        title?: string;
-        body?: string;
-        error?: { message?: string };
-      };
-      if (!payload.ok || !payload.body) {
-        setProblems([payload.error?.message ?? 'Writing help could not answer. Try again.']);
-        return;
-      }
-      setUndo({ title, body });
-      if (payload.title && (mode === 'draft' || !title.trim() || payload.title !== title))
-        setTitle(payload.title);
-      setBody(payload.body);
-      setTab('write');
-      setPanel(null);
-    } catch {
-      setProblems(['Writing help could not be reached. Check your connection and try again.']);
-    } finally {
-      setAssisting(false);
-    }
+    const before = { ...fields.current };
+    await writing.run(
+      async ({ signal }) => {
+        const payload = (await fetch('/api/writing/assist', {
+          method: 'POST',
+          signal,
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ mode, instruction, ...before, language: 'English' }),
+        })
+          .then((response) => response.json())
+          .catch(() => {
+            throw new Error(
+              'Writing help could not be reached. Check your connection and try again.',
+            );
+          })) as {
+          ok?: boolean;
+          title?: string;
+          body?: string;
+          error?: { message?: string };
+        };
+        if (!payload.ok || !payload.body)
+          throw new Error(payload.error?.message ?? 'Writing help could not answer. Try again.');
+        return { title: payload.title || before.title, body: payload.body };
+      },
+      (after) => {
+        fields.current = after;
+        writing.invalidate();
+        const change = { before, after, context };
+        undoRef.current = change;
+        setUndo(change);
+        setTitleState(after.title);
+        setBodyState(after.body);
+        setTab('write');
+        setPanel(null);
+      },
+    );
   };
 
   const toggle = (next: Panel) => setPanel((current) => (current === next ? null : next));
@@ -228,11 +331,13 @@ export function Composer({
       router.push('/sign-in?next=' + encodeURIComponent('/write'));
       return;
     }
+    writing.cancel();
     setBusy(status);
     setProblems([]);
     try {
       if (needsName) {
         const { error } = await authClient.updateUser({ name: penName.trim().slice(0, 80) });
+        if (!writing.isActive()) return;
         if (error) {
           setProblems([error.message ?? 'The byline could not be saved. Try again.']);
           return;
@@ -255,6 +360,7 @@ export function Composer({
         id?: string;
         error?: { message?: string; problems?: string[] };
       };
+      if (!writing.isActive()) return;
       if (!payload.ok || !payload.id) {
         setProblems(
           payload.error?.problems?.length
@@ -263,6 +369,7 @@ export function Composer({
         );
         return;
       }
+      published.current = true;
       localStorage.removeItem(key);
       router.push(status === 'published' ? `/articles/${payload.id}` : '/desk');
       router.refresh();
@@ -491,6 +598,7 @@ export function Composer({
 
         {panel === 'speak' && (
           <SpeakPanel
+            onEdit={writing.invalidate}
             busy={assisting}
             canDraft={!!user}
             onBrief={(brief) => void assist('draft', brief)}
@@ -499,20 +607,26 @@ export function Composer({
         )}
         {panel === 'improve' && (
           <ImprovePanel
+            onEdit={writing.invalidate}
             busy={assisting}
-            canUndo={!!undo}
-            onUndo={() => {
-              if (!undo) return;
-              setTitle(undo.title);
-              setBody(undo.body);
-              setUndo(null);
-            }}
+            canUndo={canUndo}
+            onUndo={undoChange}
             onImprove={(instruction) => void assist('improve', instruction)}
           />
         )}
         {panel === 'photo' && <PhotoPanel onPick={insert} />}
         {panel === 'chart' && <ChartPanel onInsert={insert} />}
 
+        {writing.busy && (
+          <button type="button" className="bb-button bb-button--secondary" onClick={writing.cancel}>
+            Cancel writing help
+          </button>
+        )}
+        {writing.error && (
+          <p role="alert" className={styles.problemLine}>
+            {writing.error}
+          </p>
+        )}
         {tab === 'write' ? (
           <textarea
             id="write-body"
@@ -523,7 +637,7 @@ export function Composer({
             onChange={(event) => setBody(event.target.value)}
             maxLength={WRITING_LIMITS.body}
             placeholder="Write here — or press Speak and say what you want written. Paragraphs are enough; Markdown works for headings, lists, links and quotes."
-            disabled={!!busy || assisting}
+            disabled={!!busy}
           />
         ) : (
           <div className={`${styles.preview} journalTheme`} aria-label="Preview">
@@ -534,18 +648,10 @@ export function Composer({
             )}
           </div>
         )}
-        {undo && (
+        {canUndo && (
           <p className={styles.meta}>
             The text was changed by writing help.{' '}
-            <button
-              type="button"
-              className={styles.linkButton}
-              onClick={() => {
-                setTitle(undo.title);
-                setBody(undo.body);
-                setUndo(null);
-              }}
-            >
+            <button type="button" className={styles.linkButton} onClick={undoChange}>
               Undo
             </button>
           </p>
