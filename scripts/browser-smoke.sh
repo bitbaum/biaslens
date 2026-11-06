@@ -17,7 +17,7 @@ echo "Browser: $("$browser" --version)"
 # A throwaway secret enables the real shared auth screens in this isolated test.
 # No test credentials are written to disk or sent to a provider.
 export BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-$(node -e 'process.stdout.write(require("node:crypto").randomBytes(48).toString("base64"))')}"
-pnpm run start --hostname 127.0.0.1 --port 3000 > "$out/server.log" 2>&1 &
+node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3000 > "$out/server.log" 2>&1 &
 app_pid="$!"
 cleanup() {
   kill "$app_pid" 2>/dev/null || true
@@ -60,13 +60,8 @@ for page in 'home|/|Today on BiasLens' 'workspace|/workspace|Your workspace.' 'a
     height="${viewport#*x}"
     png="$out/$slug-$viewport.png"
 
-    timeout 45 "$browser" \
-      --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-      --disable-extensions --force-device-scale-factor=1 \
-      --window-size="$width,$height" --hide-scrollbars \
-      --virtual-time-budget=2000 \
-      --user-data-dir="/tmp/biaslens-browser-$slug-$viewport" \
-      --screenshot="$png" "$url" > "$out/$slug-$viewport.log" 2>&1
+    BROWSER_EXECUTABLE="$browser" timeout 45 node scripts/capture-browser.mjs \
+      "$url" "$width" "$height" "$png" > "$out/$slug-$viewport.log" 2>&1
 
     python3 - "$png" "$width" "$height" <<'PY'
 import struct

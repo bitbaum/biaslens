@@ -10,11 +10,11 @@ try {
   const page = await browser.newPage();
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  for (const width of [390, 834, 1440]) {
+  for (const width of [320, 390, 834, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(base + '/analyze', { waitUntil: 'networkidle' });
     await page.getByRole('heading', { name: 'Examine text.' }).waitFor();
-    await page.getByRole('link', { name: 'Sign in', exact: true }).waitFor();
+    if (width > 380) await page.getByRole('link', { name: 'Sign in', exact: true }).waitFor();
     assert.equal(
       await page.evaluate(() => document.documentElement.scrollWidth > innerWidth),
       false,
@@ -34,31 +34,42 @@ try {
     const headerHeight = (await page.locator('.sk-masthead').boundingBox()).height;
     assert.ok(headerHeight >= 64 && headerHeight <= 70, 'compact shared header at ' + width);
     assert.equal(await page.locator('.sk-footer-group').count(), 3);
-    if (width <= 1100) {
+    {
       const menu = page.locator('[data-sitekit-menu]');
       const summary = menu.locator('summary');
-      await summary.click();
+      await summary.focus();
+      await page.keyboard.press('Enter');
       assert.equal(await menu.evaluate((el) => el.open), true);
-      const links = menu.getByRole('link');
-      assert.equal(await links.count(), 5);
+      const links = menu.locator('.sk-nav-group a');
+      assert.equal(await links.count(), 8);
+      const panel = await menu.locator('nav').boundingBox();
+      assert.ok(panel.x >= 0 && panel.x + panel.width <= width, 'grouped menu fits ' + width);
+      if (width <= 380) {
+        const signIn = menu.getByRole('link', { name: 'Sign in', exact: true });
+        assert.ok((await signIn.boundingBox()).height >= 44);
+      }
       for (const link of await links.all()) assert.ok((await link.boundingBox()).height >= 44);
       await links.first().focus();
       await page.keyboard.press('Escape');
       assert.equal(await menu.evaluate((el) => el.open), false);
       assert.equal(await summary.evaluate((el) => el === document.activeElement), true);
       await summary.click();
-      await page.mouse.click(4, 500);
+      await page.mouse.click(4, 850);
       assert.equal(await menu.evaluate((el) => el.open), false);
       await summary.click();
-      await menu.getByRole('link', { name: 'My desk', exact: true }).click();
+      await menu.locator('a[href="/desk"]').click();
       await page.waitForURL('**/desk');
       assert.equal(await menu.evaluate((el) => el.open), false);
       await summary.click();
-      assert.equal(
-        await menu.getByRole('link', { name: 'My desk', exact: true }).getAttribute('aria-current'),
-        'page',
-      );
-    } else assert.equal(await page.locator('.sk-desktop-nav').isVisible(), true);
+      assert.equal(await menu.locator('a[href="/desk"]').getAttribute('aria-current'), 'page');
+      await page.screenshot({
+        path:
+          (process.env.BROWSER_SMOKE_DIR ?? 'browser-smoke-artifacts') +
+          '/grouped-menu-' +
+          width +
+          '.png',
+      });
+    }
   }
   for (const path of [
     '/workspace',
@@ -199,26 +210,68 @@ try {
     }),
   );
   const accountPage = await signedIn.newPage();
-  await accountPage.goto(base + '/workspace', { waitUntil: 'networkidle' });
-  const accountTrigger = accountPage.getByRole('button', {
-    name: 'Account: Test Researcher',
-    exact: true,
-  });
-  await accountTrigger.click();
-  assert.equal(
+  for (const width of [320, 390, 834, 1440]) {
+    await accountPage.setViewportSize({ width, height: 900 });
+    await accountPage.goto(base + '/workspace', { waitUntil: 'networkidle' });
+    if (width <= 380) await accountPage.locator('[data-sitekit-menu] summary').click();
+    const accountTrigger = accountPage
+      .locator(width <= 380 ? '.sk-grouped-actions' : '.sk-account-actions')
+      .getByRole('button', { name: 'Account: Test Researcher', exact: true, includeHidden: true });
+    await accountTrigger.click();
+    assert.equal(
+      await accountPage
+        .getByRole('menuitem', { name: 'Profile & security', exact: true })
+        .getAttribute('href'),
+      '/account',
+    );
+    assert.equal(
+      await accountPage
+        .getByRole('menuitem', { name: 'Your notebook', exact: true })
+        .getAttribute('href'),
+      '/explore',
+    );
     await accountPage
       .getByRole('menuitem', { name: 'Profile & security', exact: true })
-      .getAttribute('href'),
-    '/account',
-  );
-  assert.equal(
+      .click({ trial: true });
     await accountPage
       .getByRole('menuitem', { name: 'Your notebook', exact: true })
-      .getAttribute('href'),
-    '/explore',
-  );
-  await accountPage.keyboard.press('Escape');
-  assert.equal(await accountTrigger.getAttribute('aria-expanded'), 'false');
+      .click({ trial: true });
+    assert.equal(
+      await accountPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      true,
+    );
+    assert.deepEqual(
+      await accountPage
+        .getByRole('menuitem')
+        .evaluateAll((items) => [
+          ...new Set(items.map((item) => getComputedStyle(item).flexDirection)),
+        ]),
+      ['row'],
+      'account links and buttons retain one row anatomy',
+    );
+    const accountBounds = await accountPage.getByRole('menu').boundingBox();
+    assert.ok(
+      accountBounds.x >= 0 && accountBounds.x + accountBounds.width <= width,
+      'account popup fits viewport at ' + width,
+    );
+    if (width <= 380) {
+      const menuBounds = await accountPage.locator('.sk-grouped-panel').boundingBox();
+      assert.ok(
+        accountBounds.x >= menuBounds.x &&
+          accountBounds.x + accountBounds.width <= menuBounds.x + menuBounds.width,
+        'account popup is not clipped by navigation at ' + width,
+      );
+    }
+    await accountPage.screenshot({
+      path:
+        (process.env.BROWSER_SMOKE_DIR ?? 'browser-smoke-artifacts') +
+        '/account-menu-' +
+        width +
+        '.png',
+    });
+    await accountPage.keyboard.press('Escape');
+    assert.equal(await accountTrigger.getAttribute('aria-expanded'), 'false');
+  }
   await signedIn.close();
   const noJs = await browser.newContext({
     javaScriptEnabled: false,

@@ -7,6 +7,10 @@
 - **Photo** and **Chart** in the composer: an openly licensed Wikimedia Commons photo lands as a figure with its credit and licence; a chart block (bar, line, area) is drawn by bip-kit from numbers you type. Heading, bold, quote, list and link buttons; a Preview tab.
 - **Comments** under every published article: chatkit's composer with the microphone, oldest first, removable by their author or the article's. `Comment` table (migration 0008), `GET/POST/DELETE /api/writing/<id>/comments`. Not threadkit: a public article's comments are not participation-gated, the page is the room.
 - **One shape for an article's actions**: Share as the primary, then equal secondary actions (two columns on a phone, one row on a desk); the author's Edit and Delete sit apart as quiet links. Responses and comments share one section shape.
+## Unreleased — grouped navigation
+
+- The shared SiteKit menu groups existing destinations by reading, article work and personal work/method. Descriptions explain each screen; the phone task bar remains available.
+- The footer calls `/workspace` “Workspace tools”, matching its destination. Rewrite actions remain on examined articles.
 
 ## Unreleased — write your own article
 

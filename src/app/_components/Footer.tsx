@@ -20,7 +20,7 @@ export function SiteFooter() {
             { href: ROUTES.write, label: 'Write an article' },
             { href: ROUTES.articles, label: 'Articles' },
             { href: '/investigations', label: 'Investigations' },
-            { href: ROUTES.workspace, label: 'Rewrite studio' },
+            { href: ROUTES.workspace, label: 'Workspace tools' },
             { href: ROUTES.analyze, label: 'Examine text' },
             { href: ROUTES.explore, label: 'Research notebook' },
             { href: ROUTES.arena, label: 'Conversations' },

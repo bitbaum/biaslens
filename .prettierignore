@@ -31,3 +31,6 @@ yarn.lock
 *.md
 # drizzle-kit generated migration snapshots — machine-written, not hand-formatted
 drizzle/meta/
+
+# Generated browser smoke evidence is retained by CI.
+browser-smoke-artifacts/

@@ -5,7 +5,7 @@
       "bindings": [
         {
           "file": "src/app/_components/Chrome.tsx",
-          "symbols": ["SiteMasthead"]
+          "symbols": ["SiteMasthead", "SiteTabBar", "SiteIcon"]
         },
         {
           "file": "src/app/_components/Footer.tsx",
@@ -19,7 +19,8 @@
           "file": "src/app/workspace/page.tsx",
           "symbols": ["HeroSection"]
         }
-      ]
+      ],
+      "notes": "SiteKit owns the grouped menu markup, responsive layout and dismissal. Chrome supplies destinations and descriptions; the mobile tab bar retains frequent task shortcuts. The masthead tabBar shortcut is intentionally not enabled: the grouped menu carries destinations beyond the five phone shortcuts."
     },
     "identity": {
       "package": "@bitbaum/accountkit",
