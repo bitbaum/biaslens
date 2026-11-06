@@ -78,6 +78,30 @@
         {
           "file": "src/app/explore/NotebookAssistant.tsx",
           "symbols": ["Composer"]
+        },
+        {
+          "file": "src/app/articles/[id]/Comments.tsx",
+          "symbols": ["CommentThread"]
+        },
+        {
+          "file": "src/app/_components/replies/ReplyComposer.tsx",
+          "symbols": ["DictationField"]
+        },
+        {
+          "file": "src/app/analyze/AnalyzeWorkspace.tsx",
+          "symbols": ["DictationField"]
+        },
+        {
+          "file": "src/app/explore/NotebookFields.tsx",
+          "symbols": ["DictationField"]
+        },
+        {
+          "file": "src/app/explore/SourceAdder.tsx",
+          "symbols": ["DictationField"]
+        },
+        {
+          "file": "src/app/investigations/InvestigationEditor.tsx",
+          "symbols": ["DictationField"]
         }
       ]
     },
@@ -154,11 +178,34 @@
           "symbols": ["BarChart", "LineChart", "ShareBars"]
         }
       ]
+    },
+    "writing": {
+      "package": "@bitbaum/writingkit",
+      "bindings": [
+        {
+          "file": "src/app/write/Composer.tsx",
+          "symbols": ["ArticleComposer"]
+        },
+        {
+          "file": "src/app/api/writing/assist/route.ts",
+          "symbols": ["assistMessages", "parseAssistAnswer", "parseAssistInput"]
+        }
+      ],
+      "notes": "The composer, its tools and the writing-help prompts are the package's; this app supplies the wire/response context, the byline, the two routes and the model chain."
     }
   },
   "productOwned": {
     "investigation": "Article reasoning, evidence/provenance contracts, research notebook and transcript metrics are BiasLens domain behavior; no fleet package implements these domain decisions.",
     "theme": "src/app/theme.css is the single product palette/type/spacing adapter, loaded after package defaults. Shared renderers retain ownership of chrome, controls, auth and publishing. docs/design-contract.md governs acceptance.",
     "entry": "The workspace tools and illustrative question examples configure BiasLens investigation journeys; sitekit continues to own shared chrome and hero rendering."
+  },
+  "experience": {
+    "ceiling": {
+      "bareTextareas": 0,
+      "localChrome": 0,
+      "localComposers": 0,
+      "localComments": 0,
+      "localArticleEditors": 0
+    }
   }
 }

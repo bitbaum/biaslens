@@ -1,5 +1,6 @@
 'use client';
 
+import { DictationField } from '@bitbaum/chatkit/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -185,10 +186,13 @@ export function InvestigationEditor({
         </p>
       )}
       <div className={styles.form}>
-        <label>
-          Notes
-          <textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />
-        </label>
+        <DictationField
+          label="Notes"
+          value={notes}
+          onValueChange={setNotes}
+          rows={3}
+          voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
+        />
         <div className={styles.actions}>
           <button
             type="button"
@@ -259,10 +263,13 @@ export function InvestigationEditor({
             ))}
           </select>
         </label>
-        <label>
-          The finding, as the study states it
-          <textarea rows={3} value={draft.statement} onChange={set('statement')} />
-        </label>
+        <DictationField
+          label="The finding, as the study states it"
+          value={draft.statement}
+          onValueChange={(value) => set('statement')({ target: { value } })}
+          rows={3}
+          voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
+        />
         <label>
           Where to check it (page, table, section)
           <input value={draft.locator} onChange={set('locator')} />
@@ -289,14 +296,20 @@ export function InvestigationEditor({
             <option value="context">Context</option>
           </select>
         </label>
-        <label>
-          Why it bears on the claim
-          <textarea rows={2} value={draft.rationale} onChange={set('rationale')} />
-        </label>
-        <label>
-          Strength of evidence note
-          <textarea rows={2} value={draft.strengthNote} onChange={set('strengthNote')} />
-        </label>
+        <DictationField
+          label="Why it bears on the claim"
+          value={draft.rationale}
+          onValueChange={(value) => set('rationale')({ target: { value } })}
+          rows={2}
+          voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
+        />
+        <DictationField
+          label="Strength of evidence note"
+          value={draft.strengthNote}
+          onValueChange={(value) => set('strengthNote')({ target: { value } })}
+          rows={2}
+          voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
+        />
         <div className={styles.actions}>
           <button
             type="button"
