@@ -1,3 +1,4 @@
+// experience-exempt: a timed transcript is structured data (00:00-00:15 | Speaker | text); dictating it is meaningless
 'use client';
 
 import { useState, type FormEvent } from 'react';

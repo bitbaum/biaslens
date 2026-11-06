@@ -142,8 +142,7 @@
   padding-top: 20px;
   border-top: 1px solid var(--color-border);
 }
-.responses h2,
-.comments h2 {
+.responses h2 {
   font-size: 22px;
   margin: 0 0 12px;
 }
@@ -187,30 +186,4 @@
     display: flex;
     flex-wrap: wrap;
   }
-}
-.commentList {
-  margin-bottom: 16px;
-}
-.comment {
-  padding: 12px 0;
-}
-.commentMeta {
-  margin: 0 0 4px;
-  font-size: 13px;
-  color: var(--color-text-muted);
-}
-.commentMeta strong {
-  color: var(--color-text);
-}
-.commentBody {
-  margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  line-height: 1.6;
-}
-.commentBox {
-  margin-top: 8px;
-}
-.commentSignIn {
-  margin: 8px 0 0;
 }

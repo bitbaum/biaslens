@@ -1,6 +1,7 @@
 'use client';
 
 import type { UseAiForm } from '@fleet/ai-forms/react';
+import { DictationField } from '@bitbaum/chatkit/react';
 import { useState } from 'react';
 
 import styles from './explore.module.css';
@@ -32,15 +33,36 @@ function Editable({
 }) {
   const [editing, setEditing] = useState(false);
   if (editing) {
-    const props = {
-      'aria-label': label,
-      autoFocus: true,
-      value,
-      maxLength: multiline ? 4000 : 400,
-      onChange: (event: { target: { value: string } }) => onChange(event.target.value),
-      onBlur: () => setEditing(false),
-    };
-    return multiline ? <textarea rows={5} {...props} /> : <input {...props} />;
+    if (multiline)
+      // Leaving the whole field (not just the text box) saves, so tapping the
+      // microphone does not end the edit.
+      return (
+        <div
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setEditing(false);
+          }}
+        >
+          <DictationField
+            ariaLabel={label}
+            value={value}
+            onValueChange={onChange}
+            maxLength={4000}
+            rows={5}
+            voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
+            inputRef={(el) => el?.focus()}
+          />
+        </div>
+      );
+    return (
+      <input
+        aria-label={label}
+        autoFocus
+        value={value}
+        maxLength={400}
+        onChange={(event) => onChange(event.target.value)}
+        onBlur={() => setEditing(false)}
+      />
+    );
   }
   return (
     <button

@@ -1,5 +1,6 @@
 'use client';
 
+import { DictationField } from '@bitbaum/chatkit/react';
 import { useMemo, useState } from 'react';
 
 import type { ReportResult } from '@/lib/analysis/run';
@@ -205,17 +206,15 @@ export function ReplyComposer({
             onChange={(event) => setName(event.target.value)}
           />
         </label>
-        <label>
-          <span>{copy.noteLabel}</span>
-          <textarea
-            className="bb-control"
-            value={note}
-            maxLength={500}
-            rows={3}
-            placeholder={copy.notePlaceholder}
-            onChange={(event) => setNote(event.target.value)}
-          />
-        </label>
+        <DictationField
+          label={copy.noteLabel}
+          value={note}
+          onValueChange={setNote}
+          maxLength={500}
+          rows={3}
+          placeholder={copy.notePlaceholder}
+          voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
+        />
       </div>
 
       <div className={styles.preview}>

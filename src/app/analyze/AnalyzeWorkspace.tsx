@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { DictationField } from '@bitbaum/chatkit/react';
 import { HeroSection } from '@bitbaum/sitekit/react';
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 
@@ -271,20 +272,17 @@ export function AnalyzeWorkspace({
 
             {mode === 'text' && (
               <>
-                <label className={styles.fieldLabel} htmlFor="article-text">
-                  Text to examine
-                </label>
-                <textarea
+                <DictationField
                   id="article-text"
+                  label="Text to examine"
                   disabled={busy}
-                  className={`${styles.textarea} bb-control`}
                   placeholder="Paste at least 200 characters. Useful when the publisher requires a login or blocks automated reading."
                   rows={9}
                   value={text}
-                  onChange={(event) => setText(event.target.value)}
-                  minLength={MIN_TEXT_LENGTH}
+                  onValueChange={setText}
                   maxLength={30_000}
                   required
+                  voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
                 />
                 <p className={styles.hint}>
                   {text.trim().length.toLocaleString()} / 30,000 characters. If you supply a URL, we
