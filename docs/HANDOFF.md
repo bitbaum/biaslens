@@ -6,6 +6,55 @@ Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
 
 As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: collapse Examine/Investigate/Rewrite/notebook into one article page (Read · Talk · Check · Rewrite), add chat, a followed-sources feed and sitekit nav. Its last section is a ready-to-paste build brief for phase 1. The briefs further down are superseded where they conflict.
 
+## Grouped navigation canary
+
+Current candidate uses published SiteKit 0.7.0, tagged at
+`28012464359deaec61deee35b81ba6cabfcc0cfe`.
+[Release](https://github.com/bitbaum/sitekit/actions/runs/42132915819),
+[exact-commit CI](https://github.com/bitbaum/sitekit/actions/runs/42132997173)
+and [npm publication](https://github.com/bitbaum/sitekit/actions/runs/42132997593)
+passed. The exact-version npm metadata matched that commit and the locked
+integrity. Local online installation hit upstream proxy transport errors and
+offline installation failed for missing cached metadata. The candidate's normal
+online CI installation and full verification passed; its source tree matched the
+locally built and browser-tested implementation.
+
+BiasLens supplies descriptive groups; SiteKit owns the disclosure, layout,
+keyboard/focus behavior and dismissal. The phone shortcuts use SiteKit SVG
+icons. Keep the masthead `tabBar` shortcut off: hiding the grouped menu would
+remove destinations beyond the five shortcuts. The footer labels `/workspace`
+as “Workspace tools”, matching its destination.
+
+Screenshot review drove shared corrections in
+[SiteKit #47](https://github.com/bitbaum/sitekit/pull/47) and
+[#48](https://github.com/bitbaum/sitekit/pull/48): align desktop panels with the
+header frame, avoid clipping narrow account popups, and preserve nested host
+widget styling. Consumer checks measure actual AccountKit popup bounds and row
+anatomy in both account states at 320/390/834/1440px. The signed-in menu fixture
+is controlled; it is not a real production sign-in or physical-keyboard test.
+
+Browser screenshots use Playwright against the production build with the same
+page list, dimensions and PNG checks after the Chromium CLI capture timed out.
+The harness owns its Next process directly so cleanup stops the server.
+Generated browser evidence stays out of source formatting and Git.
+
+Source preserves the writing-tools/comments work from #189 and the published
+package floors from #190/#191. [PR #192](https://github.com/bitbaum/biaslens/pull/192)
+is the authority for current candidate, merge and deployment evidence.
+[Candidate CI](https://github.com/bitbaum/biaslens/actions/runs/42134378213)
+passed online frozen install, full verify (211 unit tests in 42 files plus nine
+design checks) and production build.
+[Browser CI](https://github.com/bitbaum/biaslens/actions/runs/42134378714)
+passed both screenshots/user flows and the database-backed account lifecycle.
+Corrected desktop, phone and 320px account-menu screenshots were inspected;
+local production-build browser checks also passed. Later documentation-only
+commits retain normal required checks. A source commit or PR merge alone does
+not establish deployment: check the PR's served receipt and current-artifact
+journey before treating the canary as deployed.
+The wider one-loop/WritingKit adoption remains open; follow
+[Fleet's content plan](https://github.com/bitbaum/fleet/blob/main/docs/content-workflow-plan-2026-11-05.md)
+for Heidi, Loki and cross-product ownership. Private drafts do not synchronize.
+
 ## Current state
 
 - Writing tools (`src/app/write/WritingTools.tsx`): Speak (chatkit `useDictation`, server leg
@@ -31,17 +80,15 @@ As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: coll
   long URLs, both phone comparison views, open evidence notes and labelled copy
   output. Run through `pnpm run browser:smoke` against a production build.
   This repair does not complete the one-loop migration or navigation redesign.
-- Navigation inspection confirmed `Chrome.tsx` uses sitekit's masthead/tab bar.
-  Its current navigation API is a flat list. A grouped, descriptive menu should
-  extend sitekit upstream and arrive through a published dependency update,
-  not a product-local replacement.
-- Shared authoring follow-up: OrangeCat needs one generation/editing lifecycle;
-  Heidi adds source-to-language-learning adaptation through its existing
-  variety-pack boundary. Share draft identity, revision safety, cancellation,
-  proposals/Undo and comparison. Keep evidence policies, simulation labels,
-  capability tokens and server revision checks here. Preserve source and
-  provenance through adaptation and copy/export. No shared authoring package
-  or cross-product draft synchronization is implemented by this repair.
+- Navigation: `Chrome.tsx` configures SiteKit's grouped masthead, tab bar and SVG
+  icons. The package owns markup and interaction; the canary checkpoint above
+  records verification and deployment state.
+- Shared authoring follow-up: follow Fleet's linked content plan and
+  [OrangeCat's writing checkpoint](https://github.com/bitbaum/orangecat/blob/main/docs/development/2026-11-05-writing-handoff.md).
+  BiasLens's WritingKit adoption and one-loop consolidation remain open. Keep
+  evidence policies, simulation labels, capability tokens and server revision
+  checks here. Heidi retains its variety-pack boundary and source provenance.
+  This navigation change adds no cross-product draft synchronization.
 - Live: https://biaslens.orangecat.ch — demo investigation at
   https://biaslens.orangecat.ch/investigations/demo; a saved test investigation
   with five model-written versions at

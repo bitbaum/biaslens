@@ -13,3 +13,6 @@ next-env.d.ts
 auth-journey-artifacts/
 .tmp/
 eval/out/
+
+# Generated browser smoke evidence is retained by CI.
+browser-smoke-artifacts/

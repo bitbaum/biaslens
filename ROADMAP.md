@@ -10,6 +10,7 @@ milestone means the capability is implemented and verified, not merely proposed.
 
 See `docs/plans/2026-11-one-loop.md`. BiasLens becomes one simple loop: a feed from followed sources, one paste box, one article page with Read · Talk · Check · Rewrite, chosen lenses always labelled, and outlet track records under the Open Epistemic Method (no per-article bias score). Earlier items below are absorbed into this.
 
+- [x] Grouped descriptive navigation through SiteKit, with keyboard and four-width acceptance
 - [ ] Phase 1: one article page, global paste box, sitekit nav, retire duplicate doors
 - [ ] Phase 2: Talk (chatkit) with Explain / Dig deeper / What's missing chips
 - [ ] Phase 3: source registry, follow sources, Today feed, paywall headline mode
