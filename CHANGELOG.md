@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — revision-safe writing help
+
+- Existing composer assistance and source rewrites use WritingKit to reject late answers after edits, option changes, cancellation or workspace switches. Writing remains editable during assistance; Undo preserves later manual edits.
+- The latest device draft is flushed when account/draft ownership changes. Starting publication cancels pending writing help; publication and server revision/capability checks keep their existing owners.
+- Rewrite waiting can be stopped, with an explicit reminder that this does not undo a rewrite already saved by the server. Original source, evidence notes and simulation labels remain attached to output and copying.
+
 ## Unreleased — say it, show it, talk about it
 
 - **Speak**: one microphone in the composer (chatkit's dictation, server leg `/api/transcribe`). Say what to write and how, and writing help turns it into a titled article in your voice; or dictate straight into the text. What was heard is shown and editable before anything happens.

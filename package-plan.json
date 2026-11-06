@@ -154,6 +154,16 @@
           "symbols": ["BarChart", "LineChart", "ShareBars"]
         }
       ]
+    },
+    "writing": {
+      "package": "@bitbaum/writingkit",
+      "bindings": [
+        {
+          "file": "src/app/_components/writing/useWritingOperation.ts",
+          "symbols": ["WritingSession"]
+        }
+      ],
+      "notes": "WritingKit owns operation reservation, cancellation and identity/revision safety for the existing composer assistance and source rewrite workspace. BiasLens owns editor fields, safe Undo, device/account drafts, transport, publishing and evidence/simulation labels. Versioned investigation writes retain their server capability and optimistic revision checks."
     }
   },
   "productOwned": {

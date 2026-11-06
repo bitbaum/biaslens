@@ -20,7 +20,8 @@
     "format:check": "prettier --check .",
     "design:check": "node --test scripts/design-check.mjs",
     "browser:smoke": "bash scripts/browser-smoke.sh",
-    "eval:reports": "vitest run --config vitest.eval.config.ts"
+    "eval:reports": "vitest run --config vitest.eval.config.ts",
+    "test:writing-browser": "node scripts/writingkit-browser-check.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.14",
@@ -31,6 +32,7 @@
     "@bitbaum/design-tokens": "^1.5.2",
     "@bitbaum/mail-kit": "^0.2.0",
     "@bitbaum/sitekit": "0.7.0",
+    "@bitbaum/writingkit": "github:bitbaum/writingkit#b167b55c1cd06e3234a5a1001e98197759ee5d6b",
     "@fleet/ai-forms": "npm:ai-forms@0.1.3",
     "@paralleldrive/cuid2": "^3.3.0",
     "better-auth": "^1.7.14",
@@ -49,6 +51,7 @@
     "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",
     "drizzle-kit": "^0.31.11",
+    "esbuild": "^0.28.2",
     "eslint": "^10.13.0",
     "eslint-config-next": "^16.4.3",
     "playwright": "^1.64.1",

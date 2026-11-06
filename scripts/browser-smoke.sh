@@ -86,3 +86,5 @@ done
 BROWSER_EXECUTABLE="$browser" node scripts/shared-shell-browser-check.mjs
 
 BROWSER_EXECUTABLE="$browser" BROWSER_SMOKE_DIR="$out" node scripts/investigation-browser-check.mjs
+
+BROWSER_EXECUTABLE="$browser" BROWSER_SMOKE_DIR="$out" node scripts/writingkit-browser-check.mjs

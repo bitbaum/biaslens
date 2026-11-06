@@ -1,3 +1,4 @@
+import { PUBLIC_ID } from './public-id';
 /**
  * Saved reports and replies. Every function takes the database as an argument
  * so the same code runs against Postgres in production and PGlite in tests.
@@ -39,7 +40,7 @@ export function newPublicId(length = 10): string {
   return id.length === length ? id : newPublicId(length);
 }
 
-export const PUBLIC_ID = /^[a-zA-Z0-9]{8,16}$/;
+export { PUBLIC_ID } from './public-id';
 
 export interface SavedReport {
   id: string;
