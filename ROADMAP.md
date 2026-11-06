@@ -22,7 +22,7 @@ See `docs/plans/2026-11-one-loop.md`. BiasLens becomes one simple loop: a feed f
 
 ## Writing (Nov 2026)
 
-- [ ] WritingKit lifecycle adoption in the existing composer and source rewrite studio, with revision-safe responses and guarded Undo
+- [x] WritingKit lifecycle adoption in the existing composer and source rewrite studio, with revision-safe responses and guarded Undo
 
 
 BiasLens is also where you write, not only where you check: the wires suggest what is happening, you say what you think, the evidence checks it, others answer.
