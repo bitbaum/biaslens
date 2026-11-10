@@ -1,5 +1,6 @@
 'use client';
 
+import { DictationField } from '@bitbaum/chatkit/react';
 import { useState, type FormEvent } from 'react';
 
 import type { EvidenceStance } from '@/lib/domain/epistemic-graph';
@@ -50,13 +51,14 @@ function SourceRow({
             value={source.locator}
             onChange={(e) => onChange({ ...source, locator: e.target.value })}
           />
-          <textarea
-            aria-label="The passage that matters"
+          <DictationField
+            ariaLabel="The passage that matters"
             placeholder="Paste the passage that matters (optional)"
             rows={3}
             maxLength={10000}
             value={source.excerpt}
-            onChange={(e) => onChange({ ...source, excerpt: e.target.value })}
+            onValueChange={(excerpt) => onChange({ ...source, excerpt })}
+            voice={{ transcribeUrl: '/api/transcribe', rememberKey: 'biaslens:dictation' }}
           />
         </div>
       )}
