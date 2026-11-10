@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { readCollection, readEntry } from 'bip-kit/node';
+import { readCollection, readEntry } from '@bitbaum/bip-kit/node';
 
 const JOURNAL_PATH = join(process.cwd(), 'content', 'blog');
 

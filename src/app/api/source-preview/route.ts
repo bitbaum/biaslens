@@ -1,4 +1,4 @@
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { originAllowed } from '@/lib/api/guard';
 import { readSource } from '@/lib/analysis/source';

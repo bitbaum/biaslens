@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { readEntry } from 'bip-kit/node';
+import { readEntry } from '@bitbaum/bip-kit/node';
 
 /** The same reviewed Markdown pipeline as the journal; no second renderer. */
 export function getWhitepaper() {

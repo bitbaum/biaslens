@@ -1,4 +1,4 @@
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { suggestSources } from '@/lib/investigations/suggest';
 

@@ -40,7 +40,7 @@
       ]
     },
     "publishing": {
-      "package": "bip-kit",
+      "package": "@bitbaum/bip-kit",
       "surfaces": [
         "src/app/roadmap/page.tsx",
         "src/app/changelog/page.tsx",
@@ -141,7 +141,7 @@
       ]
     },
     "limits": {
-      "package": "limitkit",
+      "package": "@bitbaum/limitkit",
       "bindings": [
         {
           "file": "src/app/api/analyze/route.ts",
@@ -154,7 +154,7 @@
       ]
     },
     "forms": {
-      "package": "ai-forms",
+      "package": "@bitbaum/ai-forms",
       "bindings": [
         {
           "file": "src/lib/config/ai-forms.ts",

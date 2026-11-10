@@ -1,4 +1,4 @@
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { isOutputLanguage } from '@/lib/config/languages';
 import { resolveProfile, type ProfileResult, type ProfileRole } from '@/lib/entities/profile';

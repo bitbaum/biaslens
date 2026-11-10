@@ -1,6 +1,6 @@
 import { complete, freeChain, usableChain } from '@bitbaum/ai-kit';
 import { createFormAssistHandler } from '@fleet/ai-forms/server';
-import { clientIp, slidingWindow } from 'limitkit';
+import { clientIp, slidingWindow } from '@bitbaum/limitkit';
 
 import { originAllowed } from '@/lib/api/guard';
 import { AI_FORMS } from '@/lib/config/ai-forms';

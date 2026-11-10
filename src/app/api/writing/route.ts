@@ -1,4 +1,4 @@
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { BodyTooLarge, originAllowed, readBoundedJson } from '@/lib/api/guard';
 import { requireUser } from '@/lib/auth';
