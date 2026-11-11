@@ -29,7 +29,7 @@
     "@bitbaum/ai-kit": "^1.24.0",
     "@bitbaum/chartkit": "^0.7.0",
     "@bitbaum/chatkit": "^0.23.0",
-    "@bitbaum/design-tokens": "^1.6.1",
+    "@bitbaum/design-tokens": "^1.7.1",
     "@bitbaum/mail-kit": "^0.2.0",
     "@bitbaum/sitekit": "0.7.0",
     "@bitbaum/writingkit": "github:bitbaum/writingkit#b167b55c1cd06e3234a5a1001e98197759ee5d6b",
