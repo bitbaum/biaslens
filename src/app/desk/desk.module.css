@@ -107,3 +107,6 @@
     transition: none;
   }
 }
+.empty h2 {
+  margin: 0 0 8px;
+}

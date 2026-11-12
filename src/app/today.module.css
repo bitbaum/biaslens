@@ -51,6 +51,10 @@
 .trending a:hover {
   border-color: var(--color-text);
 }
+.trendingNote {
+  flex-basis: 100%;
+  margin: 0;
+}
 .wire {
   list-style: none;
   padding: 0;

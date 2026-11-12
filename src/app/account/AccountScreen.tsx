@@ -9,6 +9,7 @@ import { db } from '@/lib/db/client';
 import { AccountForms } from './AccountForms';
 import './account.css';
 import { AccountTabs } from '../_components/AccountTabs';
+import { authPurpose } from './purpose';
 
 export async function AccountScreen({
   mode,
@@ -21,6 +22,7 @@ export async function AccountScreen({
 }) {
   const safeNext = returnPath(requested, '/workspace');
   const next = /^\/(?:sign-in|sign-up)(?:[/?#]|$)/.test(safeNext) ? '/workspace' : safeNext;
+  const purpose = authPurpose(next);
   const status = authStatus();
   const session = await getSession();
   if (session && mode !== 'account' && !recovering) redirect(next);
@@ -56,8 +58,8 @@ export async function AccountScreen({
               : recovering
                 ? 'Choose a new password, then sign in again.'
                 : mode === 'sign-up'
-                  ? 'An email and a password — that’s all.'
-                  : 'Sign in to manage your profile and security.'}
+                  ? purpose.signUp
+                  : purpose.signIn}
           </p>
         </header>
         {mode === 'account' && <AccountTabs current="/account" />}

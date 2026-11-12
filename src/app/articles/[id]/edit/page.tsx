@@ -33,6 +33,7 @@ export default async function EditWrittenArticle({ params }: { params: Promise<{
           title: article.title,
           body: article.body,
           status: article.status,
+          savedAt: article.updatedAt.toISOString(),
           source: article.sourceUrl
             ? {
                 url: article.sourceUrl,

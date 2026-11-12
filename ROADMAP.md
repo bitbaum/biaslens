@@ -35,6 +35,7 @@ BiasLens is also where you write, not only where you check: the wires suggest wh
 - [x] Comments under an article (chatkit composer with the microphone); author notification is next
 - [x] Speak to write: a spoken brief becomes a draft; dictate into the text; improve with an instruction, with Undo
 - [x] Photos (Commons, credited) and charts (bip-kit) from the composer; preview tab
+- [x] First-time writer path (dogfood 12 Nov 2026): Save draft to the account that stays in the editor and says when it saved; an honest browser-only line when signed out; sign-in says it is for publishing; named, hover-explained composer tools; a desk that loads on the server with a real empty state; topics on Today that explain themselves
 - [ ] AI illustrations in the composer once the server sets IMAGE_GEN_API / IMAGE_GEN_MODEL
 - [ ] Notify the author of a comment or a response (mail-kit)
 - [ ] Several bylines under one account (Morulia "lives"), so a person can write under more than one name
