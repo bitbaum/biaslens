@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArticleBody, ReadingProgress } from 'bip-kit/react';
+import { ArticleBody, ReadingProgress } from '@bitbaum/bip-kit/react';
 
 import { BRAND } from '@/lib/config/brand';
 import { getPublishedPost, listPublishedPosts } from '@/lib/content/blog';

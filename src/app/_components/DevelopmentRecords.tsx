@@ -1,5 +1,5 @@
-import { loadDevelopmentProfile } from 'bip-kit';
-import { DevelopmentPage } from 'bip-kit/react';
+import { loadDevelopmentProfile } from '@bitbaum/bip-kit';
+import { DevelopmentPage } from '@bitbaum/bip-kit/react';
 import { PROJECT_LINKS } from '@/lib/config/routes';
 
 export async function DevelopmentRecords({ section }: { section: 'roadmap' | 'changelog' }) {

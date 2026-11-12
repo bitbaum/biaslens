@@ -9,7 +9,7 @@ import './globals.css';
 // Opt-in shared geometry comes after the app reset; local CSS modules own the brand.
 import '@bitbaum/design-tokens/composition.css';
 import '@bitbaum/sitekit/styles.css';
-import 'bip-kit/styles.css';
+import '@bitbaum/bip-kit/styles.css';
 import '@bitbaum/accountkit/styles.css';
 import '@bitbaum/chatkit/styles.css';
 // Package defaults load first; the product theme is the final role producer.

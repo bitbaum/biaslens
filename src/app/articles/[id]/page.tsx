@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArticleBody, ReadingProgress } from 'bip-kit/react';
-import { parseContentBlocks } from 'bip-kit';
+import { ArticleBody, ReadingProgress } from '@bitbaum/bip-kit/react';
+import { parseContentBlocks } from '@bitbaum/bip-kit';
 
 import { getSession } from '@/lib/auth';
 import { BRAND } from '@/lib/config/brand';

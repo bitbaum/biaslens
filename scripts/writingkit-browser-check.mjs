@@ -32,7 +32,7 @@ import{RewriteStudio}from'./src/app/_components/rewrite/RewriteStudio';
 import '@bitbaum/design-tokens/tokens.css';
 import './src/app/globals.css';
 import '@bitbaum/design-tokens/composition.css';
-import '@bitbaum/sitekit/styles.css';import 'bip-kit/styles.css';
+import '@bitbaum/sitekit/styles.css';import '@bitbaum/bip-kit/styles.css';
 import '@bitbaum/accountkit/styles.css';import '@bitbaum/chatkit/styles.css';
 import './src/app/theme.css';import './src/app/blog/journal.css';
 const root=createRoot(document.getElementById('app'));

@@ -156,7 +156,7 @@ test('application typography is governed by shared roles', () => {
 
 test('product roles load after package defaults so account colours cannot drift', () => {
   assert.ok(layout.indexOf("'./theme.css'") > layout.indexOf("'@bitbaum/accountkit/styles.css'"));
-  assert.ok(layout.indexOf("'./theme.css'") > layout.indexOf("'bip-kit/styles.css'"));
+  assert.ok(layout.indexOf("'./theme.css'") > layout.indexOf("'@bitbaum/bip-kit/styles.css'"));
   assert.match(read('src/app/theme.css'), /--acct-action:\s*var\(--color-text\)/);
 });
 

@@ -1,4 +1,4 @@
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { BodyTooLarge, originAllowed, readBoundedBytes } from '@/lib/api/guard';
 import { MAX_PDF_BYTES, pdfToText } from '@/lib/analysis/source';

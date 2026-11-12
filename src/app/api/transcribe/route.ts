@@ -5,7 +5,7 @@ import {
   speechConfigured,
   transcribe,
 } from '@bitbaum/ai-kit';
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { originAllowed } from '@/lib/api/guard';
 

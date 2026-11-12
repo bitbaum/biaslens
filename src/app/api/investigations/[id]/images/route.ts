@@ -1,5 +1,5 @@
 import { generateImage } from '@bitbaum/ai-kit/images';
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 import { randomBytes } from 'node:crypto';
 
 import { BodyTooLarge, originAllowed, readBoundedJson } from '@/lib/api/guard';

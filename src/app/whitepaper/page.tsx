@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArticleBody, ReadingProgress } from 'bip-kit/react';
+import { ArticleBody, ReadingProgress } from '@bitbaum/bip-kit/react';
 
 import { PROJECT_LINKS, ROUTES } from '@/lib/config/routes';
 import { getWhitepaper } from '@/lib/content/whitepaper';

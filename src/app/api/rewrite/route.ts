@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 import { complete, freeChain, usableChain } from '@bitbaum/ai-kit';
-import { clientIp, slidingWindow, toHeaders } from 'limitkit';
+import { clientIp, slidingWindow, toHeaders } from '@bitbaum/limitkit';
 
 import { MAX_MODEL_CHARS } from '@/lib/analysis/run';
 import { cleanSourceText } from '@/lib/analysis/quote-locate';
