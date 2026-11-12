@@ -159,3 +159,12 @@ test('product roles load after package defaults so account colours cannot drift'
   assert.ok(layout.indexOf("'./theme.css'") > layout.indexOf("'bip-kit/styles.css'"));
   assert.match(read('src/app/theme.css'), /--acct-action:\s*var\(--color-text\)/);
 });
+
+test('a link drawn as a button keeps the button text colour over the link reset', () => {
+  // design-tokens styles .bb-button--primary inside :where(), so the app's
+  // `a { color: inherit }` beat it and a primary link-button read dark on dark.
+  const plain = globals.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.match(plain, /^a \{\s*color: inherit;/m, 'the link reset this guards against moved');
+  assert.match(plain, /a\.bb-button--primary[^{]*\{\s*color: var\(--bb-action-fg/);
+  assert.match(plain, /a\.bb-button--secondary[^{]*\{\s*color: var\(--bb-action-bg/);
+});

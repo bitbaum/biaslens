@@ -36,6 +36,8 @@ BiasLens is also where you write, not only where you check: the wires suggest wh
 - [x] Speak to write: a spoken brief becomes a draft; dictate into the text; improve with an instruction, with Undo
 - [x] Photos (Commons, credited) and charts (bip-kit) from the composer; preview tab
 - [x] First-time writer path (dogfood 12 Nov 2026): Save draft to the account that stays in the editor and says when it saved; an honest browser-only line when signed out; sign-in says it is for publishing; named, hover-explained composer tools; a desk that loads on the server with a real empty state; topics on Today that explain themselves
+- [x] Signed-in writer path (dogfood 12 Nov 2026): earlier drafts offered with Resume or Start empty; readable link-buttons; /privacy and /terms
+- [ ] Delete a person's published articles and comments with their account
 - [ ] AI illustrations in the composer once the server sets IMAGE_GEN_API / IMAGE_GEN_MODEL
 - [ ] Notify the author of a comment or a response (mail-kit)
 - [ ] Several bylines under one account (Morulia "lives"), so a person can write under more than one name

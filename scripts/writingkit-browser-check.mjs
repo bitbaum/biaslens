@@ -225,6 +225,40 @@ try {
     await mount({ userId: 'claimed', docId: null });
     assert.equal(await body.inputValue(), 'Anonymous latest text');
     assert.equal(await title.inputValue(), 'Anonymous title');
+    // A draft left by an earlier session is offered, never filled in silently.
+    const leaveDraft = (userId) =>
+      page.evaluate((id) => {
+        const key = 'biaslens:draft:new:' + id;
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            title: 'Old title',
+            body: 'Old text.',
+            source: null,
+            respondToId: null,
+            savedAt: '2026-11-01T09:00:00.000Z',
+          }),
+        );
+        sessionStorage.removeItem('biaslens:draft-tab:' + key);
+      }, userId);
+    const resume = page.getByRole('button', { name: 'Resume draft', exact: true });
+    await leaveDraft('stale');
+    await mount({ userId: 'stale', docId: null });
+    await resume.waitFor();
+    assert.equal(await title.inputValue(), '');
+    assert.equal(await body.inputValue(), '');
+    await resume.click();
+    assert.equal(await title.inputValue(), 'Old title');
+    assert.equal(await body.inputValue(), 'Old text.');
+    await leaveDraft('fresh-start');
+    await mount({ userId: 'fresh-start', docId: null });
+    await page.getByRole('button', { name: 'Start empty', exact: true }).click();
+    assert.equal(await resume.count(), 0);
+    assert.equal(await body.inputValue(), '');
+    assert.equal(
+      await page.evaluate(() => localStorage.getItem('biaslens:draft:new:fresh-start')),
+      null,
+    );
     // Publishing cancels the proposal and does not resurrect the deleted device draft.
     await mount({ userId: 'publisher', docId: 'publication' });
     i = await improve();

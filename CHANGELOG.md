@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — a signed-in writer's path
+
+From a signed-in dogfood at 1920px (12 Nov 2026, 10:30–10:37).
+
+- **An old draft is offered, not poured in.** `/write` no longer fills a new piece with whatever an earlier session left in this browser. A draft this tab wrote (before signing in, or a moment ago) still comes back by itself; one from an earlier session shows "An unfinished draft is in this browser", with its title and time, and **Resume draft** or **Start empty** (which deletes it). Nothing is written over it until the writer chooses.
+- **Link-buttons are readable.** design-tokens styles `.bb-button--primary` inside `:where()`, so the app's `a { color: inherit }` won and every link drawn as a primary button was dark text on the dark button: "Write another" on My desk was a black box. Link-buttons now keep the button's colours everywhere (a design check guards it), and the desk's button reads "Write another article".
+- **Privacy and Terms.** `/privacy` says what BiasLens keeps, what it sends where (Groq and OpenRouter for model answers and dictation, Resend for sign-in mail, Wikimedia, Wikidata, Wikipedia and Crossref for look-ups), what stays in the browser, and how to have it removed, including that published articles are not deleted with the account yet. `/terms` says what the analysis is not, what you publish and how to report it. Both are linked from the footer, and OrangeCat's consent screen links them once the client registration in `bitbaum/orangecat` is deployed.
+
 ## Unreleased — a first-time writer's path
 
 From a signed-out first-time dogfood of Today → Write → sign-in → My desk (12 Nov 2026).

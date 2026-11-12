@@ -25,10 +25,19 @@ async function loadWritten(): Promise<WrittenState> {
     const list = await listArticlesByAuthor(db, session.user.id);
     return {
       kind: 'ok',
-      list: list.map(({ createdAt: _created, updatedAt, publishedAt, ...rest }) => ({
-        ...rest,
-        updatedAt: updatedAt.toISOString(),
-        publishedAt: publishedAt?.toISOString() ?? null,
+      list: list.map((a) => ({
+        id: a.id,
+        authorId: a.authorId,
+        authorName: a.authorName,
+        title: a.title,
+        excerpt: a.excerpt,
+        status: a.status,
+        respondToId: a.respondToId,
+        sourceUrl: a.sourceUrl,
+        sourceTitle: a.sourceTitle,
+        reportId: a.reportId,
+        updatedAt: a.updatedAt.toISOString(),
+        publishedAt: a.publishedAt?.toISOString() ?? null,
       })),
     };
   } catch (error) {

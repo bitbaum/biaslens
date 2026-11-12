@@ -6,6 +6,18 @@ Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
 
 As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: collapse Examine/Investigate/Rewrite/notebook into one article page (Read · Talk · Check · Rewrite), add chat, a followed-sources feed and sitekit nav. Its last section is a ready-to-paste build brief for phase 1. The briefs further down are superseded where they conflict.
 
+## Signed-in writer path (12 Nov 2026)
+
+Drafts: `src/app/write/Composer.tsx` restores a local draft only when this tab
+wrote it (`sessionStorage` mark `biaslens:draft-tab:<key>`, set on every local
+save and on the unmount flush); otherwise it offers Resume / Start empty and
+pauses local saving until the choice. Link-buttons: `src/app/globals.css`
+(`a.bb-button--primary`) beats the link reset; `scripts/design-check.mjs`
+guards it. `/privacy` and `/terms` state only what the code does — change them
+with the behaviour. The sign-in button grouping is accountkit's (`OidcButtons`)
+and the consent links are OrangeCat's client spec (`scripts/oauth/client-specs.ts`
+in `bitbaum/orangecat`); both are separate pull requests in those repos.
+
 ## First-time writer path (12 Nov 2026)
 
 A signed-out dogfood found: no Save draft on `/write`, sign-in copy about the

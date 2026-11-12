@@ -48,6 +48,8 @@ export function SiteFooter() {
         <>
           <span>Beta research software</span>
           <a href={PROJECT_LINKS.repository}>Source code</a>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
         </>
       }
     />
