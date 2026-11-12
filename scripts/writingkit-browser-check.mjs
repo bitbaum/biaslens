@@ -203,7 +203,7 @@ try {
     assert.equal(await body.inputValue(), 'Newest answer');
     // Formatting is an edit too, even while assistance is running.
     i = await improve();
-    await page.getByTitle('Heading', { exact: true }).click();
+    await page.getByRole('button', { name: 'Heading', exact: true }).click();
     const formatted = await body.inputValue();
     await finish(i, proposed('Obsolete formatted answer'));
     assert.equal(await body.inputValue(), formatted);
