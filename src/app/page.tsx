@@ -101,15 +101,25 @@ export default async function Today() {
           </p>
         </div>
         {topics.length > 0 && (
-          <p className={styles.trending}>
-            <span className={styles.kicker}>On more than one wire</span>
+          <div className={styles.trending} role="group" aria-labelledby="trending-heading">
+            <span id="trending-heading" className={styles.kicker}>
+              In headlines from more than one source
+            </span>
+            <p className={`${styles.meta} ${styles.trendingNote}`}>
+              Words that two or more of the wires below put in a headline. Open one to see those
+              headlines together and write about them.
+            </p>
             {topics.map((t) => (
-              <Link key={t.label} href={`/write?topic=${encodeURIComponent(t.label)}`}>
+              <Link
+                key={t.label}
+                href={`/write?topic=${encodeURIComponent(t.label)}`}
+                title={`“${t.label}” is in headlines from ${t.sources} sources. See them and write about it.`}
+              >
                 {t.label}
-                <span className={styles.meta}> · {t.sources}</span>
+                <span className={styles.meta}> · {t.sources} sources</span>
               </Link>
             ))}
-          </p>
+          </div>
         )}
         {wire.items.length === 0 ? (
           <p className={styles.meta}>

@@ -43,22 +43,23 @@ type Written = Omit<WrittenArticleSummary, 'createdAt' | 'updatedAt' | 'publishe
   updatedAt: string;
   publishedAt: string | null;
 };
-type WrittenState = { kind: 'loading' } | { kind: 'signed-out' } | { kind: 'ok'; list: Written[] };
+/** Read on the server by the page, so it never waits on the browser. */
+export type WrittenState =
+  { kind: 'signed-out' } | { kind: 'unavailable' } | { kind: 'ok'; list: Written[] };
 
-/** Your desk: what you wrote (your account), and what this browser holds — edit links, follows, visit days. */
-export function MyDesk() {
+/** An investigation that does not answer in time is left out, never waited on. */
+const INVESTIGATION_TIMEOUT_MS = 10_000;
+
+/**
+ * Your desk: what you wrote (your account, read by the page on the server),
+ * and what this browser holds — edit links, follows, visit days. A first
+ * visit with nothing in either place gets one plain empty state, not a row
+ * of zeros and three empty lists.
+ */
+export function MyDesk({ written }: { written: WrittenState }) {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [visit, setVisit] = useState({ streak: 0, days: 0 });
-  const [written, setWritten] = useState<WrittenState>({ kind: 'loading' });
   useEffect(() => {
-    queueMicrotask(async () => {
-      const r = await fetch('/api/writing').catch(() => null);
-      if (r?.status === 401 || r?.status === 503 || !r) setWritten({ kind: 'signed-out' });
-      else {
-        const body = (await r.json().catch(() => null)) as { articles?: Written[] } | null;
-        setWritten({ kind: 'ok', list: body?.articles ?? [] });
-      }
-    });
     queueMicrotask(async () => {
       const v = recordVisit();
       setVisit({ streak: v.streak, days: v.days });
@@ -70,8 +71,10 @@ export function MyDesk() {
       ];
       const all = await Promise.all(
         pairs.map(async ([id, isMine]) => {
-          const r = await fetch('/api/investigations/' + id).catch(() => null);
-          const body = r && r.ok ? await r.json() : null;
+          const r = await fetch('/api/investigations/' + id, {
+            signal: AbortSignal.timeout(INVESTIGATION_TIMEOUT_MS),
+          }).catch(() => null);
+          const body = r && r.ok ? await r.json().catch(() => null) : null;
           return body?.ok ? summarise(id, isMine, body) : null;
         }),
       );
@@ -87,6 +90,9 @@ export function MyDesk() {
   const queue = mine.reduce((n, r) => n + r.candidate, 0);
   const flags = mine.reduce((n, r) => n + r.flags, 0);
   const reviewed = mine.reduce((n, r) => n + r.reviewed, 0);
+  const wroteSomething = written.kind === 'ok' && written.list.length > 0;
+  const firstVisit = rows !== null && rows.length === 0 && !wroteSomething;
+  if (firstVisit) return <EmptyDesk signedIn={written.kind !== 'signed-out'} />;
   return (
     <>
       <div className={styles.stats}>
@@ -120,8 +126,11 @@ export function MyDesk() {
       )}
       <section className={styles.section} aria-labelledby="written-heading">
         <h2 id="written-heading">Your articles</h2>
-        {written.kind === 'loading' ? (
-          <p className={styles.meta}>Loading what you wrote…</p>
+        {written.kind === 'unavailable' ? (
+          <p className={styles.meta}>
+            Your articles could not be read just now. They are safe on your account; reload the page
+            to try again.
+          </p>
         ) : written.kind === 'signed-out' ? (
           <div className={styles.empty}>
             <p>Sign in to see what you wrote here and to write more.</p>
@@ -234,6 +243,39 @@ export function MyDesk() {
       <p className={styles.meta}>
         Your articles follow your account. Investigations, follows and the streak are kept in this
         browser; keeping them across devices is next.
+      </p>
+    </>
+  );
+}
+
+/** A first visit: nothing written on the account, nothing saved in this browser. */
+function EmptyDesk({ signedIn }: { signedIn: boolean }) {
+  return (
+    <>
+      <section className={styles.empty} aria-labelledby="empty-desk-heading">
+        <h2 id="empty-desk-heading">Nothing on your desk yet</h2>
+        <p>
+          Your desk gathers what you write, the investigations you work on and the ones you follow.
+          Start one and it shows up here.
+        </p>
+        <div className={styles.chips}>
+          <Link className="bb-button bb-button--primary" href="/write">
+            Write an article
+          </Link>
+          <Link className="bb-button bb-button--secondary" href="/investigations/demo">
+            Try the housing investigation
+          </Link>
+          {!signedIn && (
+            <Link className="bb-button bb-button--secondary" href="/sign-in?next=%2Fdesk">
+              Sign in
+            </Link>
+          )}
+        </div>
+      </section>
+      <p className={styles.meta}>
+        {signedIn
+          ? 'Articles you write follow your account. Investigations, follows and the streak are kept in this browser; keeping them across devices is next.'
+          : 'Signed out. Articles are saved to your account once you sign in; investigations and follows are kept in this browser.'}
       </p>
     </>
   );

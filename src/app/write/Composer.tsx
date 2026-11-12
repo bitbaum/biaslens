@@ -16,6 +16,7 @@ import { Markdown } from '@bitbaum/chatkit/react';
 import { useWritingOperation } from '@/app/_components/writing/useWritingOperation';
 import { authClient } from '@/lib/auth-client';
 import type { WireItem } from '@/lib/wire/parse';
+import { draftState, type ServerCopy } from '@/lib/writing/draft-state';
 import { readingMinutes, WRITING_LIMITS, type WritingStatus } from '@/lib/writing/input';
 import type { Topic } from '@/lib/writing/trending';
 import { zurichTime } from '@/lib/format-time';
@@ -48,6 +49,8 @@ export interface Initial {
   status: WritingStatus;
   source: Source | null;
   respondTo: RespondTo | null;
+  /** When the account copy was last saved (ISO). */
+  savedAt?: string;
 }
 
 const DRAFT_PREFIX = 'biaslens:draft:';
@@ -73,10 +76,16 @@ const readDraft = (key: string): Draft | null => {
   }
 };
 
+/** Sign in and come back to this exact page (topic, headline or response kept). */
+const signInHere = () =>
+  '/sign-in?next=' + encodeURIComponent(window.location.pathname + window.location.search);
+
 /**
  * One place to write: a title, the text, and — if you want one — the
- * headline or article you are answering. Drafts stay on this device until
- * you publish; signing in never loses them.
+ * headline or article you are answering. Signed in, "Save draft" puts the
+ * piece on your account (visible only to you, listed on My desk). Until then
+ * the text is kept in this browser, and the page says so; signing in never
+ * loses it.
  */
 type ComposerProps = {
   user: { id: string; name: string } | null;
@@ -121,7 +130,12 @@ function ComposerEditor({
   const [penName, setPenName] = useState('');
   const [busy, setBusy] = useState<WritingStatus | null>(null);
   const [problems, setProblems] = useState<string[]>([]);
-  const [savedNote, setSavedNote] = useState<string | null>(null);
+  const [browserKept, setBrowserKept] = useState(true);
+  const [server, setServer] = useState<ServerCopy | null>(
+    initial?.savedAt
+      ? { at: initial.savedAt, title: initial.title, body: initial.body, status: initial.status }
+      : null,
+  );
   const [panel, setPanel] = useState<Panel>(null);
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [undo, setUndo] = useState<{ before: Fields; after: Fields; context: string } | null>(null);
@@ -241,9 +255,9 @@ function ComposerEditor({
           savedAt: new Date().toISOString(),
         };
         localStorage.setItem(key, JSON.stringify(draft));
-        setSavedNote('Draft kept on this device.');
+        setBrowserKept(true);
       } catch {
-        setSavedNote(null);
+        setBrowserKept(false);
       }
     }, 600);
     return () => window.clearTimeout(handle);
@@ -275,7 +289,7 @@ function ComposerEditor({
   /** Writing help: a brief becomes a draft; an instruction revises the text. */
   const assist = async (mode: 'draft' | 'improve', instruction: string) => {
     if (!user) {
-      router.push('/sign-in?next=' + encodeURIComponent('/write'));
+      router.push(signInHere());
       return;
     }
     if (busy || writing.isBusy()) return;
@@ -328,7 +342,7 @@ function ComposerEditor({
   const save = async (status: WritingStatus) => {
     if (!ready) return;
     if (!user) {
-      router.push('/sign-in?next=' + encodeURIComponent('/write'));
+      router.push(signInHere());
       return;
     }
     writing.cancel();
@@ -370,9 +384,22 @@ function ComposerEditor({
         return;
       }
       published.current = true;
-      localStorage.removeItem(key);
-      router.push(status === 'published' ? `/articles/${payload.id}` : '/desk');
-      router.refresh();
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        /* storage blocked: nothing was kept there */
+      }
+      if (status === 'published') {
+        router.push(`/articles/${payload.id}`);
+        router.refresh();
+      } else if (editingId) {
+        // Stay in the editor; the line under it now says the account has it.
+        setServer({ at: new Date().toISOString(), title, body, status });
+      } else {
+        // The draft has an address now: keep writing there, so the next
+        // save updates this draft instead of starting another.
+        router.replace(`/articles/${payload.id}/edit`);
+      }
     } catch {
       setProblems(['The article could not be sent. Check your connection and try again.']);
     } finally {
@@ -386,6 +413,21 @@ function ComposerEditor({
       void save('published');
     }
   };
+
+  const saveLine = draftState({
+    signedIn: !!user,
+    title,
+    body,
+    server,
+    browserKept,
+    time: zurichTime,
+  });
+  const draftLabel =
+    busy === 'draft'
+      ? 'Saving draft…'
+      : editingId && initial?.status === 'published'
+        ? 'Unpublish, keep as draft'
+        : 'Save draft';
 
   const publishLabel = !user
     ? 'Sign in to publish'
@@ -524,6 +566,7 @@ function ComposerEditor({
               className={styles.tool}
               aria-pressed={panel === 'speak'}
               onClick={() => toggle('speak')}
+              title="Speak: dictate the text, or say what you want written"
             >
               Speak
             </button>
@@ -533,6 +576,11 @@ function ComposerEditor({
               aria-pressed={panel === 'improve'}
               onClick={() => toggle('improve')}
               disabled={!body.trim()}
+              title={
+                body.trim()
+                  ? 'Improve: ask writing help to tighten, correct or rework your text'
+                  : 'Improve: write some text first, then ask writing help to rework it'
+              }
             >
               Improve
             </button>
@@ -541,6 +589,7 @@ function ComposerEditor({
               className={styles.tool}
               aria-pressed={panel === 'photo'}
               onClick={() => toggle('photo')}
+              title="Photo: add an openly licensed photo from Wikimedia Commons, with its credit"
             >
               Photo
             </button>
@@ -549,6 +598,7 @@ function ComposerEditor({
               className={styles.tool}
               aria-pressed={panel === 'chart'}
               onClick={() => toggle('chart')}
+              title="Chart: add a bar, line or area chart drawn from numbers you type"
             >
               Chart
             </button>
@@ -557,7 +607,8 @@ function ComposerEditor({
               type="button"
               className={styles.tool}
               onClick={() => wrapSelection(bodyRef, body, '## ', '', 'Heading', setBody)}
-              title="Heading"
+              aria-label="Heading"
+              title="Heading: make the line a section heading"
             >
               H
             </button>
@@ -565,7 +616,8 @@ function ComposerEditor({
               type="button"
               className={styles.tool}
               onClick={() => wrapSelection(bodyRef, body, '**', '**', 'bold', setBody)}
-              title="Bold"
+              aria-label="Bold"
+              title="Bold: make the selected words bold"
             >
               B
             </button>
@@ -573,7 +625,8 @@ function ComposerEditor({
               type="button"
               className={styles.tool}
               onClick={() => wrapSelection(bodyRef, body, '> ', '', 'A quotation', setBody)}
-              title="Quote"
+              aria-label="Quote"
+              title="Quote: set the line as a quotation"
             >
               “
             </button>
@@ -581,7 +634,8 @@ function ComposerEditor({
               type="button"
               className={styles.tool}
               onClick={() => wrapSelection(bodyRef, body, '- ', '', 'First point', setBody)}
-              title="List"
+              aria-label="Bulleted list"
+              title="List: start a bulleted list"
             >
               •
             </button>
@@ -589,7 +643,7 @@ function ComposerEditor({
               type="button"
               className={styles.tool}
               onClick={() => wrapSelection(bodyRef, body, '[', '](https://)', 'link text', setBody)}
-              title="Link"
+              title="Link: turn the selected words into a link"
             >
               Link
             </button>
@@ -677,8 +731,12 @@ function ComposerEditor({
         <p className={styles.meta} aria-live="polite">
           {words} {words === 1 ? 'word' : 'words'} · {readingMinutes(body)} min read
           {restored ? ` · Draft from ${zurichTime(restored)} restored` : ''}
-          {!restored && savedNote ? ` · ${savedNote}` : ''}
         </p>
+        {saveLine && (
+          <p className={styles.meta} role="status">
+            {saveLine}
+          </p>
+        )}
 
         {problems.length > 0 && (
           <div role="alert" className={styles.problems}>
@@ -698,14 +756,28 @@ function ComposerEditor({
           >
             {publishLabel}
           </button>
-          {user && (
+          {user ? (
             <button
               type="button"
               className="bb-button bb-button--secondary"
               disabled={!ready}
+              title={
+                ready
+                  ? 'Save to your account. Only you can see a draft; it is listed on My desk.'
+                  : 'Give it a title and some text to save a draft.'
+              }
               onClick={() => void save('draft')}
             >
-              {busy === 'draft' ? 'Saving…' : 'Save as draft'}
+              {draftLabel}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="bb-button bb-button--secondary"
+              title="Drafts are saved to your account. This one stays in this browser while you sign in."
+              onClick={() => router.push(signInHere())}
+            >
+              Sign in to save a draft
             </button>
           )}
           {editingId && (
@@ -716,8 +788,8 @@ function ComposerEditor({
         </div>
         <p className={styles.meta}>
           {user
-            ? `Published as ${user.name.trim() || penName.trim() || 'you'}. Anyone with the link can read it; you can edit or delete it later. Ctrl/⌘ + Enter publishes.`
-            : 'Your draft stays on this device while you sign in or create an account; nothing is lost.'}
+            ? `Published as ${user.name.trim() || penName.trim() || 'you'}. Anyone with the link can read it; you can edit or delete it later. A saved draft is visible only to you and is listed on My desk. Ctrl/⌘ + Enter publishes.`
+            : 'Drafts are saved to BiasLens only when you are signed in. Until then this one stays in this browser, and signing in or creating an account keeps it.'}
         </p>
       </form>
     </div>

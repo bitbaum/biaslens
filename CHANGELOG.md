@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — a first-time writer's path
+
+From a signed-out first-time dogfood of Today → Write → sign-in → My desk (12 Nov 2026).
+
+- **Drafts say where they are.** Signed in, **Save draft** saves to your account and keeps you in the editor (a new piece moves to its own edit address, so the next save updates the same draft); the line under the text reads "Draft saved to your account · <time>" or "Not saved to your account yet". Signed out, the line says the text is kept in this browser only and not on BiasLens, and **Sign in to save a draft** sits next to Sign in to publish. Editing a published piece labels the draft button **Unpublish, keep as draft**, because that is what it does. Signing in returns to the same page, topic or headline included.
+- **Sign-in says why.** The line under "Sign in" follows where you came from: from the composer it is "Sign in to publish your piece or save it as a draft on your account", with the draft kept in the browser meanwhile; from an article it is about joining the conversation; "manage your profile and security" is kept for the account page only.
+- **Composer tools are named.** Speak, Improve, Photo and Chart explain themselves on hover; H, B, quote, list and Link have accessible names (Heading, Bold, Quote, Bulleted list, Link) and hover text.
+- **My desk never waits on the browser for your articles.** The page reads the session and your articles on the server, so a first visit no longer shows "Loading what you wrote…"; with nothing written and nothing saved in this browser it shows one empty state with Write an article, the housing investigation and Sign in. A slow investigation request times out after ten seconds instead of holding the list.
+- **Topics on Today explain themselves.** "On more than one wire / judge · 2" is now "In headlines from more than one source", with a line saying what the words are and where they lead, and each reads "judge · 2 sources".
+
 ## Unreleased — revision-safe writing help
 
 - Existing composer assistance and source rewrites use WritingKit to reject late answers after edits, option changes, cancellation or workspace switches. Writing remains editable during assistance; Undo preserves later manual edits.

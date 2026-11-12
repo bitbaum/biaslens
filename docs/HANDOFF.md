@@ -6,6 +6,20 @@ Last refreshed with the PR that touched it. Read this first, then `AGENTS.md`.
 
 As of 2026-11-03 the product direction is `docs/plans/2026-11-one-loop.md`: collapse Examine/Investigate/Rewrite/notebook into one article page (Read · Talk · Check · Rewrite), add chat, a followed-sources feed and sitekit nav. Its last section is a ready-to-paste build brief for phase 1. The briefs further down are superseded where they conflict.
 
+## First-time writer path (12 Nov 2026)
+
+A signed-out dogfood found: no Save draft on `/write`, sign-in copy about the
+profile, `/desk` stuck on "Loading what you wrote…", unlabeled composer tools
+and an unexplained "On more than one wire" row on Today. All five are fixed in
+one PR (see `CHANGELOG.md`, "a first-time writer's path"). Server drafts were
+already stored (`WrittenArticle.status = 'draft'`); the change is the path to
+them and the honest state line (`src/lib/writing/draft-state.ts`). The sign-in
+line is chosen from `next` in `src/app/account/purpose.ts`. The desk reads
+articles on the server (`src/app/desk/page.tsx`); `GET /api/writing` remains
+for other clients. Open: drafts still need a title and some text to save
+(validation unchanged), and a signed-in composer does not autosave to the
+account — it saves on Save draft.
+
 ## WritingKit composer and source rewrite adoption
 
 Implementation branch: `feat/writingkit-biaslens`, starting from navigation release
