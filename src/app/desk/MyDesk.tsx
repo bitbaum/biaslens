@@ -164,7 +164,7 @@ export function MyDesk({ written }: { written: WrittenState }) {
             </ul>
             <div className={styles.chips}>
               <Link className="bb-button bb-button--primary" href="/write">
-                Write another
+                Write another article
               </Link>
             </div>
           </>

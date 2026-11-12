@@ -75,6 +75,17 @@ a {
   color: inherit;
   text-underline-offset: 3px;
 }
+/* A link drawn as a button keeps the button's colours. design-tokens sets
+   them inside :where() (no specificity), so the reset above used to win:
+   "Write another" on My desk was dark text on the dark primary. */
+a.bb-button--primary,
+a.bb-button--primary:visited {
+  color: var(--bb-action-fg, Canvas);
+}
+a.bb-button--secondary,
+a.bb-button--secondary:visited {
+  color: var(--bb-action-bg, CanvasText);
+}
 button,
 input,
 textarea,

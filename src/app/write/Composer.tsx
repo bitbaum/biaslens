@@ -67,6 +67,27 @@ interface Draft {
   savedAt: string;
 }
 
+/**
+ * Drafts this tab wrote (before signing in, or a moment ago) come back by
+ * themselves; one left by an earlier session is offered, never filled in
+ * silently. sessionStorage is per tab and survives the sign-in round trip.
+ */
+const TAB_MARK = 'biaslens:draft-tab:';
+const markThisTab = (key: string) => {
+  try {
+    sessionStorage.setItem(TAB_MARK + key, '1');
+  } catch {
+    /* blocked storage: the draft is offered instead of restored */
+  }
+};
+const writtenThisTab = (key: string) => {
+  try {
+    return sessionStorage.getItem(TAB_MARK + key) === '1';
+  } catch {
+    return false;
+  }
+};
+
 const readDraft = (key: string): Draft | null => {
   try {
     const raw = localStorage.getItem(key);
@@ -124,6 +145,7 @@ function ComposerEditor({
   const answering = initial?.respondTo ?? respondTo;
   const [topic, setTopic] = useState<string | null>(initialTopic);
   const [restored, setRestored] = useState<string | null>(null);
+  const [offered, setOffered] = useState<{ key: string; draft: Draft } | null>(null);
   // An account starts nameless; the first piece needs a byline, and the
   // writer chooses it here — a real name or a pen name, theirs to change later.
   const needsName = !!user && !user.name.trim();
@@ -153,6 +175,10 @@ function ComposerEditor({
     !assisting &&
     !busy;
   const latestDraft = useRef<Draft | null>(null);
+  const offering = useRef(false);
+  useLayoutEffect(() => {
+    offering.current = offered !== null;
+  }, [offered]);
   useLayoutEffect(() => {
     latestDraft.current = {
       title,
@@ -165,9 +191,10 @@ function ComposerEditor({
   useLayoutEffect(
     () => () => {
       const draft = latestDraft.current;
-      if (published.current || !draft || (!draft.title && !draft.body)) return;
+      if (offering.current || published.current || !draft || (!draft.title && !draft.body)) return;
       try {
         localStorage.setItem(key, JSON.stringify({ ...draft, ...fields.current }));
+        markThisTab(key);
       } catch {
         /* Device storage can be blocked. */
       }
@@ -210,31 +237,39 @@ function ComposerEditor({
   }
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
-  // A draft from an earlier visit comes back — including one typed before
-  // signing in, which moves from the anonymous key to this account's.
+  function restore(found: Draft) {
+    setTitle(found.title);
+    setBody(found.body);
+    if (found.source) setSource((current) => current ?? found.source);
+    setRestored(found.savedAt);
+  }
+
+  // A draft this tab wrote comes back — including one typed before signing
+  // in, which moves from the anonymous key to this account's. A draft from an
+  // earlier session is offered: Resume it, or start empty.
   useEffect(() => {
     let active = true;
     queueMicrotask(() => {
       if (!active || initial) return;
       const anonKey = draftKey(null, editingId);
       let draft = readDraft(key);
+      let fresh = writtenThisTab(key);
       if (!draft && user && anonKey !== key) {
         draft = readDraft(anonKey);
+        fresh = writtenThisTab(anonKey);
         if (draft) {
           try {
             localStorage.setItem(key, JSON.stringify(draft));
             localStorage.removeItem(anonKey);
+            if (fresh) markThisTab(key);
           } catch {
-            /* storage full or blocked: the draft is still shown */
+            /* storage full or blocked: the draft is still offered */
           }
         }
       }
-      if (!draft || (!draft.title && !draft.body)) return;
-      const found = draft;
-      setTitle((current) => current || found.title);
-      setBody((current) => current || found.body);
-      if (found.source) setSource((current) => current ?? found.source);
-      setRestored(found.savedAt);
+      if (!draft || (!draft.title.trim() && !draft.body.trim())) return;
+      if (fresh) restore(draft);
+      else setOffered({ key, draft });
     });
     return () => {
       active = false;
@@ -242,9 +277,10 @@ function ComposerEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once per keyed editor, on mount
   }, []);
 
-  // Keep the draft on this device as it is written.
+  // Keep the draft on this device as it is written. While an earlier draft
+  // is on offer, nothing is written over it until the writer chooses.
   useEffect(() => {
-    if (!title && !body) return;
+    if (offered || (!title && !body)) return;
     const handle = window.setTimeout(() => {
       try {
         const draft: Draft = {
@@ -255,13 +291,30 @@ function ComposerEditor({
           savedAt: new Date().toISOString(),
         };
         localStorage.setItem(key, JSON.stringify(draft));
+        markThisTab(key);
         setBrowserKept(true);
       } catch {
         setBrowserKept(false);
       }
     }, 600);
     return () => window.clearTimeout(handle);
-  }, [title, body, source, answering, key]);
+  }, [title, body, source, answering, key, offered]);
+
+  const resumeOffered = () => {
+    if (!offered) return;
+    markThisTab(offered.key);
+    restore(offered.draft);
+    setOffered(null);
+  };
+  const discardOffered = () => {
+    if (!offered) return;
+    try {
+      localStorage.removeItem(offered.key);
+    } catch {
+      /* blocked storage: there is nothing to remove */
+    }
+    setOffered(null);
+  };
 
   // The text box grows with the article; the page scrolls, never an inner box.
   useEffect(() => {
@@ -517,6 +570,33 @@ function ComposerEditor({
             <p className={styles.meta}>Or write about anything else. Nothing here is required.</p>
           </section>
         )
+      )}
+
+      {offered && (
+        <section className={styles.panel} aria-labelledby="offered-heading">
+          <div className={styles.panelHead}>
+            <h2 id="offered-heading">An unfinished draft is in this browser</h2>
+            <p className={styles.meta}>
+              “{offered.draft.title.trim() || offered.draft.body.trim().slice(0, 80) + '…'}”, last
+              changed {zurichTime(offered.draft.savedAt)}. It is not on your account.
+            </p>
+          </div>
+          <div className={styles.panelActions}>
+            <button type="button" className="bb-button bb-button--primary" onClick={resumeOffered}>
+              {title.trim() || body.trim()
+                ? 'Resume draft (replaces what you typed)'
+                : 'Resume draft'}
+            </button>
+            <button
+              type="button"
+              className="bb-button bb-button--secondary"
+              onClick={discardOffered}
+            >
+              Start empty
+            </button>
+          </div>
+          <p className={styles.meta}>Start empty deletes that draft from this browser.</p>
+        </section>
       )}
 
       <form
