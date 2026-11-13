@@ -62,6 +62,9 @@ const PROBLEM_TEXT = {
   silence: 'Nothing was heard. Try again, a little closer to the microphone.',
   unavailable: 'Speaking is not available here just now. You can still type.',
   fileTooLarge: 'That recording is too long to send.',
+  // Chatkit 0.3x names two more reasons a transcription is refused.
+  signIn: 'Sign in to speak your text. You can still type.',
+  busy: 'Speaking is busy just now. Try again in a minute, or type.',
 } as const;
 
 /**
